@@ -1,0 +1,279 @@
+{
+  "@@locale": "en",
+
+  "appName": "cup+",
+
+  "commonCancel": "Cancel",
+  "commonConfirm": "Confirm",
+  "commonSave": "Save",
+  "commonDelete": "Delete",
+  "commonEdit": "Edit",
+  "commonSearch": "Search",
+  "commonLoading": "Loading...",
+  "commonError": "An error occurred",
+  "commonRetry": "Retry",
+  "commonClose": "Close",
+  "commonNext": "Next",
+  "commonBack": "Back",
+  "commonDone": "Done",
+  "commonAll": "All",
+  "commonFemale": "Female",
+  "commonMale": "Male",
+
+  "authLogin": "Log In",
+  "authLogout": "Log Out",
+  "authSignUp": "Sign Up",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authForgotPassword": "Forgot Password",
+  "authComingSoon": "Coming Soon",
+  "authSubtitle": "Platform for Professional Matchmakers",
+  "authLoginWithGoogle": "Continue with Google",
+  "authLoginWithKakao": "Continue with Kakao",
+  "authLoginWithEmail": "Continue with Email",
+  "authGetStarted": "Get Started",
+  "authAlreadyHaveAccount": "Already have an account?",
+  "authTermsNotice": "By continuing, you agree to our Terms of Service and Privacy Policy.",
+  "authOr": "or",
+
+  "matchStatusPending": "Pending",
+  "matchStatusAccepted": "Accepted",
+  "matchStatusDeclined": "Declined",
+  "matchStatusMeetingScheduled": "Meeting Scheduled",
+  "matchStatusCompleted": "Completed",
+  "matchCreate": "Create Match",
+  "matchList": "Match List",
+
+  "profileTitle": "Profile",
+  "profileEdit": "Edit Profile",
+  "profileName": "Name",
+  "profileGender": "Gender",
+  "profileBirthDate": "Date of Birth",
+  "profileEducation": "Education",
+  "profileOccupation": "Occupation",
+  "profileCompany": "Company",
+  "profileIncome": "Annual Income",
+  "profileReligion": "Religion",
+  "profileHeight": "Height",
+
+  "chatTitle": "Chat",
+  "chatSendMessage": "Send Message",
+  "chatNoMessages": "No messages",
+  "chatImageSent": "Sent an image",
+
+  "chatListHeadline": "Messages",
+  "chatListUnreadCount": "{count} unread messages",
+  "@chatListUnreadCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "chatEmptyTitle": "No conversations",
+  "chatEmptySubtitle": "Start a conversation with another manager",
+  "chatInputPlaceholder": "Type a message",
+  "chatOnline": "Online",
+  "chatOffline": "Offline",
+  "chatToday": "Today",
+  "chatYesterday": "Yesterday",
+  "chatImageMessage": "Photo",
+  "chatFileMessage": "File",
+  "chatJustNow": "Just now",
+  "chatMinutesAgo": "{minutes}m ago",
+  "@chatMinutesAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "chatHoursAgo": "{hours}h ago",
+  "@chatHoursAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "chatDateFormat": "{month}/{day}",
+  "@chatDateFormat": {
+    "placeholders": {
+      "month": { "type": "int" },
+      "day": { "type": "int" }
+    }
+  },
+
+  "contractTitle": "Contract",
+  "contractAgree": "I Agree",
+  "contractSign": "Sign",
+  "contractVersion": "Contract Version",
+
+  "subscriptionTitle": "Subscription",
+  "subscriptionFree": "Free",
+  "subscriptionStandard": "Standard",
+  "subscriptionPremium": "Premium",
+  "subscriptionDailyLimit": "Daily match limit: {count}",
+
+  "notificationTitle": "Notifications",
+  "notificationEmpty": "No notifications",
+
+  "navHome": "Home",
+  "navMatches": "Matches",
+  "navChat": "Chat",
+  "navMy": "My",
+
+  "homeTitle": "Home Screen",
+  "homeGreeting": "Hello, {name}!",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeRecommendedCount": "{count} recommended profiles for you today.",
+  "@homeRecommendedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeRecommendedTitle": "Recommended",
+  "homeStatusTitle": "Activity",
+  "homePendingMatches": "Pending Matches",
+  "homeTodayMatches": "Today's Matches",
+  "homePendingVerifications": "Pending Review",
+  "homeNewMessages": "New Messages",
+  "homeVerified": "Verified",
+  "homeGenderMale": "M",
+  "homeGenderFemale": "F",
+  "homeTipTitle": "Matching Tip",
+  "homeAgeSuffix": "Age {age}",
+  "@homeAgeSuffix": {
+    "placeholders": {
+      "age": { "type": "int" }
+    }
+  },
+  "homeHeightCm": "{height}cm",
+  "@homeHeightCm": {
+    "placeholders": {
+      "height": { "type": "int" }
+    }
+  },
+  "matchesTitle": "Matches",
+  "matchesTabPending": "Pending",
+  "matchesTabActive": "Active",
+  "matchesTabDone": "Done",
+  "matchesTotalCount": "{count} matches total",
+  "@matchesTotalCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "matchesMatchedAt": "{date}",
+  "@matchesMatchedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "matchesNotesPreview": "Notes",
+  "matchesEmptyPendingTitle": "No pending matches",
+  "matchesEmptyPendingSubtitle": "Create a new match to get started",
+  "matchesEmptyActiveTitle": "No active matches",
+  "matchesEmptyActiveSubtitle": "Accepted matches will appear here",
+  "matchesEmptyDoneTitle": "No completed matches",
+  "matchesEmptyDoneSubtitle": "Completed or declined matches will appear here",
+  "chatListTitle": "Messages",
+  "myTitle": "My Screen",
+
+  "authRequiredTitle": "Login Required",
+  "authRequiredMessage": "Please log in to use this feature.",
+  "authRequiredLogin": "Log In",
+
+  "errorNotFound": "Page not found",
+  "errorGoHome": "Go Home",
+
+  "mySettingsTitle": "Settings",
+  "mySettingsLanguage": "Language",
+  "mySettingsLanguageKo": "한국어",
+  "mySettingsLanguageEn": "English",
+  "mySettingsDarkMode": "Dark Mode",
+  "myGeneralTitle": "General",
+  "myMatchHistory": "Match History",
+  "mySubscriptionManage": "Subscription",
+  "myNotificationSettings": "Notification Settings",
+  "myCustomerSupport": "Customer Support",
+  "myLogoutConfirmTitle": "Log Out",
+  "myLogoutConfirmMessage": "Are you sure you want to log out?",
+  "myProfileDetail": "Profile Details",
+  "myVersion": "Version {version}",
+  "@myVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+
+  "nicknameEditTitle": "Change Nickname",
+  "nicknameHint": "Enter nickname",
+  "nicknameRules": "2-20 chars, letters/numbers/Korean/underscores",
+  "nicknameAvailable": "Available",
+  "nicknameUnavailable": "Already taken",
+  "nicknameInvalid": "Invalid format",
+  "nicknameConfirm": "Confirm",
+  "nicknameEditSuccess": "Nickname updated",
+  "nicknameSetHint": "Set your nickname",
+  "authLoginError": "Login failed",
+  "authDevLogin": "Developer Login",
+  "myNickname": "Nickname",
+
+  "myLinkedAccountsTitle": "Linked Accounts",
+  "myLinkedAccountConnected": "Connected",
+  "myLinkedAccountNotConnected": "Not connected",
+
+  "authLastUsed": "Last used",
+  "authDifferentProviderTitle": "Different login method",
+  "authDifferentProviderMessage": "You previously signed in with {provider}. Using a different method may create a separate account. Continue?",
+  "@authDifferentProviderMessage": {
+    "placeholders": {
+      "provider": { "type": "String" }
+    }
+  },
+
+  "marketplaceTitle": "Profile Market",
+  "marketplaceTotalCount": "{count} profiles",
+  "@marketplaceTotalCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "marketplaceSearchHint": "Search name, job, company, region",
+  "marketplaceEmptyTitle": "No profiles found",
+  "marketplaceEmptySubtitle": "Try adjusting your search criteria",
+  "marketplaceFilterTitle": "Filters",
+  "marketplaceFilterClear": "Clear",
+  "marketplaceFilterApply": "Apply",
+  "marketplaceFilterAge": "Age ({min} ~ {max})",
+  "@marketplaceFilterAge": {
+    "placeholders": {
+      "min": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
+  "marketplaceFilterHeight": "Height ({min}cm ~ {max}cm)",
+  "@marketplaceFilterHeight": {
+    "placeholders": {
+      "min": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
+  "marketplaceFilterVerifiedOnly": "Verified profiles only",
+
+  "profileDetailInfoTitle": "Basic Info",
+  "profileDetailHobbies": "Hobbies & Interests",
+  "profileDetailBio": "About Me",
+  "profileDetailIdealPartner": "Ideal Partner",
+  "profileDetailVerification": "Verified Documents",
+  "profileDetailMatchRequests": "Match Requests",
+  "profileDetailMatchRequestUnit": "",
+  "profileDetailRequestMatch": "Request Match",
+  "profileDetailMatchRequestTitle": "Match Request",
+  "profileDetailMatchRequestMessage": "Request a match with {name}?",
+  "@profileDetailMatchRequestMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileDetailMatchRequestSent": "Match request sent successfully"
+}

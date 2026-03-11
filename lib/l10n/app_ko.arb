@@ -1,0 +1,285 @@
+{
+  "@@locale": "ko",
+
+  "appName": "cup+",
+  "@appName": { "description": "앱 이름" },
+
+  "commonCancel": "취소",
+  "commonConfirm": "확인",
+  "commonSave": "저장",
+  "commonDelete": "삭제",
+  "commonEdit": "편집",
+  "commonSearch": "검색",
+  "commonLoading": "로딩 중...",
+  "commonError": "오류가 발생했습니다",
+  "commonRetry": "다시 시도",
+  "commonClose": "닫기",
+  "commonNext": "다음",
+  "commonBack": "뒤로",
+  "commonDone": "완료",
+  "commonAll": "전체",
+  "commonFemale": "여성",
+  "commonMale": "남성",
+
+  "authLogin": "로그인",
+  "authLogout": "로그아웃",
+  "authSignUp": "회원가입",
+  "authEmail": "이메일",
+  "authPassword": "비밀번호",
+  "authForgotPassword": "비밀번호 찾기",
+  "authComingSoon": "곧 제공됩니다",
+  "authSubtitle": "매칭 전문가를 위한 플랫폼",
+  "authLoginWithGoogle": "Google로 계속하기",
+  "authLoginWithKakao": "카카오로 계속하기",
+  "authLoginWithEmail": "이메일로 계속하기",
+  "authGetStarted": "시작하기",
+  "authAlreadyHaveAccount": "이미 계정이 있으신가요?",
+  "authTermsNotice": "계속 진행하면 이용약관 및 개인정보처리방침에 동의하는 것으로 간주됩니다.",
+  "authOr": "또는",
+
+  "matchStatusPending": "대기 중",
+  "matchStatusAccepted": "수락됨",
+  "matchStatusDeclined": "거절됨",
+  "matchStatusMeetingScheduled": "만남 예정",
+  "matchStatusCompleted": "완료",
+  "matchCreate": "매칭 생성",
+  "matchList": "매칭 목록",
+
+  "profileTitle": "프로필",
+  "profileEdit": "프로필 편집",
+  "profileName": "이름",
+  "profileGender": "성별",
+  "profileBirthDate": "생년월일",
+  "profileEducation": "학력",
+  "profileOccupation": "직업",
+  "profileCompany": "회사",
+  "profileIncome": "연소득",
+  "profileReligion": "종교",
+  "profileHeight": "키",
+
+  "chatTitle": "채팅",
+  "chatSendMessage": "메시지 보내기",
+  "chatNoMessages": "메시지가 없습니다",
+  "chatImageSent": "이미지를 보냈습니다",
+
+  "chatListHeadline": "대화함",
+  "chatListUnreadCount": "읽지 않은 메시지 {count}건",
+  "@chatListUnreadCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "chatEmptyTitle": "대화가 없습니다",
+  "chatEmptySubtitle": "다른 매니저와 대화를 시작해보세요",
+  "chatInputPlaceholder": "메시지를 입력하세요",
+  "chatOnline": "온라인",
+  "chatOffline": "오프라인",
+  "chatToday": "오늘",
+  "chatYesterday": "어제",
+  "chatImageMessage": "사진",
+  "chatFileMessage": "파일",
+  "chatJustNow": "방금",
+  "chatMinutesAgo": "{minutes}분 전",
+  "@chatMinutesAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "chatHoursAgo": "{hours}시간 전",
+  "@chatHoursAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "chatDateFormat": "{month}월 {day}일",
+  "@chatDateFormat": {
+    "placeholders": {
+      "month": { "type": "int" },
+      "day": { "type": "int" }
+    }
+  },
+
+  "contractTitle": "계약",
+  "contractAgree": "동의합니다",
+  "contractSign": "서명하기",
+  "contractVersion": "계약 버전",
+
+  "subscriptionTitle": "구독",
+  "subscriptionFree": "무료",
+  "subscriptionStandard": "스탠다드",
+  "subscriptionPremium": "프리미엄",
+  "subscriptionDailyLimit": "일일 매칭 제한: {count}건",
+  "@subscriptionDailyLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "notificationTitle": "알림",
+  "notificationEmpty": "알림이 없습니다",
+
+  "navHome": "홈",
+  "navMatches": "매칭",
+  "navChat": "채팅",
+  "navMy": "마이",
+
+  "homeTitle": "홈 화면입니다",
+  "homeGreeting": "안녕하세요, {name}님!",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeRecommendedCount": "오늘 {count}명의 추천 프로필이 있어요.",
+  "@homeRecommendedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeRecommendedTitle": "추천 프로필",
+  "homeStatusTitle": "활동 현황",
+  "homePendingMatches": "대기 중 매칭",
+  "homeTodayMatches": "오늘 매칭",
+  "homePendingVerifications": "서류 대기",
+  "homeNewMessages": "새 메시지",
+  "homeVerified": "인증됨",
+  "homeGenderMale": "남",
+  "homeGenderFemale": "여",
+  "homeTipTitle": "매칭 팁",
+  "homeAgeSuffix": "{age}세",
+  "@homeAgeSuffix": {
+    "placeholders": {
+      "age": { "type": "int" }
+    }
+  },
+  "homeHeightCm": "{height}cm",
+  "@homeHeightCm": {
+    "placeholders": {
+      "height": { "type": "int" }
+    }
+  },
+  "matchesTitle": "매칭",
+  "matchesTabPending": "대기 중",
+  "matchesTabActive": "진행 중",
+  "matchesTabDone": "완료",
+  "matchesTotalCount": "총 {count}건의 매칭",
+  "@matchesTotalCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "matchesMatchedAt": "{date}",
+  "@matchesMatchedAt": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "matchesNotesPreview": "메모",
+  "matchesEmptyPendingTitle": "대기 중인 매칭이 없습니다",
+  "matchesEmptyPendingSubtitle": "새로운 매칭을 생성해보세요",
+  "matchesEmptyActiveTitle": "진행 중인 매칭이 없습니다",
+  "matchesEmptyActiveSubtitle": "대기 중인 매칭이 수락되면 여기에 표시됩니다",
+  "matchesEmptyDoneTitle": "완료된 매칭이 없습니다",
+  "matchesEmptyDoneSubtitle": "매칭이 완료되거나 거절되면 여기에 표시됩니다",
+  "chatListTitle": "대화함",
+  "myTitle": "마이 화면입니다",
+
+  "authRequiredTitle": "로그인이 필요합니다",
+  "authRequiredMessage": "이 기능을 사용하려면 로그인이 필요합니다.",
+  "authRequiredLogin": "로그인하기",
+
+  "errorNotFound": "페이지를 찾을 수 없습니다",
+  "errorGoHome": "홈으로 이동",
+
+  "mySettingsTitle": "설정",
+  "mySettingsLanguage": "언어",
+  "mySettingsLanguageKo": "한국어",
+  "mySettingsLanguageEn": "English",
+  "mySettingsDarkMode": "다크 모드",
+  "myGeneralTitle": "일반",
+  "myMatchHistory": "매칭 이력",
+  "mySubscriptionManage": "구독 관리",
+  "myNotificationSettings": "알림 설정",
+  "myCustomerSupport": "고객센터",
+  "myLogoutConfirmTitle": "로그아웃",
+  "myLogoutConfirmMessage": "정말 로그아웃하시겠습니까?",
+  "myProfileDetail": "프로필 상세",
+  "myVersion": "버전 {version}",
+  "@myVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+
+  "nicknameEditTitle": "닉네임 변경",
+  "nicknameHint": "닉네임을 입력하세요",
+  "nicknameRules": "2-20자, 한글/영문/숫자/밑줄(_)",
+  "nicknameAvailable": "사용 가능",
+  "nicknameUnavailable": "이미 사용 중",
+  "nicknameInvalid": "올바르지 않은 형식",
+  "nicknameConfirm": "확인",
+  "nicknameEditSuccess": "닉네임이 변경되었습니다",
+  "nicknameSetHint": "닉네임을 설정해주세요",
+  "authLoginError": "로그인에 실패했습니다",
+  "authDevLogin": "개발자 로그인",
+  "myNickname": "닉네임",
+
+  "myLinkedAccountsTitle": "연결된 계정",
+  "myLinkedAccountConnected": "연결됨",
+  "myLinkedAccountNotConnected": "미연결",
+
+  "authLastUsed": "최근 사용",
+  "authDifferentProviderTitle": "다른 로그인 방법",
+  "authDifferentProviderMessage": "이전에 {provider}로 로그인하셨습니다. 다른 방법으로 로그인하면 별도의 계정이 생성될 수 있습니다. 계속하시겠습니까?",
+  "@authDifferentProviderMessage": {
+    "placeholders": {
+      "provider": { "type": "String" }
+    }
+  },
+
+  "marketplaceTitle": "프로필 마켓",
+  "marketplaceTotalCount": "총 {count}명의 프로필",
+  "@marketplaceTotalCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "marketplaceSearchHint": "이름, 직업, 회사, 지역 검색",
+  "marketplaceEmptyTitle": "프로필이 없습니다",
+  "marketplaceEmptySubtitle": "검색 조건을 변경해보세요",
+  "marketplaceFilterTitle": "필터",
+  "marketplaceFilterClear": "초기화",
+  "marketplaceFilterApply": "적용하기",
+  "marketplaceFilterAge": "나이 ({min}세 ~ {max}세)",
+  "@marketplaceFilterAge": {
+    "placeholders": {
+      "min": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
+  "marketplaceFilterHeight": "키 ({min}cm ~ {max}cm)",
+  "@marketplaceFilterHeight": {
+    "placeholders": {
+      "min": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
+  "marketplaceFilterVerifiedOnly": "인증된 프로필만",
+
+  "profileDetailInfoTitle": "기본 정보",
+  "profileDetailHobbies": "취미/관심사",
+  "profileDetailBio": "자기소개",
+  "profileDetailIdealPartner": "이상형",
+  "profileDetailVerification": "인증 서류",
+  "profileDetailMatchRequests": "매칭 신청",
+  "profileDetailMatchRequestUnit": "건",
+  "profileDetailRequestMatch": "매칭 신청하기",
+  "profileDetailMatchRequestTitle": "매칭 신청",
+  "profileDetailMatchRequestMessage": "{name}님에게 매칭을 신청하시겠습니까?",
+  "@profileDetailMatchRequestMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "profileDetailMatchRequestSent": "매칭 신청이 완료되었습니다"
+}
