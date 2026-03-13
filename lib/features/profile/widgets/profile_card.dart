@@ -10,12 +10,16 @@ class ProfileCard extends StatelessWidget {
     required this.email,
     this.subtitle,
     this.onTap,
+    this.verificationStatus,
+    this.onVerificationTap,
   });
 
   final String name;
   final String email;
   final String? subtitle;
   final VoidCallback? onTap;
+  final String? verificationStatus;
+  final VoidCallback? onVerificationTap;
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +81,25 @@ class ProfileCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            name,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  name,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (verificationStatus != null) ...[
+                                SizedBox(width: 6.w),
+                                _VerificationBadge(
+                                  status: verificationStatus!,
+                                  onTap: onVerificationTap,
+                                ),
+                              ],
+                            ],
                           ),
                           SizedBox(height: 2.h),
                           Text(
@@ -105,6 +123,29 @@ class ProfileCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _VerificationBadge extends StatelessWidget {
+  const _VerificationBadge({required this.status, this.onTap});
+  final String status;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, color) = switch (status) {
+      'verified' => (Icons.verified_rounded, Colors.green),
+      'pending' => (Icons.schedule_rounded, Colors.orange),
+      'rejected' => (Icons.error_outline_rounded, Colors.red),
+      _ => (null, null),
+    };
+
+    if (icon == null) return const SizedBox.shrink();
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Icon(icon, size: 18.r, color: color),
     );
   }
 }

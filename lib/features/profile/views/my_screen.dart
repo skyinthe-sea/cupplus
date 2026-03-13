@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/providers/locale_provider.dart';
 import '../../../shared/providers/theme_mode_provider.dart';
 import '../../auth/providers/manager_profile_provider.dart';
+import '../../../config/routes.dart';
+import '../../verification/providers/verification_provider.dart';
 import '../widgets/linked_accounts_section.dart';
 import '../widgets/logout_button.dart';
 import '../widgets/nickname_edit_dialog.dart';
@@ -29,6 +33,7 @@ class MyScreen extends ConsumerWidget {
     final locale = ref.watch(localeNotifierProvider);
     final themeMode = ref.watch(themeModeNotifierProvider);
     final isDark = theme.brightness == Brightness.dark;
+    final verificationStatus = ref.watch(managerVerificationStatusProvider);
 
     final nickname = managerProfile.valueOrNull?['nickname'] as String?;
     final managerName = managerProfile.valueOrNull?['full_name'] as String?;
@@ -65,6 +70,8 @@ class MyScreen extends ConsumerWidget {
                 name: userName,
                 subtitle: nickname == null ? l10n.nicknameSetHint : userEmail,
                 email: userEmail,
+                verificationStatus: verificationStatus.valueOrNull,
+                onVerificationTap: () => _openVerification(context),
                 onTap: () async {
                   final result = await NicknameEditDialog.show(
                     context,
@@ -79,6 +86,65 @@ class MyScreen extends ConsumerWidget {
                     }
                   }
                 },
+              ),
+            ),
+
+            // My Clients
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                child: Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                    side: BorderSide(
+                      color: theme.colorScheme.outlineVariant
+                          .withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: () => context.push(AppRoutes.myClients),
+                    borderRadius: BorderRadius.circular(12.r),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 14.h,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 36.r,
+                            height: 36.r,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Icon(
+                              Icons.people_rounded,
+                              size: 20.r,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Text(
+                              l10n.myClientsTitle,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: theme.colorScheme.onSurfaceVariant
+                                .withValues(alpha: 0.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
 
@@ -195,9 +261,7 @@ class MyScreen extends ConsumerWidget {
                       color: theme.colorScheme.onSurfaceVariant
                           .withValues(alpha: 0.5),
                     ),
-                    onTap: () {
-                      // TODO: Navigate to match history
-                    },
+                    onTap: () => context.push(AppRoutes.myMatchHistory),
                   ),
                   SettingsTile(
                     icon: Icons.credit_card_rounded,
@@ -208,9 +272,7 @@ class MyScreen extends ConsumerWidget {
                       color: theme.colorScheme.onSurfaceVariant
                           .withValues(alpha: 0.5),
                     ),
-                    onTap: () {
-                      // TODO: Navigate to subscription
-                    },
+                    onTap: () => context.push(AppRoutes.mySubscription),
                   ),
                   SettingsTile(
                     icon: Icons.notifications_outlined,
@@ -220,9 +282,7 @@ class MyScreen extends ConsumerWidget {
                       color: theme.colorScheme.onSurfaceVariant
                           .withValues(alpha: 0.5),
                     ),
-                    onTap: () {
-                      // TODO: Navigate to notification settings
-                    },
+                    onTap: () => context.push(AppRoutes.myNotificationSettings),
                   ),
                   SettingsTile(
                     icon: Icons.headset_mic_outlined,
@@ -232,8 +292,9 @@ class MyScreen extends ConsumerWidget {
                       color: theme.colorScheme.onSurfaceVariant
                           .withValues(alpha: 0.5),
                     ),
-                    onTap: () {
-                      // TODO: Navigate to customer support
+                    onTap: () async {
+                      final url = Uri.parse(l10n.customerSupportUrl);
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
                     },
                   ),
                 ],
@@ -253,6 +314,10 @@ class MyScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _openVerification(BuildContext context) {
+    context.push(AppRoutes.verification);
   }
 
   bool _isDarkEnabled(ThemeMode themeMode, bool currentIsDark) {

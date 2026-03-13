@@ -6,14 +6,25 @@ import '../l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../config/routes.dart';
 import '../config/supabase_config.dart';
 import '../features/auth/views/login_screen.dart';
 import '../features/chat/views/chat_list_screen.dart';
 import '../features/chat/views/chat_room_screen.dart';
 import '../features/home/views/home_screen.dart';
 import '../features/matching/views/marketplace_screen.dart';
+import '../features/matching/views/match_detail_screen.dart';
+import '../features/matching/views/match_history_screen.dart';
 import '../features/matching/views/profile_detail_screen.dart';
+import '../features/contract/views/contract_history_screen.dart';
+import '../features/home/views/client_registration_screen.dart';
+import '../features/profile/views/my_client_detail_screen.dart';
+import '../features/profile/views/my_client_edit_screen.dart';
+import '../features/profile/views/my_clients_screen.dart';
+import '../features/notification/views/notification_settings_screen.dart';
 import '../features/profile/views/my_screen.dart';
+import '../features/subscription/views/subscription_screen.dart';
+import '../features/verification/views/verification_screen.dart';
 import '../shared/utils/auth_guard.dart';
 
 part 'router.g.dart';
@@ -75,11 +86,72 @@ GoRouter router(Ref ref) {
         ],
       ),
       GoRoute(
+        path: '/my/clients',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const MyClientsScreen(),
+      ),
+      GoRoute(
+        path: '/my/clients/:clientId',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MyClientDetailScreen(
+          clientId: state.pathParameters['clientId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/my/clients/:clientId/edit',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MyClientEditScreen(
+          clientId: state.pathParameters['clientId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/my/subscription',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SubscriptionScreen(),
+      ),
+      GoRoute(
+        path: '/my/notification-settings',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const NotificationSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/my/match-history',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const MatchHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/my/clients/:clientId/contracts',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => ContractHistoryScreen(
+          clientId: state.pathParameters['clientId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/matches/detail/:matchId',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MatchDetailScreen(
+          matchId: state.pathParameters['matchId']!,
+        ),
+      ),
+      GoRoute(
         path: '/marketplace/:profileId',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => ProfileDetailScreen(
           profileId: state.pathParameters['profileId']!,
         ),
+      ),
+      GoRoute(
+        path: '/register-client',
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (context, state) => const MaterialPage(
+          fullscreenDialog: true,
+          child: ClientRegistrationScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/verification',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const VerificationScreen(),
       ),
       GoRoute(
         path: '/chat/:conversationId',
@@ -308,7 +380,7 @@ class _ErrorScreen extends StatelessWidget {
             Text(l10n.errorNotFound, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 16),
             FilledButton(
-              onPressed: () => context.go('/'),
+              onPressed: () => context.go(AppRoutes.home),
               child: Text(l10n.errorGoHome),
             ),
           ],

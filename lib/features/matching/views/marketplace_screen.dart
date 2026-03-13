@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../providers/marketplace_providers.dart';
@@ -8,6 +9,7 @@ import '../widgets/marketplace_gender_tabs.dart';
 import '../widgets/marketplace_header.dart';
 import '../widgets/marketplace_list_view.dart';
 import '../widgets/marketplace_search_bar.dart';
+import '../widgets/marketplace_shimmer_card.dart';
 import '../widgets/match_empty_state.dart';
 
 class MarketplaceScreen extends ConsumerStatefulWidget {
@@ -24,7 +26,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -36,10 +38,10 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final allProfiles = ref.watch(filteredMarketplaceProfilesProvider);
-    final femaleProfiles = ref.watch(femaleProfilesProvider);
-    final maleProfiles = ref.watch(maleProfilesProvider);
     final filter = ref.watch(marketplaceFilterNotifierProvider);
+    final countsAsync = ref.watch(profileCountsProvider);
+
+    final counts = countsAsync.valueOrNull ?? (all: 0, female: 0, male: 0, liked: 0);
 
     return Scaffold(
       body: SafeArea(
@@ -47,7 +49,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MarketplaceHeader(
-              totalCount: allProfiles.length,
+              totalCount: counts.all,
               activeFilterCount: filter.activeFilterCount,
               onFilterTap: () => MarketplaceFilterSheet.show(context),
             ),
@@ -60,42 +62,114 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
             ),
             MarketplaceGenderTabs(
               controller: _tabController,
-              allCount: allProfiles.length,
-              femaleCount: femaleProfiles.length,
-              maleCount: maleProfiles.length,
+              allCount: counts.all,
+              femaleCount: counts.female,
+              maleCount: counts.male,
+              likesCount: counts.liked,
             ),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  // All tab
-                  allProfiles.isEmpty
-                      ? MatchEmptyState(
-                          icon: Icons.person_search_rounded,
-                          title: l10n.marketplaceEmptyTitle,
-                          subtitle: l10n.marketplaceEmptySubtitle,
-                        )
-                      : MarketplaceListView(profiles: allProfiles),
-
-                  // Female tab
-                  femaleProfiles.isEmpty
-                      ? MatchEmptyState(
-                          icon: Icons.person_search_rounded,
-                          title: l10n.marketplaceEmptyTitle,
-                          subtitle: l10n.marketplaceEmptySubtitle,
-                        )
-                      : MarketplaceListView(profiles: femaleProfiles),
-
-                  // Male tab
-                  maleProfiles.isEmpty
-                      ? MatchEmptyState(
-                          icon: Icons.person_search_rounded,
-                          title: l10n.marketplaceEmptyTitle,
-                          subtitle: l10n.marketplaceEmptySubtitle,
-                        )
-                      : MarketplaceListView(profiles: maleProfiles),
+                  _buildProfileTab(l10n, null),
+                  _buildProfileTab(l10n, 'F'),
+                  _buildProfileTab(l10n, 'M'),
+                  _buildLikesTab(l10n),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileTab(AppLocalizations l10n, String? genderFilter) {
+    final profilesAsync = ref.watch(
+      marketplaceProfileListProvider(genderOverride: genderFilter),
+    );
+    final notifier = ref.read(
+      marketplaceProfileListProvider(genderOverride: genderFilter).notifier,
+    );
+
+    return profilesAsync.when(
+      data: (profiles) {
+        if (profiles.isEmpty) {
+          return MatchEmptyState(
+            icon: Icons.person_search_rounded,
+            title: l10n.marketplaceEmptyTitle,
+            subtitle: l10n.marketplaceEmptySubtitle,
+          );
+        }
+        return MarketplaceListView(
+          profiles: profiles,
+          hasMore: notifier.hasMore,
+          onLoadMore: notifier.loadMore,
+          onRefresh: () async {
+            ref.invalidate(
+              marketplaceProfileListProvider(genderOverride: genderFilter),
+            );
+            ref.invalidate(profileCountsProvider);
+          },
+        );
+      },
+      loading: () => ListView.builder(
+        padding: EdgeInsets.only(top: 8.h, bottom: 120.h),
+        itemCount: 5,
+        itemBuilder: (_, __) => const MarketplaceShimmerCard(),
+      ),
+      error: (error, _) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(l10n.commonError),
+            SizedBox(height: 8.h),
+            TextButton(
+              onPressed: () => ref.invalidate(
+                marketplaceProfileListProvider(genderOverride: genderFilter),
+              ),
+              child: Text(l10n.commonRetry),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLikesTab(AppLocalizations l10n) {
+    final likesAsync = ref.watch(likedProfilesProvider);
+
+    return likesAsync.when(
+      data: (profiles) {
+        if (profiles.isEmpty) {
+          return MatchEmptyState(
+            icon: Icons.favorite_border_rounded,
+            title: l10n.marketplaceEmptyTitle,
+            subtitle: l10n.marketplaceEmptySubtitle,
+          );
+        }
+        return MarketplaceListView(
+          profiles: profiles,
+          showDimForMatched: true,
+          onRefresh: () async {
+            ref.invalidate(likedProfilesProvider);
+          },
+        );
+      },
+      loading: () => ListView.builder(
+        padding: EdgeInsets.only(top: 8.h, bottom: 120.h),
+        itemCount: 3,
+        itemBuilder: (_, __) => const MarketplaceShimmerCard(),
+      ),
+      error: (error, _) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(l10n.commonError),
+            SizedBox(height: 8.h),
+            TextButton(
+              onPressed: () => ref.invalidate(likedProfilesProvider),
+              child: Text(l10n.commonRetry),
             ),
           ],
         ),

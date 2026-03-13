@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../config/routes.dart';
 import '../../config/supabase_config.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -24,7 +25,7 @@ Future<bool> requireAuth(BuildContext context, WidgetRef ref) async {
         FilledButton(
           onPressed: () {
             Navigator.of(dialogContext).pop();
-            context.push('/auth');
+            context.push(AppRoutes.auth);
           },
           child: Text(l10n.authRequiredLogin),
         ),

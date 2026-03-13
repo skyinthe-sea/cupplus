@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomeAppBar extends StatelessWidget {
-  const HomeAppBar({super.key, this.unreadCount = 0});
+import '../providers/home_providers.dart';
+import 'notification_bottom_sheet.dart';
 
-  final int unreadCount;
+class HomeAppBar extends ConsumerWidget {
+  const HomeAppBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final unreadAsync = ref.watch(unreadNotificationCountProvider);
+    final unreadCount = unreadAsync.valueOrNull ?? 0;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
@@ -32,7 +36,16 @@ class HomeAppBar extends StatelessWidget {
                   color: theme.colorScheme.onSurface,
                 ),
                 onPressed: () {
-                  // TODO: Navigate to notifications
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: theme.colorScheme.surface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    builder: (_) => const NotificationBottomSheet(),
+                  );
                 },
               ),
               if (unreadCount > 0)
@@ -40,11 +53,22 @@ class HomeAppBar extends StatelessWidget {
                   right: 6.r,
                   top: 6.r,
                   child: Container(
-                    width: 10.r,
-                    height: 10.r,
+                    constraints: BoxConstraints(minWidth: 16.r),
+                    height: 16.r,
+                    padding: EdgeInsets.symmetric(horizontal: 4.w),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.tertiary,
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Center(
+                      child: Text(
+                        unreadCount > 99 ? '99+' : '$unreadCount',
+                        style: TextStyle(
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),

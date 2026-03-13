@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../models/chat_message.dart';
@@ -127,16 +128,10 @@ class _MineBubble extends StatelessWidget {
 
   Widget _buildContent(Color textColor, Color secondaryColor) {
     if (message.type == 'image') {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.image_outlined, size: 16.r, color: secondaryColor),
-          SizedBox(width: 4.w),
-          Text(
-            l10n.chatImageMessage,
-            style: TextStyle(fontSize: 14.sp, color: secondaryColor),
-          ),
-        ],
+      return _ImageContent(
+        message: message,
+        l10n: l10n,
+        secondaryColor: secondaryColor,
       );
     }
     return Text(
@@ -234,6 +229,53 @@ class _OtherBubble extends StatelessWidget {
 
   Widget _buildContent(Color textColor, Color secondaryColor) {
     if (message.type == 'image') {
+      return _ImageContent(
+        message: message,
+        l10n: l10n,
+        secondaryColor: secondaryColor,
+      );
+    }
+    return Text(
+      message.content,
+      style: TextStyle(fontSize: 14.sp, color: textColor, height: 1.4),
+    );
+  }
+}
+
+class _ImageContent extends StatelessWidget {
+  const _ImageContent({
+    required this.message,
+    required this.l10n,
+    required this.secondaryColor,
+  });
+
+  final ChatMessage message;
+  final AppLocalizations l10n;
+  final Color secondaryColor;
+
+  @override
+  Widget build(BuildContext context) {
+    // Local upload in progress
+    if (message.id.startsWith('local-')) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 14.r,
+            height: 14.r,
+            child: CircularProgressIndicator(strokeWidth: 2, color: secondaryColor),
+          ),
+          SizedBox(width: 6.w),
+          Text(
+            l10n.chatImageUploading,
+            style: TextStyle(fontSize: 13.sp, color: secondaryColor),
+          ),
+        ],
+      );
+    }
+
+    final imageUrl = message.imageUrl;
+    if (imageUrl == null || imageUrl.isEmpty) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -246,9 +288,115 @@ class _OtherBubble extends StatelessWidget {
         ],
       );
     }
-    return Text(
-      message.content,
-      style: TextStyle(fontSize: 14.sp, color: textColor, height: 1.4),
+
+    // Use signed URL for private bucket access
+    final storagePath = imageUrl.replaceFirst('chat-images/', '');
+    return _SignedImageWidget(
+      storagePath: storagePath,
+      secondaryColor: secondaryColor,
+      l10n: l10n,
+    );
+  }
+}
+
+class _SignedImageWidget extends StatefulWidget {
+  const _SignedImageWidget({
+    required this.storagePath,
+    required this.secondaryColor,
+    required this.l10n,
+  });
+
+  final String storagePath;
+  final Color secondaryColor;
+  final AppLocalizations l10n;
+
+  @override
+  State<_SignedImageWidget> createState() => _SignedImageWidgetState();
+}
+
+class _SignedImageWidgetState extends State<_SignedImageWidget> {
+  String? _signedUrl;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSignedUrl();
+  }
+
+  Future<void> _loadSignedUrl() async {
+    try {
+      final url = await Supabase.instance.client.storage
+          .from('chat-images')
+          .createSignedUrl(widget.storagePath, 3600);
+      if (mounted) {
+        setState(() => _signedUrl = url);
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _hasError = true);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_hasError || _signedUrl == null) {
+      if (_hasError) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.broken_image_outlined, size: 16.r, color: widget.secondaryColor),
+            SizedBox(width: 4.w),
+            Text(
+              widget.l10n.chatImageMessage,
+              style: TextStyle(fontSize: 14.sp, color: widget.secondaryColor),
+            ),
+          ],
+        );
+      }
+      return SizedBox(
+        width: 150.w,
+        height: 100.h,
+        child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.r),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 200.w, maxHeight: 200.h),
+        child: Image.network(
+          _signedUrl!,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, progress) {
+            if (progress == null) return child;
+            return SizedBox(
+              width: 150.w,
+              height: 100.h,
+              child: Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  value: progress.expectedTotalBytes != null
+                      ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                      : null,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (_, __, ___) => Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.broken_image_outlined, size: 16.r, color: widget.secondaryColor),
+              SizedBox(width: 4.w),
+              Text(
+                widget.l10n.chatImageMessage,
+                style: TextStyle(fontSize: 14.sp, color: widget.secondaryColor),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

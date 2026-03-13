@@ -54,7 +54,7 @@ class ChatListItem extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            height: 72.h,
+            height: conversation.matchContext != null ? 84.h : 72.h,
             decoration: BoxDecoration(
               color: isDark
                   ? theme.colorScheme.surfaceContainer.withValues(alpha: 0.55)
@@ -136,6 +136,18 @@ class ChatListItem extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
+                            if (conversation.matchContext != null) ...[
+                              SizedBox(height: 1.h),
+                              Text(
+                                conversation.matchContext!,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: theme.colorScheme.primary.withValues(alpha: 0.8),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                             SizedBox(height: 2.h),
                             Text(
                               _lastMessagePreview(context),

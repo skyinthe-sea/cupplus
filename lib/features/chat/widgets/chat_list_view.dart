@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../config/routes.dart';
 import '../models/conversation_summary.dart';
 import 'chat_list_item.dart';
 
 class ChatListView extends StatefulWidget {
-  const ChatListView({super.key, required this.conversations});
+  const ChatListView({
+    super.key,
+    required this.conversations,
+    this.onRefresh,
+  });
 
   final List<ConversationSummary> conversations;
+  final Future<void> Function()? onRefresh;
 
   @override
   State<ChatListView> createState() => _ChatListViewState();
@@ -87,9 +93,7 @@ class _ChatListViewState extends State<ChatListView>
   Widget build(BuildContext context) {
     return RefreshIndicator(
       color: const Color(0xFFB4637A),
-      onRefresh: () async {
-        await Future.delayed(const Duration(milliseconds: 500));
-      },
+      onRefresh: widget.onRefresh ?? () async {},
       child: ListView.builder(
         padding: EdgeInsets.only(top: 8.h, bottom: 120.h),
         itemCount: widget.conversations.length,
@@ -97,7 +101,7 @@ class _ChatListViewState extends State<ChatListView>
           final conversation = widget.conversations[index];
           final item = ChatListItem(
             conversation: conversation,
-            onTap: () => context.push('/chat/${conversation.id}'),
+            onTap: () => context.push(AppRoutes.chatRoom(conversation.id)),
           );
 
           if (index >= _fadeAnimations.length) return item;

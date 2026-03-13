@@ -182,7 +182,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chatEmptyTitle => '대화가 없습니다';
 
   @override
-  String get chatEmptySubtitle => '다른 매니저와 대화를 시작해보세요';
+  String get chatEmptySubtitle => '아직 채팅이 없습니다.\n매칭이 성사되면 자동으로 채팅방이 생성됩니다.';
 
   @override
   String get chatInputPlaceholder => '메시지를 입력하세요';
@@ -216,6 +216,11 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String chatHoursAgo(int hours) {
     return '$hours시간 전';
+  }
+
+  @override
+  String chatDaysAgo(int days) {
+    return '$days일 전';
   }
 
   @override
@@ -560,4 +565,1033 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get profileDetailMatchRequestSent => '매칭 신청이 완료되었습니다';
+
+  @override
+  String homeGreetingMorning(String name) {
+    return '좋은 아침이에요, $name님';
+  }
+
+  @override
+  String homeGreetingAfternoon(String name) {
+    return '좋은 오후예요, $name님';
+  }
+
+  @override
+  String homeGreetingEvening(String name) {
+    return '좋은 저녁이에요, $name님';
+  }
+
+  @override
+  String homeGreetingNight(String name) {
+    return '늦은 시간 고생하세요, $name님';
+  }
+
+  @override
+  String get homeQuickRegister => '회원등록';
+
+  @override
+  String get homeQuickMatch => '매칭생성';
+
+  @override
+  String get homeTodayTasks => '오늘의 할일';
+
+  @override
+  String homeTodayPendingMatches(int count) {
+    return '대기 매칭 $count건';
+  }
+
+  @override
+  String homeTodayNewMessages(int count) {
+    return '새 메시지 $count건';
+  }
+
+  @override
+  String get homeTodayView => '보기';
+
+  @override
+  String get homeRecentActivity => '최근 활동';
+
+  @override
+  String homeActivityMatchCreated(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭 생성';
+  }
+
+  @override
+  String homeActivityMatchAccepted(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭 수락됨';
+  }
+
+  @override
+  String homeActivityMatchDeclined(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭 거절됨';
+  }
+
+  @override
+  String homeActivityClientRegistered(String name) {
+    return '$name 신규 회원 등록';
+  }
+
+  @override
+  String get homeActivityEmpty => '아직 활동 내역이 없습니다';
+
+  @override
+  String get homeActivityEmptyAction => '첫 회원을 등록해보세요!';
+
+  @override
+  String get homeActivityToday => '오늘';
+
+  @override
+  String get homeActivityYesterday => '어제';
+
+  @override
+  String get homeNotificationMarkAllRead => '모두 읽음';
+
+  @override
+  String get homeClientRegTitle => '간편 회원 등록';
+
+  @override
+  String get homeClientRegNameRequired => '이름을 입력해주세요';
+
+  @override
+  String get homeClientRegSuccess => '회원이 등록되었습니다';
+
+  @override
+  String get homeMatchCreateTitle => '오늘의 추천';
+
+  @override
+  String get homeMatchCreateEmpty => '추천할 프로필이 없습니다';
+
+  @override
+  String get homeMatchMgmtTitle => '매칭 관리';
+
+  @override
+  String get homeMatchAccept => '수락';
+
+  @override
+  String get homeMatchDecline => '거절';
+
+  @override
+  String get homeMatchMemo => '메모';
+
+  @override
+  String get homeMatchDeclineReason => '거절 사유 (선택)';
+
+  @override
+  String get homeMatchAcceptSuccess => '매칭이 수락되었습니다';
+
+  @override
+  String get homeMatchDeclineSuccess => '매칭이 거절되었습니다';
+
+  @override
+  String get homeMatchMemoHint => '메모를 입력하세요';
+
+  @override
+  String get homeMatchMemoSaved => '메모가 저장되었습니다';
+
+  @override
+  String get marketplaceLikesTab => '좋아요';
+
+  @override
+  String get marketplaceSortNewest => '최신순';
+
+  @override
+  String get marketplaceSortMostLikes => '좋아요순';
+
+  @override
+  String get marketplaceFilterEducation => '학력';
+
+  @override
+  String get marketplaceFilterOccupation => '직업군';
+
+  @override
+  String get marketplaceFilterIncome => '연소득대';
+
+  @override
+  String get marketplaceMatchCompleted => '매칭완료';
+
+  @override
+  String get matchRequestVerificationPending =>
+      '인증 검토 중입니다. 승인 후 매칭 요청이 가능합니다.';
+
+  @override
+  String get matchRequestVerificationRequired => '매칭 요청을 위해 매니저 인증이 필요합니다.';
+
+  @override
+  String get matchRequestVerify => '인증하기';
+
+  @override
+  String get matchRequestSelectClient => '매칭할 회원을 선택해주세요';
+
+  @override
+  String get matchRequestNoEligible => '매칭 가능한 이성 회원이 없습니다';
+
+  @override
+  String matchRequestConfirmMessage(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭을 요청하시겠습니까?';
+  }
+
+  @override
+  String get matchRequestSuccess => '매칭 요청이 완료되었습니다';
+
+  @override
+  String get matchRequestDailyLimit => '오늘의 매칭 횟수를 초과했습니다';
+
+  @override
+  String chatMatchContext(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭';
+  }
+
+  @override
+  String get chatImagePickerTitle => '이미지 전송';
+
+  @override
+  String get chatImagePickerCamera => '카메라';
+
+  @override
+  String get chatImagePickerGallery => '갤러리';
+
+  @override
+  String get chatImageUploading => '이미지 업로드 중...';
+
+  @override
+  String get chatMessageSendFailed => '메시지 전송에 실패했습니다';
+
+  @override
+  String get regTitle => '회원 등록';
+
+  @override
+  String regStepOf(int current, int total) {
+    return 'Step $current/$total';
+  }
+
+  @override
+  String get regStep1Title => '기본 정보';
+
+  @override
+  String get regStep2Title => '직업/학력';
+
+  @override
+  String get regStep3Title => '신체/외모';
+
+  @override
+  String get regStep4Title => '성격/취미';
+
+  @override
+  String get regStep5Title => '동의 및 완료';
+
+  @override
+  String get regPrevious => '이전';
+
+  @override
+  String get regComplete => '등록 완료';
+
+  @override
+  String get regNameLabel => '이름';
+
+  @override
+  String get regNameHint => '이름을 입력하세요';
+
+  @override
+  String get regNameValidation => '이름은 2~20자여야 합니다';
+
+  @override
+  String get regPhoneLabel => '핸드폰';
+
+  @override
+  String get regPhoneHint => '010-0000-0000';
+
+  @override
+  String get regEmailLabel => '이메일';
+
+  @override
+  String get regEmailHint => '이메일을 입력하세요';
+
+  @override
+  String get regEmailValidation => '올바른 이메일 형식이 아닙니다';
+
+  @override
+  String get regOccupationLabel => '직업';
+
+  @override
+  String get regOccupationHint => '직업을 입력하세요';
+
+  @override
+  String get regOccupationRequired => '직업을 입력해주세요';
+
+  @override
+  String get regCompanyLabel => '회사';
+
+  @override
+  String get regCompanyHint => '회사를 입력하세요';
+
+  @override
+  String get regEducationLevel => '학력 수준';
+
+  @override
+  String get regEduHighSchool => '고졸';
+
+  @override
+  String get regEduAssociate => '전문대';
+
+  @override
+  String get regEduBachelor => '대졸';
+
+  @override
+  String get regEduMaster => '석사';
+
+  @override
+  String get regEduDoctorate => '박사';
+
+  @override
+  String get regSchoolLabel => '학교명';
+
+  @override
+  String get regSchoolHint => '학교명을 입력하세요';
+
+  @override
+  String get regMajorLabel => '전공';
+
+  @override
+  String get regMajorHint => '전공을 입력하세요';
+
+  @override
+  String get regIncomeLabel => '연소득대';
+
+  @override
+  String get regIncome1 => '3,000만원 미만';
+
+  @override
+  String get regIncome2 => '3,000~5,000만원';
+
+  @override
+  String get regIncome3 => '5,000~7,000만원';
+
+  @override
+  String get regIncome4 => '7,000만~1억원';
+
+  @override
+  String get regIncome5 => '1억~1.5억원';
+
+  @override
+  String get regIncome6 => '1.5억원 이상';
+
+  @override
+  String get regHeightLabel => '키';
+
+  @override
+  String regHeightValue(int height) {
+    return '$height cm';
+  }
+
+  @override
+  String get regBodyTypeLabel => '체형';
+
+  @override
+  String get regBodySlim => '마른';
+
+  @override
+  String get regBodySlightlySlim => '약간마른';
+
+  @override
+  String get regBodyAverage => '보통';
+
+  @override
+  String get regBodySlightlyChubby => '약간통통';
+
+  @override
+  String get regBodyChubby => '통통';
+
+  @override
+  String get regPhotoLabel => '프로필 사진 (최대 5장)';
+
+  @override
+  String get regPhotoAdd => '추가';
+
+  @override
+  String get regPhotoMain => '대표';
+
+  @override
+  String get regPhotoHint => '첫 번째 사진이 대표 사진으로 사용됩니다.';
+
+  @override
+  String get regPhotoMax => '최대 5장까지 등록 가능합니다';
+
+  @override
+  String get regReligionLabel => '종교';
+
+  @override
+  String get regReligionNone => '무교';
+
+  @override
+  String get regReligionChristian => '기독교';
+
+  @override
+  String get regReligionCatholic => '천주교';
+
+  @override
+  String get regReligionBuddhist => '불교';
+
+  @override
+  String get regReligionOther => '기타';
+
+  @override
+  String get regHobbiesLabel => '취미 (최대 5개)';
+
+  @override
+  String get regHobbiesMax => '최대 5개까지 선택 가능합니다';
+
+  @override
+  String regHobbiesCount(int count) {
+    return '$count/5';
+  }
+
+  @override
+  String get regHobbiesCustom => '+ 직접 입력';
+
+  @override
+  String get regHobbiesAdd => '추가';
+
+  @override
+  String get regBioLabel => '자기소개';
+
+  @override
+  String get regBioHint => '밝고 긍정적인 성격으로, 주말엔 카페에서 책 읽는 것을 좋아합니다...';
+
+  @override
+  String regBioCount(int count) {
+    return '$count/300';
+  }
+
+  @override
+  String get regAgreeAll => '전체 동의';
+
+  @override
+  String get regAgreeTerms => '서비스 이용 약관';
+
+  @override
+  String get regAgreePrivacy => '개인정보 수집/이용';
+
+  @override
+  String get regAgreeMarketing => '마케팅 정보 수신';
+
+  @override
+  String get regRequired => '(필수)';
+
+  @override
+  String get regOptional => '(선택)';
+
+  @override
+  String get regView => '보기';
+
+  @override
+  String get regAgreeDesc => '등록 정보를 확인하고 약관에 동의해주세요.';
+
+  @override
+  String get regSuccessTitle => '회원 등록 완료!';
+
+  @override
+  String regSuccessMessage(String name) {
+    return '$name님이 등록되었습니다';
+  }
+
+  @override
+  String get regSuccessViewProfile => '프로필 확인';
+
+  @override
+  String get regSuccessGoHome => '홈으로';
+
+  @override
+  String get regExitTitle => '나가시겠습니까?';
+
+  @override
+  String get regExitMessage => '입력 중인 정보가 있습니다.\n임시저장됩니다.';
+
+  @override
+  String get regExitLeave => '나가기';
+
+  @override
+  String get regDraftFound => '작성 중인 회원 정보가 있습니다.\n이어서 작성하시겠습니까?';
+
+  @override
+  String get regDraftContinue => '이어서 작성';
+
+  @override
+  String get regDraftNew => '새로 작성';
+
+  @override
+  String get myClientsTitle => '내 회원 관리';
+
+  @override
+  String get myClientsRegister => '등록';
+
+  @override
+  String get myClientsSearchHint => '이름으로 검색';
+
+  @override
+  String get myClientsTabAll => '전체';
+
+  @override
+  String get myClientsTabActive => '활성';
+
+  @override
+  String get myClientsTabPaused => '휴지';
+
+  @override
+  String get myClientsTabMatched => '매칭중';
+
+  @override
+  String myClientsCount(int count) {
+    return '$count명';
+  }
+
+  @override
+  String get myClientsEmpty => '등록된 회원이 없습니다';
+
+  @override
+  String get myClientsEmptyAction => '첫 회원을 등록해보세요';
+
+  @override
+  String get myClientDetailTitle => '회원 상세';
+
+  @override
+  String get myClientDetailEdit => '수정';
+
+  @override
+  String get myClientDetailStatus => '상태';
+
+  @override
+  String get myClientDetailStatusActive => '활성';
+
+  @override
+  String get myClientDetailStatusPaused => '휴지';
+
+  @override
+  String get myClientDetailStatusMatched => '매칭중';
+
+  @override
+  String get myClientDetailStatusWithdrawn => '탈퇴';
+
+  @override
+  String get myClientDetailMatchHistory => '매칭 이력';
+
+  @override
+  String get myClientDetailMatchEmpty => '매칭 이력이 없습니다';
+
+  @override
+  String get myClientDetailRegisteredAt => '등록일';
+
+  @override
+  String get myClientDetailPhone => '연락처';
+
+  @override
+  String get myClientDetailEmail => '이메일';
+
+  @override
+  String get myClientDetailEducationLevel => '학력';
+
+  @override
+  String get myClientDetailSchool => '학교';
+
+  @override
+  String get myClientDetailMajor => '전공';
+
+  @override
+  String get myClientDetailBodyType => '체형';
+
+  @override
+  String get myClientEditTitle => '회원 정보 수정';
+
+  @override
+  String get myClientEditSaved => '수정 사항이 저장되었습니다';
+
+  @override
+  String get myClientEditFailed => '저장에 실패했습니다';
+
+  @override
+  String get myClientStatusChange => '상태 변경';
+
+  @override
+  String myClientStatusChangeConfirm(String name, String status) {
+    return '$name님의 상태를 $status(으)로 변경하시겠습니까?';
+  }
+
+  @override
+  String get myClientStatusChanged => '상태가 변경되었습니다';
+
+  @override
+  String get myClientDeleteTitle => '회원 삭제';
+
+  @override
+  String myClientDeleteMessage(String name) {
+    return '$name님을 삭제하시겠습니까?\n삭제 시 해당 회원의 대기 매칭이 취소되고, 프로필 마켓에서 사라집니다.';
+  }
+
+  @override
+  String get myClientDeleteSuccess => '회원이 삭제되었습니다';
+
+  @override
+  String get myClientDeleteFailed => '삭제에 실패했습니다';
+
+  @override
+  String get verificationTitle => '매니저 인증';
+
+  @override
+  String get verificationDesc =>
+      '결혼정보회사 소속을 증명할 서류를 제출해주세요.\n검토 후 알림으로 결과를 안내드립니다.';
+
+  @override
+  String get verificationDocTypeTitle => '서류 종류 선택';
+
+  @override
+  String get verificationBusinessCard => '명함';
+
+  @override
+  String get verificationEmploymentCert => '재직증명서';
+
+  @override
+  String get verificationBusinessReg => '사업자등록증';
+
+  @override
+  String get verificationUpload => '서류 업로드';
+
+  @override
+  String get verificationCamera => '카메라';
+
+  @override
+  String get verificationGallery => '갤러리';
+
+  @override
+  String get verificationSubmit => '제출하기';
+
+  @override
+  String get verificationSubmitSuccess => '제출 완료! 검토 후 알림드리겠습니다.';
+
+  @override
+  String get verificationSubmitFailed => '제출에 실패했습니다';
+
+  @override
+  String get verificationUploading => '업로드 중...';
+
+  @override
+  String get verificationStatusUnverified => '미인증';
+
+  @override
+  String get verificationStatusPending => '인증 대기중';
+
+  @override
+  String get verificationStatusVerified => '인증 완료';
+
+  @override
+  String get verificationStatusRejected => '반려됨';
+
+  @override
+  String get verificationRejectedMessage => '인증이 반려되었습니다. 서류를 다시 제출해주세요.';
+
+  @override
+  String verificationRejectedReason(String reason) {
+    return '반려 사유: $reason';
+  }
+
+  @override
+  String get verificationResubmit => '재제출하기';
+
+  @override
+  String get verificationImageRequired => '서류 이미지를 선택해주세요';
+
+  @override
+  String get contractEmptyTitle => '계약 이력이 없습니다';
+
+  @override
+  String get contractAgreedAt => '동의 일시';
+
+  @override
+  String get contractHashLabel => '계약 해시';
+
+  @override
+  String get contractMarketingConsent => '마케팅 동의';
+
+  @override
+  String get contractDeviceInfo => '디바이스';
+
+  @override
+  String get contractHistory => '계약 이력';
+
+  @override
+  String get subscriptionCurrentPlan => '현재 플랜';
+
+  @override
+  String subscriptionDailyUsage(int used, int limit) {
+    return '오늘 $used/$limit건 사용';
+  }
+
+  @override
+  String subscriptionDailyUnlimited(int used) {
+    return '오늘 $used건 사용 · 무제한';
+  }
+
+  @override
+  String get subscriptionChangePlan => '플랜 변경';
+
+  @override
+  String get subscriptionFeatureMatches => '일일 매칭';
+
+  @override
+  String subscriptionFeatureMatchesValue(int count) {
+    return '$count건/일';
+  }
+
+  @override
+  String get subscriptionFeatureUnlimited => '무제한';
+
+  @override
+  String get subscriptionFreePlanDesc => '무료 플랜';
+
+  @override
+  String get subscriptionStandardPlanDesc => '스탠다드 플랜';
+
+  @override
+  String get subscriptionPremiumPlanDesc => '프리미엄 플랜';
+
+  @override
+  String get subscriptionRestoreTitle => '구매 복원';
+
+  @override
+  String get subscriptionRestoreSuccess => '구매가 복원되었습니다';
+
+  @override
+  String get subscriptionRestoreFailed => '복원할 구매가 없습니다';
+
+  @override
+  String get subscriptionNotConfigured => '구독 서비스 준비 중입니다';
+
+  @override
+  String get notificationSettingsTitle => '알림 설정';
+
+  @override
+  String get notificationSettingsDesc =>
+      '알림 종류별로 푸시 알림 수신 여부를 설정할 수 있습니다. 앱 내 알림은 항상 표시됩니다.';
+
+  @override
+  String get notificationSettingsMatch => '매칭 알림';
+
+  @override
+  String get notificationSettingsMatchDesc => '매칭 요청, 수락, 거절 알림';
+
+  @override
+  String get notificationSettingsMessage => '채팅 알림';
+
+  @override
+  String get notificationSettingsMessageDesc => '새 메시지 수신 알림';
+
+  @override
+  String get notificationSettingsVerification => '인증 알림';
+
+  @override
+  String get notificationSettingsVerificationDesc => '매니저 인증 승인/반려 알림';
+
+  @override
+  String get notificationSettingsSystem => '시스템 알림';
+
+  @override
+  String get notificationSettingsSystemDesc => '공지사항, 구독 만료 등';
+
+  @override
+  String get notificationSettingsFcmNote =>
+      '푸시 알림은 Firebase 설정 후 활성화됩니다. 앱 내 알림은 항상 수신됩니다.';
+
+  @override
+  String get notificationSettingsSaved => '알림 설정이 저장되었습니다';
+
+  @override
+  String get matchDetailTitle => '매칭 상세';
+
+  @override
+  String get matchDetailNotFound => '매칭 정보를 찾을 수 없습니다';
+
+  @override
+  String get matchDetailClientA => '회원 A';
+
+  @override
+  String get matchDetailClientB => '회원 B';
+
+  @override
+  String get matchDetailCreatedBy => '생성자';
+
+  @override
+  String get matchDetailCreatedAt => '생성일';
+
+  @override
+  String get matchDetailRespondedAt => '응답일';
+
+  @override
+  String get matchDetailOpenChat => '채팅 열기';
+
+  @override
+  String get matchHistoryEmpty => '매칭 이력이 없습니다';
+
+  @override
+  String get regStep6Title => '가족/라이프스타일';
+
+  @override
+  String get regMaritalHistoryLabel => '결혼 이력';
+
+  @override
+  String get regMaritalFirst => '초혼';
+
+  @override
+  String get regMaritalRemarriage => '재혼';
+
+  @override
+  String get regMaritalDivorced => '이혼';
+
+  @override
+  String get regHasChildrenLabel => '자녀 유무';
+
+  @override
+  String get regChildrenCountLabel => '자녀 수';
+
+  @override
+  String get regFamilyDetailLabel => '가족 관계';
+
+  @override
+  String get regFamilyDetailHint => '예: 1남2녀 중 장남';
+
+  @override
+  String get regParentsStatusLabel => '부모님 상태';
+
+  @override
+  String get regParentsBothAlive => '양부모 건재';
+
+  @override
+  String get regParentsFatherOnly => '부친만';
+
+  @override
+  String get regParentsMotherOnly => '모친만';
+
+  @override
+  String get regParentsDeceased => '모두 별세';
+
+  @override
+  String get regDrinkingLabel => '음주';
+
+  @override
+  String get regDrinkingNone => '안 함';
+
+  @override
+  String get regDrinkingSocial => '가끔';
+
+  @override
+  String get regDrinkingRegular => '자주';
+
+  @override
+  String get regSmokingLabel => '흡연';
+
+  @override
+  String get regSmokingNone => '안 함';
+
+  @override
+  String get regSmokingSometimes => '가끔';
+
+  @override
+  String get regSmokingRegular => '자주';
+
+  @override
+  String get regAssetRangeLabel => '자산 범위';
+
+  @override
+  String get regAssetRange1 => '1억 미만';
+
+  @override
+  String get regAssetRange2 => '1~3억';
+
+  @override
+  String get regAssetRange3 => '3~5억';
+
+  @override
+  String get regAssetRange4 => '5~10억';
+
+  @override
+  String get regAssetRange5 => '10억 이상';
+
+  @override
+  String get regResidenceAreaLabel => '거주 지역';
+
+  @override
+  String get regResidenceAreaHint => '예: 서울 강남구';
+
+  @override
+  String get regResidenceTypeLabel => '거주 형태';
+
+  @override
+  String get regResidenceOwn => '자가';
+
+  @override
+  String get regResidenceRentDeposit => '전세';
+
+  @override
+  String get regResidenceRentMonthly => '월세';
+
+  @override
+  String get regResidenceWithParents => '부모님 동거';
+
+  @override
+  String get regHealthNotesLabel => '건강 특이사항';
+
+  @override
+  String get regHealthNotesHint => '특이사항이 있으면 입력하세요';
+
+  @override
+  String get regPersonalityTypeLabel => '성격 유형 (MBTI 등)';
+
+  @override
+  String get regPersonalityTypeHint => '예: ENFP';
+
+  @override
+  String get profileFamilyTitle => '가족 정보';
+
+  @override
+  String get profileLifestyleTitle => '라이프스타일';
+
+  @override
+  String get profileIdealPartnerTitle => '이상형 조건';
+
+  @override
+  String get profileResidenceTitle => '자산/거주';
+
+  @override
+  String get profilePersonalityTitle => '성격';
+
+  @override
+  String get profileMaritalHistory => '결혼이력';
+
+  @override
+  String get profileChildren => '자녀';
+
+  @override
+  String profileChildrenCount(int count) {
+    return '$count명';
+  }
+
+  @override
+  String get profileFamilyDetail => '가족관계';
+
+  @override
+  String get profileParentsStatus => '부모님';
+
+  @override
+  String get profileDrinking => '음주';
+
+  @override
+  String get profileSmoking => '흡연';
+
+  @override
+  String get profileHealthNotes => '건강';
+
+  @override
+  String get profilePersonalityType => '성격유형';
+
+  @override
+  String get profileAssetRange => '자산';
+
+  @override
+  String get profileResidenceArea => '거주지';
+
+  @override
+  String get profileResidenceType => '거주형태';
+
+  @override
+  String get profileIdealAge => '희망 나이';
+
+  @override
+  String get profileIdealHeight => '희망 키';
+
+  @override
+  String get profileIdealEducation => '희망 학력';
+
+  @override
+  String get profileIdealIncome => '희망 연소득';
+
+  @override
+  String get profileIdealReligion => '희망 종교';
+
+  @override
+  String get profileIdealNotes => '기타 조건';
+
+  @override
+  String profileIdealAgeRange(int min, int max) {
+    return '$min~$max세';
+  }
+
+  @override
+  String profileIdealHeightRange(int min, int max) {
+    return '$min~${max}cm';
+  }
+
+  @override
+  String get marketplaceFilterDrinking => '음주';
+
+  @override
+  String get marketplaceFilterSmoking => '흡연';
+
+  @override
+  String get marketplaceFilterMaritalHistory => '결혼이력';
+
+  @override
+  String get marketplaceFilterResidenceArea => '거주지';
+
+  @override
+  String get marketplaceFilterResidenceHint => '지역명 입력';
+
+  @override
+  String get crmNotesTitle => '메모 & 타임라인';
+
+  @override
+  String get crmNoteAdd => '메모 추가';
+
+  @override
+  String get crmNoteTypeGeneral => '일반';
+
+  @override
+  String get crmNoteTypePreference => '선호도';
+
+  @override
+  String get crmNoteTypeMeetingFeedback => '미팅 후기';
+
+  @override
+  String get crmNoteTypeSchedule => '일정';
+
+  @override
+  String get crmNoteContentHint => '메모 내용을 입력하세요';
+
+  @override
+  String get crmNoteScheduleAt => '일정 날짜';
+
+  @override
+  String get crmNoteSaved => '메모가 저장되었습니다';
+
+  @override
+  String get crmNoteDeleted => '메모가 삭제되었습니다';
+
+  @override
+  String get crmNoteDeleteConfirm => '이 메모를 삭제하시겠습니까?';
+
+  @override
+  String get crmNoteEmpty => '아직 메모가 없습니다';
+
+  @override
+  String get crmNoteCompleted => '완료';
+
+  @override
+  String get crmScheduleTitle => '예정 일정';
+
+  @override
+  String get crmScheduleEmpty => '예정된 일정이 없습니다';
+
+  @override
+  String homeTodaySchedules(int count) {
+    return '예정 일정 $count건';
+  }
+
+  @override
+  String get customerSupportUrl => 'https://cupplus.channel.io';
 }

@@ -443,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @chatEmptySubtitle.
   ///
   /// In ko, this message translates to:
-  /// **'다른 매니저와 대화를 시작해보세요'**
+  /// **'아직 채팅이 없습니다.\n매칭이 성사되면 자동으로 채팅방이 생성됩니다.'**
   String get chatEmptySubtitle;
 
   /// No description provided for @chatInputPlaceholder.
@@ -505,6 +505,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'{hours}시간 전'**
   String chatHoursAgo(int hours);
+
+  /// No description provided for @chatDaysAgo.
+  ///
+  /// In ko, this message translates to:
+  /// **'{days}일 전'**
+  String chatDaysAgo(int days);
 
   /// No description provided for @chatDateFormat.
   ///
@@ -1135,6 +1141,1944 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'매칭 신청이 완료되었습니다'**
   String get profileDetailMatchRequestSent;
+
+  /// No description provided for @homeGreetingMorning.
+  ///
+  /// In ko, this message translates to:
+  /// **'좋은 아침이에요, {name}님'**
+  String homeGreetingMorning(String name);
+
+  /// No description provided for @homeGreetingAfternoon.
+  ///
+  /// In ko, this message translates to:
+  /// **'좋은 오후예요, {name}님'**
+  String homeGreetingAfternoon(String name);
+
+  /// No description provided for @homeGreetingEvening.
+  ///
+  /// In ko, this message translates to:
+  /// **'좋은 저녁이에요, {name}님'**
+  String homeGreetingEvening(String name);
+
+  /// No description provided for @homeGreetingNight.
+  ///
+  /// In ko, this message translates to:
+  /// **'늦은 시간 고생하세요, {name}님'**
+  String homeGreetingNight(String name);
+
+  /// No description provided for @homeQuickRegister.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원등록'**
+  String get homeQuickRegister;
+
+  /// No description provided for @homeQuickMatch.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭생성'**
+  String get homeQuickMatch;
+
+  /// No description provided for @homeTodayTasks.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘의 할일'**
+  String get homeTodayTasks;
+
+  /// No description provided for @homeTodayPendingMatches.
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 매칭 {count}건'**
+  String homeTodayPendingMatches(int count);
+
+  /// No description provided for @homeTodayNewMessages.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 메시지 {count}건'**
+  String homeTodayNewMessages(int count);
+
+  /// No description provided for @homeTodayView.
+  ///
+  /// In ko, this message translates to:
+  /// **'보기'**
+  String get homeTodayView;
+
+  /// No description provided for @homeRecentActivity.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 활동'**
+  String get homeRecentActivity;
+
+  /// No description provided for @homeActivityMatchCreated.
+  ///
+  /// In ko, this message translates to:
+  /// **'{clientA} ↔ {clientB} 매칭 생성'**
+  String homeActivityMatchCreated(String clientA, String clientB);
+
+  /// No description provided for @homeActivityMatchAccepted.
+  ///
+  /// In ko, this message translates to:
+  /// **'{clientA} ↔ {clientB} 매칭 수락됨'**
+  String homeActivityMatchAccepted(String clientA, String clientB);
+
+  /// No description provided for @homeActivityMatchDeclined.
+  ///
+  /// In ko, this message translates to:
+  /// **'{clientA} ↔ {clientB} 매칭 거절됨'**
+  String homeActivityMatchDeclined(String clientA, String clientB);
+
+  /// No description provided for @homeActivityClientRegistered.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name} 신규 회원 등록'**
+  String homeActivityClientRegistered(String name);
+
+  /// No description provided for @homeActivityEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 활동 내역이 없습니다'**
+  String get homeActivityEmpty;
+
+  /// No description provided for @homeActivityEmptyAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'첫 회원을 등록해보세요!'**
+  String get homeActivityEmptyAction;
+
+  /// No description provided for @homeActivityToday.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘'**
+  String get homeActivityToday;
+
+  /// No description provided for @homeActivityYesterday.
+  ///
+  /// In ko, this message translates to:
+  /// **'어제'**
+  String get homeActivityYesterday;
+
+  /// No description provided for @homeNotificationMarkAllRead.
+  ///
+  /// In ko, this message translates to:
+  /// **'모두 읽음'**
+  String get homeNotificationMarkAllRead;
+
+  /// No description provided for @homeClientRegTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'간편 회원 등록'**
+  String get homeClientRegTitle;
+
+  /// No description provided for @homeClientRegNameRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름을 입력해주세요'**
+  String get homeClientRegNameRequired;
+
+  /// No description provided for @homeClientRegSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원이 등록되었습니다'**
+  String get homeClientRegSuccess;
+
+  /// No description provided for @homeMatchCreateTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘의 추천'**
+  String get homeMatchCreateTitle;
+
+  /// No description provided for @homeMatchCreateEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'추천할 프로필이 없습니다'**
+  String get homeMatchCreateEmpty;
+
+  /// No description provided for @homeMatchMgmtTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 관리'**
+  String get homeMatchMgmtTitle;
+
+  /// No description provided for @homeMatchAccept.
+  ///
+  /// In ko, this message translates to:
+  /// **'수락'**
+  String get homeMatchAccept;
+
+  /// No description provided for @homeMatchDecline.
+  ///
+  /// In ko, this message translates to:
+  /// **'거절'**
+  String get homeMatchDecline;
+
+  /// No description provided for @homeMatchMemo.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모'**
+  String get homeMatchMemo;
+
+  /// No description provided for @homeMatchDeclineReason.
+  ///
+  /// In ko, this message translates to:
+  /// **'거절 사유 (선택)'**
+  String get homeMatchDeclineReason;
+
+  /// No description provided for @homeMatchAcceptSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭이 수락되었습니다'**
+  String get homeMatchAcceptSuccess;
+
+  /// No description provided for @homeMatchDeclineSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭이 거절되었습니다'**
+  String get homeMatchDeclineSuccess;
+
+  /// No description provided for @homeMatchMemoHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모를 입력하세요'**
+  String get homeMatchMemoHint;
+
+  /// No description provided for @homeMatchMemoSaved.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모가 저장되었습니다'**
+  String get homeMatchMemoSaved;
+
+  /// No description provided for @marketplaceLikesTab.
+  ///
+  /// In ko, this message translates to:
+  /// **'좋아요'**
+  String get marketplaceLikesTab;
+
+  /// No description provided for @marketplaceSortNewest.
+  ///
+  /// In ko, this message translates to:
+  /// **'최신순'**
+  String get marketplaceSortNewest;
+
+  /// No description provided for @marketplaceSortMostLikes.
+  ///
+  /// In ko, this message translates to:
+  /// **'좋아요순'**
+  String get marketplaceSortMostLikes;
+
+  /// No description provided for @marketplaceFilterEducation.
+  ///
+  /// In ko, this message translates to:
+  /// **'학력'**
+  String get marketplaceFilterEducation;
+
+  /// No description provided for @marketplaceFilterOccupation.
+  ///
+  /// In ko, this message translates to:
+  /// **'직업군'**
+  String get marketplaceFilterOccupation;
+
+  /// No description provided for @marketplaceFilterIncome.
+  ///
+  /// In ko, this message translates to:
+  /// **'연소득대'**
+  String get marketplaceFilterIncome;
+
+  /// No description provided for @marketplaceMatchCompleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭완료'**
+  String get marketplaceMatchCompleted;
+
+  /// No description provided for @matchRequestVerificationPending.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 검토 중입니다. 승인 후 매칭 요청이 가능합니다.'**
+  String get matchRequestVerificationPending;
+
+  /// No description provided for @matchRequestVerificationRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 요청을 위해 매니저 인증이 필요합니다.'**
+  String get matchRequestVerificationRequired;
+
+  /// No description provided for @matchRequestVerify.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증하기'**
+  String get matchRequestVerify;
+
+  /// No description provided for @matchRequestSelectClient.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭할 회원을 선택해주세요'**
+  String get matchRequestSelectClient;
+
+  /// No description provided for @matchRequestNoEligible.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 가능한 이성 회원이 없습니다'**
+  String get matchRequestNoEligible;
+
+  /// No description provided for @matchRequestConfirmMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'{clientA} ↔ {clientB} 매칭을 요청하시겠습니까?'**
+  String matchRequestConfirmMessage(String clientA, String clientB);
+
+  /// No description provided for @matchRequestSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 요청이 완료되었습니다'**
+  String get matchRequestSuccess;
+
+  /// No description provided for @matchRequestDailyLimit.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘의 매칭 횟수를 초과했습니다'**
+  String get matchRequestDailyLimit;
+
+  /// No description provided for @chatMatchContext.
+  ///
+  /// In ko, this message translates to:
+  /// **'{clientA} ↔ {clientB} 매칭'**
+  String chatMatchContext(String clientA, String clientB);
+
+  /// No description provided for @chatImagePickerTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이미지 전송'**
+  String get chatImagePickerTitle;
+
+  /// No description provided for @chatImagePickerCamera.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라'**
+  String get chatImagePickerCamera;
+
+  /// No description provided for @chatImagePickerGallery.
+  ///
+  /// In ko, this message translates to:
+  /// **'갤러리'**
+  String get chatImagePickerGallery;
+
+  /// No description provided for @chatImageUploading.
+  ///
+  /// In ko, this message translates to:
+  /// **'이미지 업로드 중...'**
+  String get chatImageUploading;
+
+  /// No description provided for @chatMessageSendFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'메시지 전송에 실패했습니다'**
+  String get chatMessageSendFailed;
+
+  /// No description provided for @regTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 등록'**
+  String get regTitle;
+
+  /// No description provided for @regStepOf.
+  ///
+  /// In ko, this message translates to:
+  /// **'Step {current}/{total}'**
+  String regStepOf(int current, int total);
+
+  /// No description provided for @regStep1Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'기본 정보'**
+  String get regStep1Title;
+
+  /// No description provided for @regStep2Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'직업/학력'**
+  String get regStep2Title;
+
+  /// No description provided for @regStep3Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'신체/외모'**
+  String get regStep3Title;
+
+  /// No description provided for @regStep4Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'성격/취미'**
+  String get regStep4Title;
+
+  /// No description provided for @regStep5Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'동의 및 완료'**
+  String get regStep5Title;
+
+  /// No description provided for @regPrevious.
+  ///
+  /// In ko, this message translates to:
+  /// **'이전'**
+  String get regPrevious;
+
+  /// No description provided for @regComplete.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록 완료'**
+  String get regComplete;
+
+  /// No description provided for @regNameLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름'**
+  String get regNameLabel;
+
+  /// No description provided for @regNameHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름을 입력하세요'**
+  String get regNameHint;
+
+  /// No description provided for @regNameValidation.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름은 2~20자여야 합니다'**
+  String get regNameValidation;
+
+  /// No description provided for @regPhoneLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'핸드폰'**
+  String get regPhoneLabel;
+
+  /// No description provided for @regPhoneHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'010-0000-0000'**
+  String get regPhoneHint;
+
+  /// No description provided for @regEmailLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일'**
+  String get regEmailLabel;
+
+  /// No description provided for @regEmailHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일을 입력하세요'**
+  String get regEmailHint;
+
+  /// No description provided for @regEmailValidation.
+  ///
+  /// In ko, this message translates to:
+  /// **'올바른 이메일 형식이 아닙니다'**
+  String get regEmailValidation;
+
+  /// No description provided for @regOccupationLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'직업'**
+  String get regOccupationLabel;
+
+  /// No description provided for @regOccupationHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'직업을 입력하세요'**
+  String get regOccupationHint;
+
+  /// No description provided for @regOccupationRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'직업을 입력해주세요'**
+  String get regOccupationRequired;
+
+  /// No description provided for @regCompanyLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'회사'**
+  String get regCompanyLabel;
+
+  /// No description provided for @regCompanyHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'회사를 입력하세요'**
+  String get regCompanyHint;
+
+  /// No description provided for @regEducationLevel.
+  ///
+  /// In ko, this message translates to:
+  /// **'학력 수준'**
+  String get regEducationLevel;
+
+  /// No description provided for @regEduHighSchool.
+  ///
+  /// In ko, this message translates to:
+  /// **'고졸'**
+  String get regEduHighSchool;
+
+  /// No description provided for @regEduAssociate.
+  ///
+  /// In ko, this message translates to:
+  /// **'전문대'**
+  String get regEduAssociate;
+
+  /// No description provided for @regEduBachelor.
+  ///
+  /// In ko, this message translates to:
+  /// **'대졸'**
+  String get regEduBachelor;
+
+  /// No description provided for @regEduMaster.
+  ///
+  /// In ko, this message translates to:
+  /// **'석사'**
+  String get regEduMaster;
+
+  /// No description provided for @regEduDoctorate.
+  ///
+  /// In ko, this message translates to:
+  /// **'박사'**
+  String get regEduDoctorate;
+
+  /// No description provided for @regSchoolLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'학교명'**
+  String get regSchoolLabel;
+
+  /// No description provided for @regSchoolHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'학교명을 입력하세요'**
+  String get regSchoolHint;
+
+  /// No description provided for @regMajorLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'전공'**
+  String get regMajorLabel;
+
+  /// No description provided for @regMajorHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'전공을 입력하세요'**
+  String get regMajorHint;
+
+  /// No description provided for @regIncomeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'연소득대'**
+  String get regIncomeLabel;
+
+  /// No description provided for @regIncome1.
+  ///
+  /// In ko, this message translates to:
+  /// **'3,000만원 미만'**
+  String get regIncome1;
+
+  /// No description provided for @regIncome2.
+  ///
+  /// In ko, this message translates to:
+  /// **'3,000~5,000만원'**
+  String get regIncome2;
+
+  /// No description provided for @regIncome3.
+  ///
+  /// In ko, this message translates to:
+  /// **'5,000~7,000만원'**
+  String get regIncome3;
+
+  /// No description provided for @regIncome4.
+  ///
+  /// In ko, this message translates to:
+  /// **'7,000만~1억원'**
+  String get regIncome4;
+
+  /// No description provided for @regIncome5.
+  ///
+  /// In ko, this message translates to:
+  /// **'1억~1.5억원'**
+  String get regIncome5;
+
+  /// No description provided for @regIncome6.
+  ///
+  /// In ko, this message translates to:
+  /// **'1.5억원 이상'**
+  String get regIncome6;
+
+  /// No description provided for @regHeightLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'키'**
+  String get regHeightLabel;
+
+  /// No description provided for @regHeightValue.
+  ///
+  /// In ko, this message translates to:
+  /// **'{height} cm'**
+  String regHeightValue(int height);
+
+  /// No description provided for @regBodyTypeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'체형'**
+  String get regBodyTypeLabel;
+
+  /// No description provided for @regBodySlim.
+  ///
+  /// In ko, this message translates to:
+  /// **'마른'**
+  String get regBodySlim;
+
+  /// No description provided for @regBodySlightlySlim.
+  ///
+  /// In ko, this message translates to:
+  /// **'약간마른'**
+  String get regBodySlightlySlim;
+
+  /// No description provided for @regBodyAverage.
+  ///
+  /// In ko, this message translates to:
+  /// **'보통'**
+  String get regBodyAverage;
+
+  /// No description provided for @regBodySlightlyChubby.
+  ///
+  /// In ko, this message translates to:
+  /// **'약간통통'**
+  String get regBodySlightlyChubby;
+
+  /// No description provided for @regBodyChubby.
+  ///
+  /// In ko, this message translates to:
+  /// **'통통'**
+  String get regBodyChubby;
+
+  /// No description provided for @regPhotoLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 사진 (최대 5장)'**
+  String get regPhotoLabel;
+
+  /// No description provided for @regPhotoAdd.
+  ///
+  /// In ko, this message translates to:
+  /// **'추가'**
+  String get regPhotoAdd;
+
+  /// No description provided for @regPhotoMain.
+  ///
+  /// In ko, this message translates to:
+  /// **'대표'**
+  String get regPhotoMain;
+
+  /// No description provided for @regPhotoHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'첫 번째 사진이 대표 사진으로 사용됩니다.'**
+  String get regPhotoHint;
+
+  /// No description provided for @regPhotoMax.
+  ///
+  /// In ko, this message translates to:
+  /// **'최대 5장까지 등록 가능합니다'**
+  String get regPhotoMax;
+
+  /// No description provided for @regReligionLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'종교'**
+  String get regReligionLabel;
+
+  /// No description provided for @regReligionNone.
+  ///
+  /// In ko, this message translates to:
+  /// **'무교'**
+  String get regReligionNone;
+
+  /// No description provided for @regReligionChristian.
+  ///
+  /// In ko, this message translates to:
+  /// **'기독교'**
+  String get regReligionChristian;
+
+  /// No description provided for @regReligionCatholic.
+  ///
+  /// In ko, this message translates to:
+  /// **'천주교'**
+  String get regReligionCatholic;
+
+  /// No description provided for @regReligionBuddhist.
+  ///
+  /// In ko, this message translates to:
+  /// **'불교'**
+  String get regReligionBuddhist;
+
+  /// No description provided for @regReligionOther.
+  ///
+  /// In ko, this message translates to:
+  /// **'기타'**
+  String get regReligionOther;
+
+  /// No description provided for @regHobbiesLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'취미 (최대 5개)'**
+  String get regHobbiesLabel;
+
+  /// No description provided for @regHobbiesMax.
+  ///
+  /// In ko, this message translates to:
+  /// **'최대 5개까지 선택 가능합니다'**
+  String get regHobbiesMax;
+
+  /// No description provided for @regHobbiesCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}/5'**
+  String regHobbiesCount(int count);
+
+  /// No description provided for @regHobbiesCustom.
+  ///
+  /// In ko, this message translates to:
+  /// **'+ 직접 입력'**
+  String get regHobbiesCustom;
+
+  /// No description provided for @regHobbiesAdd.
+  ///
+  /// In ko, this message translates to:
+  /// **'추가'**
+  String get regHobbiesAdd;
+
+  /// No description provided for @regBioLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'자기소개'**
+  String get regBioLabel;
+
+  /// No description provided for @regBioHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'밝고 긍정적인 성격으로, 주말엔 카페에서 책 읽는 것을 좋아합니다...'**
+  String get regBioHint;
+
+  /// No description provided for @regBioCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}/300'**
+  String regBioCount(int count);
+
+  /// No description provided for @regAgreeAll.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 동의'**
+  String get regAgreeAll;
+
+  /// No description provided for @regAgreeTerms.
+  ///
+  /// In ko, this message translates to:
+  /// **'서비스 이용 약관'**
+  String get regAgreeTerms;
+
+  /// No description provided for @regAgreePrivacy.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보 수집/이용'**
+  String get regAgreePrivacy;
+
+  /// No description provided for @regAgreeMarketing.
+  ///
+  /// In ko, this message translates to:
+  /// **'마케팅 정보 수신'**
+  String get regAgreeMarketing;
+
+  /// No description provided for @regRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'(필수)'**
+  String get regRequired;
+
+  /// No description provided for @regOptional.
+  ///
+  /// In ko, this message translates to:
+  /// **'(선택)'**
+  String get regOptional;
+
+  /// No description provided for @regView.
+  ///
+  /// In ko, this message translates to:
+  /// **'보기'**
+  String get regView;
+
+  /// No description provided for @regAgreeDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록 정보를 확인하고 약관에 동의해주세요.'**
+  String get regAgreeDesc;
+
+  /// No description provided for @regSuccessTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 등록 완료!'**
+  String get regSuccessTitle;
+
+  /// No description provided for @regSuccessMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name}님이 등록되었습니다'**
+  String regSuccessMessage(String name);
+
+  /// No description provided for @regSuccessViewProfile.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 확인'**
+  String get regSuccessViewProfile;
+
+  /// No description provided for @regSuccessGoHome.
+  ///
+  /// In ko, this message translates to:
+  /// **'홈으로'**
+  String get regSuccessGoHome;
+
+  /// No description provided for @regExitTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'나가시겠습니까?'**
+  String get regExitTitle;
+
+  /// No description provided for @regExitMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'입력 중인 정보가 있습니다.\n임시저장됩니다.'**
+  String get regExitMessage;
+
+  /// No description provided for @regExitLeave.
+  ///
+  /// In ko, this message translates to:
+  /// **'나가기'**
+  String get regExitLeave;
+
+  /// No description provided for @regDraftFound.
+  ///
+  /// In ko, this message translates to:
+  /// **'작성 중인 회원 정보가 있습니다.\n이어서 작성하시겠습니까?'**
+  String get regDraftFound;
+
+  /// No description provided for @regDraftContinue.
+  ///
+  /// In ko, this message translates to:
+  /// **'이어서 작성'**
+  String get regDraftContinue;
+
+  /// No description provided for @regDraftNew.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로 작성'**
+  String get regDraftNew;
+
+  /// No description provided for @myClientsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 회원 관리'**
+  String get myClientsTitle;
+
+  /// No description provided for @myClientsRegister.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록'**
+  String get myClientsRegister;
+
+  /// No description provided for @myClientsSearchHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'이름으로 검색'**
+  String get myClientsSearchHint;
+
+  /// No description provided for @myClientsTabAll.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체'**
+  String get myClientsTabAll;
+
+  /// No description provided for @myClientsTabActive.
+  ///
+  /// In ko, this message translates to:
+  /// **'활성'**
+  String get myClientsTabActive;
+
+  /// No description provided for @myClientsTabPaused.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지'**
+  String get myClientsTabPaused;
+
+  /// No description provided for @myClientsTabMatched.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭중'**
+  String get myClientsTabMatched;
+
+  /// No description provided for @myClientsCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}명'**
+  String myClientsCount(int count);
+
+  /// No description provided for @myClientsEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 회원이 없습니다'**
+  String get myClientsEmpty;
+
+  /// No description provided for @myClientsEmptyAction.
+  ///
+  /// In ko, this message translates to:
+  /// **'첫 회원을 등록해보세요'**
+  String get myClientsEmptyAction;
+
+  /// No description provided for @myClientDetailTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 상세'**
+  String get myClientDetailTitle;
+
+  /// No description provided for @myClientDetailEdit.
+  ///
+  /// In ko, this message translates to:
+  /// **'수정'**
+  String get myClientDetailEdit;
+
+  /// No description provided for @myClientDetailStatus.
+  ///
+  /// In ko, this message translates to:
+  /// **'상태'**
+  String get myClientDetailStatus;
+
+  /// No description provided for @myClientDetailStatusActive.
+  ///
+  /// In ko, this message translates to:
+  /// **'활성'**
+  String get myClientDetailStatusActive;
+
+  /// No description provided for @myClientDetailStatusPaused.
+  ///
+  /// In ko, this message translates to:
+  /// **'휴지'**
+  String get myClientDetailStatusPaused;
+
+  /// No description provided for @myClientDetailStatusMatched.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭중'**
+  String get myClientDetailStatusMatched;
+
+  /// No description provided for @myClientDetailStatusWithdrawn.
+  ///
+  /// In ko, this message translates to:
+  /// **'탈퇴'**
+  String get myClientDetailStatusWithdrawn;
+
+  /// No description provided for @myClientDetailMatchHistory.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 이력'**
+  String get myClientDetailMatchHistory;
+
+  /// No description provided for @myClientDetailMatchEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 이력이 없습니다'**
+  String get myClientDetailMatchEmpty;
+
+  /// No description provided for @myClientDetailRegisteredAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록일'**
+  String get myClientDetailRegisteredAt;
+
+  /// No description provided for @myClientDetailPhone.
+  ///
+  /// In ko, this message translates to:
+  /// **'연락처'**
+  String get myClientDetailPhone;
+
+  /// No description provided for @myClientDetailEmail.
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일'**
+  String get myClientDetailEmail;
+
+  /// No description provided for @myClientDetailEducationLevel.
+  ///
+  /// In ko, this message translates to:
+  /// **'학력'**
+  String get myClientDetailEducationLevel;
+
+  /// No description provided for @myClientDetailSchool.
+  ///
+  /// In ko, this message translates to:
+  /// **'학교'**
+  String get myClientDetailSchool;
+
+  /// No description provided for @myClientDetailMajor.
+  ///
+  /// In ko, this message translates to:
+  /// **'전공'**
+  String get myClientDetailMajor;
+
+  /// No description provided for @myClientDetailBodyType.
+  ///
+  /// In ko, this message translates to:
+  /// **'체형'**
+  String get myClientDetailBodyType;
+
+  /// No description provided for @myClientEditTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 정보 수정'**
+  String get myClientEditTitle;
+
+  /// No description provided for @myClientEditSaved.
+  ///
+  /// In ko, this message translates to:
+  /// **'수정 사항이 저장되었습니다'**
+  String get myClientEditSaved;
+
+  /// No description provided for @myClientEditFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장에 실패했습니다'**
+  String get myClientEditFailed;
+
+  /// No description provided for @myClientStatusChange.
+  ///
+  /// In ko, this message translates to:
+  /// **'상태 변경'**
+  String get myClientStatusChange;
+
+  /// No description provided for @myClientStatusChangeConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name}님의 상태를 {status}(으)로 변경하시겠습니까?'**
+  String myClientStatusChangeConfirm(String name, String status);
+
+  /// No description provided for @myClientStatusChanged.
+  ///
+  /// In ko, this message translates to:
+  /// **'상태가 변경되었습니다'**
+  String get myClientStatusChanged;
+
+  /// No description provided for @myClientDeleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 삭제'**
+  String get myClientDeleteTitle;
+
+  /// No description provided for @myClientDeleteMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'{name}님을 삭제하시겠습니까?\n삭제 시 해당 회원의 대기 매칭이 취소되고, 프로필 마켓에서 사라집니다.'**
+  String myClientDeleteMessage(String name);
+
+  /// No description provided for @myClientDeleteSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원이 삭제되었습니다'**
+  String get myClientDeleteSuccess;
+
+  /// No description provided for @myClientDeleteFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'삭제에 실패했습니다'**
+  String get myClientDeleteFailed;
+
+  /// No description provided for @verificationTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'매니저 인증'**
+  String get verificationTitle;
+
+  /// No description provided for @verificationDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'결혼정보회사 소속을 증명할 서류를 제출해주세요.\n검토 후 알림으로 결과를 안내드립니다.'**
+  String get verificationDesc;
+
+  /// No description provided for @verificationDocTypeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'서류 종류 선택'**
+  String get verificationDocTypeTitle;
+
+  /// No description provided for @verificationBusinessCard.
+  ///
+  /// In ko, this message translates to:
+  /// **'명함'**
+  String get verificationBusinessCard;
+
+  /// No description provided for @verificationEmploymentCert.
+  ///
+  /// In ko, this message translates to:
+  /// **'재직증명서'**
+  String get verificationEmploymentCert;
+
+  /// No description provided for @verificationBusinessReg.
+  ///
+  /// In ko, this message translates to:
+  /// **'사업자등록증'**
+  String get verificationBusinessReg;
+
+  /// No description provided for @verificationUpload.
+  ///
+  /// In ko, this message translates to:
+  /// **'서류 업로드'**
+  String get verificationUpload;
+
+  /// No description provided for @verificationCamera.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라'**
+  String get verificationCamera;
+
+  /// No description provided for @verificationGallery.
+  ///
+  /// In ko, this message translates to:
+  /// **'갤러리'**
+  String get verificationGallery;
+
+  /// No description provided for @verificationSubmit.
+  ///
+  /// In ko, this message translates to:
+  /// **'제출하기'**
+  String get verificationSubmit;
+
+  /// No description provided for @verificationSubmitSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'제출 완료! 검토 후 알림드리겠습니다.'**
+  String get verificationSubmitSuccess;
+
+  /// No description provided for @verificationSubmitFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'제출에 실패했습니다'**
+  String get verificationSubmitFailed;
+
+  /// No description provided for @verificationUploading.
+  ///
+  /// In ko, this message translates to:
+  /// **'업로드 중...'**
+  String get verificationUploading;
+
+  /// No description provided for @verificationStatusUnverified.
+  ///
+  /// In ko, this message translates to:
+  /// **'미인증'**
+  String get verificationStatusUnverified;
+
+  /// No description provided for @verificationStatusPending.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 대기중'**
+  String get verificationStatusPending;
+
+  /// No description provided for @verificationStatusVerified.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 완료'**
+  String get verificationStatusVerified;
+
+  /// No description provided for @verificationStatusRejected.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려됨'**
+  String get verificationStatusRejected;
+
+  /// No description provided for @verificationRejectedMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증이 반려되었습니다. 서류를 다시 제출해주세요.'**
+  String get verificationRejectedMessage;
+
+  /// No description provided for @verificationRejectedReason.
+  ///
+  /// In ko, this message translates to:
+  /// **'반려 사유: {reason}'**
+  String verificationRejectedReason(String reason);
+
+  /// No description provided for @verificationResubmit.
+  ///
+  /// In ko, this message translates to:
+  /// **'재제출하기'**
+  String get verificationResubmit;
+
+  /// No description provided for @verificationImageRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'서류 이미지를 선택해주세요'**
+  String get verificationImageRequired;
+
+  /// No description provided for @contractEmptyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'계약 이력이 없습니다'**
+  String get contractEmptyTitle;
+
+  /// No description provided for @contractAgreedAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'동의 일시'**
+  String get contractAgreedAt;
+
+  /// No description provided for @contractHashLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'계약 해시'**
+  String get contractHashLabel;
+
+  /// No description provided for @contractMarketingConsent.
+  ///
+  /// In ko, this message translates to:
+  /// **'마케팅 동의'**
+  String get contractMarketingConsent;
+
+  /// No description provided for @contractDeviceInfo.
+  ///
+  /// In ko, this message translates to:
+  /// **'디바이스'**
+  String get contractDeviceInfo;
+
+  /// No description provided for @contractHistory.
+  ///
+  /// In ko, this message translates to:
+  /// **'계약 이력'**
+  String get contractHistory;
+
+  /// No description provided for @subscriptionCurrentPlan.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 플랜'**
+  String get subscriptionCurrentPlan;
+
+  /// No description provided for @subscriptionDailyUsage.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘 {used}/{limit}건 사용'**
+  String subscriptionDailyUsage(int used, int limit);
+
+  /// No description provided for @subscriptionDailyUnlimited.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘 {used}건 사용 · 무제한'**
+  String subscriptionDailyUnlimited(int used);
+
+  /// No description provided for @subscriptionChangePlan.
+  ///
+  /// In ko, this message translates to:
+  /// **'플랜 변경'**
+  String get subscriptionChangePlan;
+
+  /// No description provided for @subscriptionFeatureMatches.
+  ///
+  /// In ko, this message translates to:
+  /// **'일일 매칭'**
+  String get subscriptionFeatureMatches;
+
+  /// No description provided for @subscriptionFeatureMatchesValue.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}건/일'**
+  String subscriptionFeatureMatchesValue(int count);
+
+  /// No description provided for @subscriptionFeatureUnlimited.
+  ///
+  /// In ko, this message translates to:
+  /// **'무제한'**
+  String get subscriptionFeatureUnlimited;
+
+  /// No description provided for @subscriptionFreePlanDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'무료 플랜'**
+  String get subscriptionFreePlanDesc;
+
+  /// No description provided for @subscriptionStandardPlanDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'스탠다드 플랜'**
+  String get subscriptionStandardPlanDesc;
+
+  /// No description provided for @subscriptionPremiumPlanDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'프리미엄 플랜'**
+  String get subscriptionPremiumPlanDesc;
+
+  /// No description provided for @subscriptionRestoreTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'구매 복원'**
+  String get subscriptionRestoreTitle;
+
+  /// No description provided for @subscriptionRestoreSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'구매가 복원되었습니다'**
+  String get subscriptionRestoreSuccess;
+
+  /// No description provided for @subscriptionRestoreFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'복원할 구매가 없습니다'**
+  String get subscriptionRestoreFailed;
+
+  /// No description provided for @subscriptionNotConfigured.
+  ///
+  /// In ko, this message translates to:
+  /// **'구독 서비스 준비 중입니다'**
+  String get subscriptionNotConfigured;
+
+  /// No description provided for @notificationSettingsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 설정'**
+  String get notificationSettingsTitle;
+
+  /// No description provided for @notificationSettingsDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 종류별로 푸시 알림 수신 여부를 설정할 수 있습니다. 앱 내 알림은 항상 표시됩니다.'**
+  String get notificationSettingsDesc;
+
+  /// No description provided for @notificationSettingsMatch.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 알림'**
+  String get notificationSettingsMatch;
+
+  /// No description provided for @notificationSettingsMatchDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 요청, 수락, 거절 알림'**
+  String get notificationSettingsMatchDesc;
+
+  /// No description provided for @notificationSettingsMessage.
+  ///
+  /// In ko, this message translates to:
+  /// **'채팅 알림'**
+  String get notificationSettingsMessage;
+
+  /// No description provided for @notificationSettingsMessageDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 메시지 수신 알림'**
+  String get notificationSettingsMessageDesc;
+
+  /// No description provided for @notificationSettingsVerification.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 알림'**
+  String get notificationSettingsVerification;
+
+  /// No description provided for @notificationSettingsVerificationDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'매니저 인증 승인/반려 알림'**
+  String get notificationSettingsVerificationDesc;
+
+  /// No description provided for @notificationSettingsSystem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템 알림'**
+  String get notificationSettingsSystem;
+
+  /// No description provided for @notificationSettingsSystemDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'공지사항, 구독 만료 등'**
+  String get notificationSettingsSystemDesc;
+
+  /// No description provided for @notificationSettingsFcmNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'푸시 알림은 Firebase 설정 후 활성화됩니다. 앱 내 알림은 항상 수신됩니다.'**
+  String get notificationSettingsFcmNote;
+
+  /// No description provided for @notificationSettingsSaved.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 설정이 저장되었습니다'**
+  String get notificationSettingsSaved;
+
+  /// No description provided for @matchDetailTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 상세'**
+  String get matchDetailTitle;
+
+  /// No description provided for @matchDetailNotFound.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 정보를 찾을 수 없습니다'**
+  String get matchDetailNotFound;
+
+  /// No description provided for @matchDetailClientA.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 A'**
+  String get matchDetailClientA;
+
+  /// No description provided for @matchDetailClientB.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 B'**
+  String get matchDetailClientB;
+
+  /// No description provided for @matchDetailCreatedBy.
+  ///
+  /// In ko, this message translates to:
+  /// **'생성자'**
+  String get matchDetailCreatedBy;
+
+  /// No description provided for @matchDetailCreatedAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'생성일'**
+  String get matchDetailCreatedAt;
+
+  /// No description provided for @matchDetailRespondedAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'응답일'**
+  String get matchDetailRespondedAt;
+
+  /// No description provided for @matchDetailOpenChat.
+  ///
+  /// In ko, this message translates to:
+  /// **'채팅 열기'**
+  String get matchDetailOpenChat;
+
+  /// No description provided for @matchHistoryEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 이력이 없습니다'**
+  String get matchHistoryEmpty;
+
+  /// No description provided for @regStep6Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'가족/라이프스타일'**
+  String get regStep6Title;
+
+  /// No description provided for @regMaritalHistoryLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'결혼 이력'**
+  String get regMaritalHistoryLabel;
+
+  /// No description provided for @regMaritalFirst.
+  ///
+  /// In ko, this message translates to:
+  /// **'초혼'**
+  String get regMaritalFirst;
+
+  /// No description provided for @regMaritalRemarriage.
+  ///
+  /// In ko, this message translates to:
+  /// **'재혼'**
+  String get regMaritalRemarriage;
+
+  /// No description provided for @regMaritalDivorced.
+  ///
+  /// In ko, this message translates to:
+  /// **'이혼'**
+  String get regMaritalDivorced;
+
+  /// No description provided for @regHasChildrenLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'자녀 유무'**
+  String get regHasChildrenLabel;
+
+  /// No description provided for @regChildrenCountLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'자녀 수'**
+  String get regChildrenCountLabel;
+
+  /// No description provided for @regFamilyDetailLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'가족 관계'**
+  String get regFamilyDetailLabel;
+
+  /// No description provided for @regFamilyDetailHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: 1남2녀 중 장남'**
+  String get regFamilyDetailHint;
+
+  /// No description provided for @regParentsStatusLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'부모님 상태'**
+  String get regParentsStatusLabel;
+
+  /// No description provided for @regParentsBothAlive.
+  ///
+  /// In ko, this message translates to:
+  /// **'양부모 건재'**
+  String get regParentsBothAlive;
+
+  /// No description provided for @regParentsFatherOnly.
+  ///
+  /// In ko, this message translates to:
+  /// **'부친만'**
+  String get regParentsFatherOnly;
+
+  /// No description provided for @regParentsMotherOnly.
+  ///
+  /// In ko, this message translates to:
+  /// **'모친만'**
+  String get regParentsMotherOnly;
+
+  /// No description provided for @regParentsDeceased.
+  ///
+  /// In ko, this message translates to:
+  /// **'모두 별세'**
+  String get regParentsDeceased;
+
+  /// No description provided for @regDrinkingLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'음주'**
+  String get regDrinkingLabel;
+
+  /// No description provided for @regDrinkingNone.
+  ///
+  /// In ko, this message translates to:
+  /// **'안 함'**
+  String get regDrinkingNone;
+
+  /// No description provided for @regDrinkingSocial.
+  ///
+  /// In ko, this message translates to:
+  /// **'가끔'**
+  String get regDrinkingSocial;
+
+  /// No description provided for @regDrinkingRegular.
+  ///
+  /// In ko, this message translates to:
+  /// **'자주'**
+  String get regDrinkingRegular;
+
+  /// No description provided for @regSmokingLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'흡연'**
+  String get regSmokingLabel;
+
+  /// No description provided for @regSmokingNone.
+  ///
+  /// In ko, this message translates to:
+  /// **'안 함'**
+  String get regSmokingNone;
+
+  /// No description provided for @regSmokingSometimes.
+  ///
+  /// In ko, this message translates to:
+  /// **'가끔'**
+  String get regSmokingSometimes;
+
+  /// No description provided for @regSmokingRegular.
+  ///
+  /// In ko, this message translates to:
+  /// **'자주'**
+  String get regSmokingRegular;
+
+  /// No description provided for @regAssetRangeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'자산 범위'**
+  String get regAssetRangeLabel;
+
+  /// No description provided for @regAssetRange1.
+  ///
+  /// In ko, this message translates to:
+  /// **'1억 미만'**
+  String get regAssetRange1;
+
+  /// No description provided for @regAssetRange2.
+  ///
+  /// In ko, this message translates to:
+  /// **'1~3억'**
+  String get regAssetRange2;
+
+  /// No description provided for @regAssetRange3.
+  ///
+  /// In ko, this message translates to:
+  /// **'3~5억'**
+  String get regAssetRange3;
+
+  /// No description provided for @regAssetRange4.
+  ///
+  /// In ko, this message translates to:
+  /// **'5~10억'**
+  String get regAssetRange4;
+
+  /// No description provided for @regAssetRange5.
+  ///
+  /// In ko, this message translates to:
+  /// **'10억 이상'**
+  String get regAssetRange5;
+
+  /// No description provided for @regResidenceAreaLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'거주 지역'**
+  String get regResidenceAreaLabel;
+
+  /// No description provided for @regResidenceAreaHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: 서울 강남구'**
+  String get regResidenceAreaHint;
+
+  /// No description provided for @regResidenceTypeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'거주 형태'**
+  String get regResidenceTypeLabel;
+
+  /// No description provided for @regResidenceOwn.
+  ///
+  /// In ko, this message translates to:
+  /// **'자가'**
+  String get regResidenceOwn;
+
+  /// No description provided for @regResidenceRentDeposit.
+  ///
+  /// In ko, this message translates to:
+  /// **'전세'**
+  String get regResidenceRentDeposit;
+
+  /// No description provided for @regResidenceRentMonthly.
+  ///
+  /// In ko, this message translates to:
+  /// **'월세'**
+  String get regResidenceRentMonthly;
+
+  /// No description provided for @regResidenceWithParents.
+  ///
+  /// In ko, this message translates to:
+  /// **'부모님 동거'**
+  String get regResidenceWithParents;
+
+  /// No description provided for @regHealthNotesLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'건강 특이사항'**
+  String get regHealthNotesLabel;
+
+  /// No description provided for @regHealthNotesHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'특이사항이 있으면 입력하세요'**
+  String get regHealthNotesHint;
+
+  /// No description provided for @regPersonalityTypeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'성격 유형 (MBTI 등)'**
+  String get regPersonalityTypeLabel;
+
+  /// No description provided for @regPersonalityTypeHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'예: ENFP'**
+  String get regPersonalityTypeHint;
+
+  /// No description provided for @profileFamilyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'가족 정보'**
+  String get profileFamilyTitle;
+
+  /// No description provided for @profileLifestyleTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'라이프스타일'**
+  String get profileLifestyleTitle;
+
+  /// No description provided for @profileIdealPartnerTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이상형 조건'**
+  String get profileIdealPartnerTitle;
+
+  /// No description provided for @profileResidenceTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'자산/거주'**
+  String get profileResidenceTitle;
+
+  /// No description provided for @profilePersonalityTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'성격'**
+  String get profilePersonalityTitle;
+
+  /// No description provided for @profileMaritalHistory.
+  ///
+  /// In ko, this message translates to:
+  /// **'결혼이력'**
+  String get profileMaritalHistory;
+
+  /// No description provided for @profileChildren.
+  ///
+  /// In ko, this message translates to:
+  /// **'자녀'**
+  String get profileChildren;
+
+  /// No description provided for @profileChildrenCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}명'**
+  String profileChildrenCount(int count);
+
+  /// No description provided for @profileFamilyDetail.
+  ///
+  /// In ko, this message translates to:
+  /// **'가족관계'**
+  String get profileFamilyDetail;
+
+  /// No description provided for @profileParentsStatus.
+  ///
+  /// In ko, this message translates to:
+  /// **'부모님'**
+  String get profileParentsStatus;
+
+  /// No description provided for @profileDrinking.
+  ///
+  /// In ko, this message translates to:
+  /// **'음주'**
+  String get profileDrinking;
+
+  /// No description provided for @profileSmoking.
+  ///
+  /// In ko, this message translates to:
+  /// **'흡연'**
+  String get profileSmoking;
+
+  /// No description provided for @profileHealthNotes.
+  ///
+  /// In ko, this message translates to:
+  /// **'건강'**
+  String get profileHealthNotes;
+
+  /// No description provided for @profilePersonalityType.
+  ///
+  /// In ko, this message translates to:
+  /// **'성격유형'**
+  String get profilePersonalityType;
+
+  /// No description provided for @profileAssetRange.
+  ///
+  /// In ko, this message translates to:
+  /// **'자산'**
+  String get profileAssetRange;
+
+  /// No description provided for @profileResidenceArea.
+  ///
+  /// In ko, this message translates to:
+  /// **'거주지'**
+  String get profileResidenceArea;
+
+  /// No description provided for @profileResidenceType.
+  ///
+  /// In ko, this message translates to:
+  /// **'거주형태'**
+  String get profileResidenceType;
+
+  /// No description provided for @profileIdealAge.
+  ///
+  /// In ko, this message translates to:
+  /// **'희망 나이'**
+  String get profileIdealAge;
+
+  /// No description provided for @profileIdealHeight.
+  ///
+  /// In ko, this message translates to:
+  /// **'희망 키'**
+  String get profileIdealHeight;
+
+  /// No description provided for @profileIdealEducation.
+  ///
+  /// In ko, this message translates to:
+  /// **'희망 학력'**
+  String get profileIdealEducation;
+
+  /// No description provided for @profileIdealIncome.
+  ///
+  /// In ko, this message translates to:
+  /// **'희망 연소득'**
+  String get profileIdealIncome;
+
+  /// No description provided for @profileIdealReligion.
+  ///
+  /// In ko, this message translates to:
+  /// **'희망 종교'**
+  String get profileIdealReligion;
+
+  /// No description provided for @profileIdealNotes.
+  ///
+  /// In ko, this message translates to:
+  /// **'기타 조건'**
+  String get profileIdealNotes;
+
+  /// No description provided for @profileIdealAgeRange.
+  ///
+  /// In ko, this message translates to:
+  /// **'{min}~{max}세'**
+  String profileIdealAgeRange(int min, int max);
+
+  /// No description provided for @profileIdealHeightRange.
+  ///
+  /// In ko, this message translates to:
+  /// **'{min}~{max}cm'**
+  String profileIdealHeightRange(int min, int max);
+
+  /// No description provided for @marketplaceFilterDrinking.
+  ///
+  /// In ko, this message translates to:
+  /// **'음주'**
+  String get marketplaceFilterDrinking;
+
+  /// No description provided for @marketplaceFilterSmoking.
+  ///
+  /// In ko, this message translates to:
+  /// **'흡연'**
+  String get marketplaceFilterSmoking;
+
+  /// No description provided for @marketplaceFilterMaritalHistory.
+  ///
+  /// In ko, this message translates to:
+  /// **'결혼이력'**
+  String get marketplaceFilterMaritalHistory;
+
+  /// No description provided for @marketplaceFilterResidenceArea.
+  ///
+  /// In ko, this message translates to:
+  /// **'거주지'**
+  String get marketplaceFilterResidenceArea;
+
+  /// No description provided for @marketplaceFilterResidenceHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'지역명 입력'**
+  String get marketplaceFilterResidenceHint;
+
+  /// No description provided for @crmNotesTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모 & 타임라인'**
+  String get crmNotesTitle;
+
+  /// No description provided for @crmNoteAdd.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모 추가'**
+  String get crmNoteAdd;
+
+  /// No description provided for @crmNoteTypeGeneral.
+  ///
+  /// In ko, this message translates to:
+  /// **'일반'**
+  String get crmNoteTypeGeneral;
+
+  /// No description provided for @crmNoteTypePreference.
+  ///
+  /// In ko, this message translates to:
+  /// **'선호도'**
+  String get crmNoteTypePreference;
+
+  /// No description provided for @crmNoteTypeMeetingFeedback.
+  ///
+  /// In ko, this message translates to:
+  /// **'미팅 후기'**
+  String get crmNoteTypeMeetingFeedback;
+
+  /// No description provided for @crmNoteTypeSchedule.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정'**
+  String get crmNoteTypeSchedule;
+
+  /// No description provided for @crmNoteContentHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모 내용을 입력하세요'**
+  String get crmNoteContentHint;
+
+  /// No description provided for @crmNoteScheduleAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정 날짜'**
+  String get crmNoteScheduleAt;
+
+  /// No description provided for @crmNoteSaved.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모가 저장되었습니다'**
+  String get crmNoteSaved;
+
+  /// No description provided for @crmNoteDeleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모가 삭제되었습니다'**
+  String get crmNoteDeleted;
+
+  /// No description provided for @crmNoteDeleteConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 메모를 삭제하시겠습니까?'**
+  String get crmNoteDeleteConfirm;
+
+  /// No description provided for @crmNoteEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 메모가 없습니다'**
+  String get crmNoteEmpty;
+
+  /// No description provided for @crmNoteCompleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료'**
+  String get crmNoteCompleted;
+
+  /// No description provided for @crmScheduleTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'예정 일정'**
+  String get crmScheduleTitle;
+
+  /// No description provided for @crmScheduleEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'예정된 일정이 없습니다'**
+  String get crmScheduleEmpty;
+
+  /// No description provided for @homeTodaySchedules.
+  ///
+  /// In ko, this message translates to:
+  /// **'예정 일정 {count}건'**
+  String homeTodaySchedules(int count);
+
+  /// No description provided for @customerSupportUrl.
+  ///
+  /// In ko, this message translates to:
+  /// **'https://cupplus.channel.io'**
+  String get customerSupportUrl;
 }
 
 class _AppLocalizationsDelegate

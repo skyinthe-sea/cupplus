@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../config/routes.dart';
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -56,7 +57,7 @@ class LogoutButton extends ConsumerWidget {
     if (confirmed == true && context.mounted) {
       await ref.read(supabaseClientProvider).auth.signOut();
       if (context.mounted) {
-        context.go('/');
+        context.go(AppRoutes.home);
       }
     }
   }

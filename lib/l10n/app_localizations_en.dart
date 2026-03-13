@@ -183,7 +183,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatEmptyTitle => 'No conversations';
 
   @override
-  String get chatEmptySubtitle => 'Start a conversation with another manager';
+  String get chatEmptySubtitle =>
+      'No chats yet.\nA chat room will be created automatically when a match is accepted.';
 
   @override
   String get chatInputPlaceholder => 'Type a message';
@@ -217,6 +218,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String chatHoursAgo(int hours) {
     return '${hours}h ago';
+  }
+
+  @override
+  String chatDaysAgo(int days) {
+    return '${days}d ago';
   }
 
   @override
@@ -562,4 +568,1045 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileDetailMatchRequestSent => 'Match request sent successfully';
+
+  @override
+  String homeGreetingMorning(String name) {
+    return 'Good morning, $name';
+  }
+
+  @override
+  String homeGreetingAfternoon(String name) {
+    return 'Good afternoon, $name';
+  }
+
+  @override
+  String homeGreetingEvening(String name) {
+    return 'Good evening, $name';
+  }
+
+  @override
+  String homeGreetingNight(String name) {
+    return 'Working late, $name?';
+  }
+
+  @override
+  String get homeQuickRegister => 'Register Client';
+
+  @override
+  String get homeQuickMatch => 'Create Match';
+
+  @override
+  String get homeTodayTasks => 'Today\'s Tasks';
+
+  @override
+  String homeTodayPendingMatches(int count) {
+    return '$count pending matches';
+  }
+
+  @override
+  String homeTodayNewMessages(int count) {
+    return '$count new messages';
+  }
+
+  @override
+  String get homeTodayView => 'View';
+
+  @override
+  String get homeRecentActivity => 'Recent Activity';
+
+  @override
+  String homeActivityMatchCreated(String clientA, String clientB) {
+    return '$clientA ↔ $clientB match created';
+  }
+
+  @override
+  String homeActivityMatchAccepted(String clientA, String clientB) {
+    return '$clientA ↔ $clientB match accepted';
+  }
+
+  @override
+  String homeActivityMatchDeclined(String clientA, String clientB) {
+    return '$clientA ↔ $clientB match declined';
+  }
+
+  @override
+  String homeActivityClientRegistered(String name) {
+    return '$name registered';
+  }
+
+  @override
+  String get homeActivityEmpty => 'No activity yet';
+
+  @override
+  String get homeActivityEmptyAction => 'Register your first client!';
+
+  @override
+  String get homeActivityToday => 'Today';
+
+  @override
+  String get homeActivityYesterday => 'Yesterday';
+
+  @override
+  String get homeNotificationMarkAllRead => 'Mark all read';
+
+  @override
+  String get homeClientRegTitle => 'Quick Registration';
+
+  @override
+  String get homeClientRegNameRequired => 'Name is required';
+
+  @override
+  String get homeClientRegSuccess => 'Client registered successfully';
+
+  @override
+  String get homeMatchCreateTitle => 'Today\'s Picks';
+
+  @override
+  String get homeMatchCreateEmpty => 'No profiles to recommend';
+
+  @override
+  String get homeMatchMgmtTitle => 'Match Management';
+
+  @override
+  String get homeMatchAccept => 'Accept';
+
+  @override
+  String get homeMatchDecline => 'Decline';
+
+  @override
+  String get homeMatchMemo => 'Note';
+
+  @override
+  String get homeMatchDeclineReason => 'Reason (optional)';
+
+  @override
+  String get homeMatchAcceptSuccess => 'Match accepted';
+
+  @override
+  String get homeMatchDeclineSuccess => 'Match declined';
+
+  @override
+  String get homeMatchMemoHint => 'Enter a note';
+
+  @override
+  String get homeMatchMemoSaved => 'Note saved';
+
+  @override
+  String get marketplaceLikesTab => 'Likes';
+
+  @override
+  String get marketplaceSortNewest => 'Newest';
+
+  @override
+  String get marketplaceSortMostLikes => 'Most Liked';
+
+  @override
+  String get marketplaceFilterEducation => 'Education';
+
+  @override
+  String get marketplaceFilterOccupation => 'Occupation';
+
+  @override
+  String get marketplaceFilterIncome => 'Income Range';
+
+  @override
+  String get marketplaceMatchCompleted => 'Match Completed';
+
+  @override
+  String get matchRequestVerificationPending =>
+      'Verification is being reviewed. You can request matches after approval.';
+
+  @override
+  String get matchRequestVerificationRequired =>
+      'Manager verification is required to request matches.';
+
+  @override
+  String get matchRequestVerify => 'Verify';
+
+  @override
+  String get matchRequestSelectClient => 'Select a client for matching';
+
+  @override
+  String get matchRequestNoEligible =>
+      'No eligible opposite-gender clients available';
+
+  @override
+  String matchRequestConfirmMessage(String clientA, String clientB) {
+    return 'Request a match between $clientA and $clientB?';
+  }
+
+  @override
+  String get matchRequestSuccess => 'Match request sent successfully';
+
+  @override
+  String get matchRequestDailyLimit => 'You have exceeded today\'s match limit';
+
+  @override
+  String chatMatchContext(String clientA, String clientB) {
+    return '$clientA ↔ $clientB Match';
+  }
+
+  @override
+  String get chatImagePickerTitle => 'Send Image';
+
+  @override
+  String get chatImagePickerCamera => 'Camera';
+
+  @override
+  String get chatImagePickerGallery => 'Gallery';
+
+  @override
+  String get chatImageUploading => 'Uploading image...';
+
+  @override
+  String get chatMessageSendFailed => 'Failed to send message';
+
+  @override
+  String get regTitle => 'Register Client';
+
+  @override
+  String regStepOf(int current, int total) {
+    return 'Step $current/$total';
+  }
+
+  @override
+  String get regStep1Title => 'Basic Info';
+
+  @override
+  String get regStep2Title => 'Career / Education';
+
+  @override
+  String get regStep3Title => 'Appearance';
+
+  @override
+  String get regStep4Title => 'Personality / Hobbies';
+
+  @override
+  String get regStep5Title => 'Agreement';
+
+  @override
+  String get regPrevious => 'Previous';
+
+  @override
+  String get regComplete => 'Complete';
+
+  @override
+  String get regNameLabel => 'Name';
+
+  @override
+  String get regNameHint => 'Enter name';
+
+  @override
+  String get regNameValidation => 'Name must be 2-20 characters';
+
+  @override
+  String get regPhoneLabel => 'Phone';
+
+  @override
+  String get regPhoneHint => '010-0000-0000';
+
+  @override
+  String get regEmailLabel => 'Email';
+
+  @override
+  String get regEmailHint => 'Enter email';
+
+  @override
+  String get regEmailValidation => 'Invalid email format';
+
+  @override
+  String get regOccupationLabel => 'Occupation';
+
+  @override
+  String get regOccupationHint => 'Enter occupation';
+
+  @override
+  String get regOccupationRequired => 'Occupation is required';
+
+  @override
+  String get regCompanyLabel => 'Company';
+
+  @override
+  String get regCompanyHint => 'Enter company';
+
+  @override
+  String get regEducationLevel => 'Education Level';
+
+  @override
+  String get regEduHighSchool => 'High School';
+
+  @override
+  String get regEduAssociate => 'Associate';
+
+  @override
+  String get regEduBachelor => 'Bachelor';
+
+  @override
+  String get regEduMaster => 'Master';
+
+  @override
+  String get regEduDoctorate => 'Doctorate';
+
+  @override
+  String get regSchoolLabel => 'School';
+
+  @override
+  String get regSchoolHint => 'Enter school name';
+
+  @override
+  String get regMajorLabel => 'Major';
+
+  @override
+  String get regMajorHint => 'Enter major';
+
+  @override
+  String get regIncomeLabel => 'Annual Income';
+
+  @override
+  String get regIncome1 => 'Under 30M KRW';
+
+  @override
+  String get regIncome2 => '30M - 50M KRW';
+
+  @override
+  String get regIncome3 => '50M - 70M KRW';
+
+  @override
+  String get regIncome4 => '70M - 100M KRW';
+
+  @override
+  String get regIncome5 => '100M - 150M KRW';
+
+  @override
+  String get regIncome6 => 'Over 150M KRW';
+
+  @override
+  String get regHeightLabel => 'Height';
+
+  @override
+  String regHeightValue(int height) {
+    return '$height cm';
+  }
+
+  @override
+  String get regBodyTypeLabel => 'Body Type';
+
+  @override
+  String get regBodySlim => 'Slim';
+
+  @override
+  String get regBodySlightlySlim => 'Slightly Slim';
+
+  @override
+  String get regBodyAverage => 'Average';
+
+  @override
+  String get regBodySlightlyChubby => 'Slightly Chubby';
+
+  @override
+  String get regBodyChubby => 'Chubby';
+
+  @override
+  String get regPhotoLabel => 'Profile Photos (max 5)';
+
+  @override
+  String get regPhotoAdd => 'Add';
+
+  @override
+  String get regPhotoMain => 'Main';
+
+  @override
+  String get regPhotoHint => 'The first photo will be used as the main photo.';
+
+  @override
+  String get regPhotoMax => 'You can add up to 5 photos';
+
+  @override
+  String get regReligionLabel => 'Religion';
+
+  @override
+  String get regReligionNone => 'None';
+
+  @override
+  String get regReligionChristian => 'Christian';
+
+  @override
+  String get regReligionCatholic => 'Catholic';
+
+  @override
+  String get regReligionBuddhist => 'Buddhist';
+
+  @override
+  String get regReligionOther => 'Other';
+
+  @override
+  String get regHobbiesLabel => 'Hobbies (max 5)';
+
+  @override
+  String get regHobbiesMax => 'You can select up to 5 hobbies';
+
+  @override
+  String regHobbiesCount(int count) {
+    return '$count/5';
+  }
+
+  @override
+  String get regHobbiesCustom => '+ Custom';
+
+  @override
+  String get regHobbiesAdd => 'Add';
+
+  @override
+  String get regBioLabel => 'About';
+
+  @override
+  String get regBioHint =>
+      'A positive person who enjoys reading at cafes on weekends...';
+
+  @override
+  String regBioCount(int count) {
+    return '$count/300';
+  }
+
+  @override
+  String get regAgreeAll => 'Agree to All';
+
+  @override
+  String get regAgreeTerms => 'Terms of Service';
+
+  @override
+  String get regAgreePrivacy => 'Privacy Policy';
+
+  @override
+  String get regAgreeMarketing => 'Marketing Communications';
+
+  @override
+  String get regRequired => '(Required)';
+
+  @override
+  String get regOptional => '(Optional)';
+
+  @override
+  String get regView => 'View';
+
+  @override
+  String get regAgreeDesc => 'Please review and agree to the terms.';
+
+  @override
+  String get regSuccessTitle => 'Registration Complete!';
+
+  @override
+  String regSuccessMessage(String name) {
+    return '$name has been registered';
+  }
+
+  @override
+  String get regSuccessViewProfile => 'View Profile';
+
+  @override
+  String get regSuccessGoHome => 'Go Home';
+
+  @override
+  String get regExitTitle => 'Leave?';
+
+  @override
+  String get regExitMessage =>
+      'You have unsaved information.\nIt will be saved as a draft.';
+
+  @override
+  String get regExitLeave => 'Leave';
+
+  @override
+  String get regDraftFound =>
+      'You have a draft in progress.\nWould you like to continue?';
+
+  @override
+  String get regDraftContinue => 'Continue';
+
+  @override
+  String get regDraftNew => 'Start Fresh';
+
+  @override
+  String get myClientsTitle => 'My Clients';
+
+  @override
+  String get myClientsRegister => 'Register';
+
+  @override
+  String get myClientsSearchHint => 'Search by name';
+
+  @override
+  String get myClientsTabAll => 'All';
+
+  @override
+  String get myClientsTabActive => 'Active';
+
+  @override
+  String get myClientsTabPaused => 'Paused';
+
+  @override
+  String get myClientsTabMatched => 'Matched';
+
+  @override
+  String myClientsCount(int count) {
+    return '$count';
+  }
+
+  @override
+  String get myClientsEmpty => 'No clients registered';
+
+  @override
+  String get myClientsEmptyAction => 'Register your first client';
+
+  @override
+  String get myClientDetailTitle => 'Client Details';
+
+  @override
+  String get myClientDetailEdit => 'Edit';
+
+  @override
+  String get myClientDetailStatus => 'Status';
+
+  @override
+  String get myClientDetailStatusActive => 'Active';
+
+  @override
+  String get myClientDetailStatusPaused => 'Paused';
+
+  @override
+  String get myClientDetailStatusMatched => 'Matched';
+
+  @override
+  String get myClientDetailStatusWithdrawn => 'Withdrawn';
+
+  @override
+  String get myClientDetailMatchHistory => 'Match History';
+
+  @override
+  String get myClientDetailMatchEmpty => 'No match history';
+
+  @override
+  String get myClientDetailRegisteredAt => 'Registered';
+
+  @override
+  String get myClientDetailPhone => 'Phone';
+
+  @override
+  String get myClientDetailEmail => 'Email';
+
+  @override
+  String get myClientDetailEducationLevel => 'Education';
+
+  @override
+  String get myClientDetailSchool => 'School';
+
+  @override
+  String get myClientDetailMajor => 'Major';
+
+  @override
+  String get myClientDetailBodyType => 'Body Type';
+
+  @override
+  String get myClientEditTitle => 'Edit Client';
+
+  @override
+  String get myClientEditSaved => 'Changes saved successfully';
+
+  @override
+  String get myClientEditFailed => 'Failed to save changes';
+
+  @override
+  String get myClientStatusChange => 'Change Status';
+
+  @override
+  String myClientStatusChangeConfirm(String name, String status) {
+    return 'Change $name\'s status to $status?';
+  }
+
+  @override
+  String get myClientStatusChanged => 'Status updated';
+
+  @override
+  String get myClientDeleteTitle => 'Delete Client';
+
+  @override
+  String myClientDeleteMessage(String name) {
+    return 'Delete $name?\nThis will cancel pending matches and remove the profile from the marketplace.';
+  }
+
+  @override
+  String get myClientDeleteSuccess => 'Client deleted';
+
+  @override
+  String get myClientDeleteFailed => 'Failed to delete client';
+
+  @override
+  String get verificationTitle => 'Manager Verification';
+
+  @override
+  String get verificationDesc =>
+      'Submit a document proving your affiliation with a matchmaking company.\nYou will be notified once reviewed.';
+
+  @override
+  String get verificationDocTypeTitle => 'Select Document Type';
+
+  @override
+  String get verificationBusinessCard => 'Business Card';
+
+  @override
+  String get verificationEmploymentCert => 'Employment Certificate';
+
+  @override
+  String get verificationBusinessReg => 'Business Registration';
+
+  @override
+  String get verificationUpload => 'Upload Document';
+
+  @override
+  String get verificationCamera => 'Camera';
+
+  @override
+  String get verificationGallery => 'Gallery';
+
+  @override
+  String get verificationSubmit => 'Submit';
+
+  @override
+  String get verificationSubmitSuccess =>
+      'Submitted! You will be notified after review.';
+
+  @override
+  String get verificationSubmitFailed => 'Submission failed';
+
+  @override
+  String get verificationUploading => 'Uploading...';
+
+  @override
+  String get verificationStatusUnverified => 'Unverified';
+
+  @override
+  String get verificationStatusPending => 'Pending Review';
+
+  @override
+  String get verificationStatusVerified => 'Verified';
+
+  @override
+  String get verificationStatusRejected => 'Rejected';
+
+  @override
+  String get verificationRejectedMessage =>
+      'Verification was rejected. Please resubmit your document.';
+
+  @override
+  String verificationRejectedReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get verificationResubmit => 'Resubmit';
+
+  @override
+  String get verificationImageRequired => 'Please select a document image';
+
+  @override
+  String get contractEmptyTitle => 'No contract history';
+
+  @override
+  String get contractAgreedAt => 'Agreed at';
+
+  @override
+  String get contractHashLabel => 'Contract hash';
+
+  @override
+  String get contractMarketingConsent => 'Marketing consent';
+
+  @override
+  String get contractDeviceInfo => 'Device';
+
+  @override
+  String get contractHistory => 'Contract History';
+
+  @override
+  String get subscriptionCurrentPlan => 'Current Plan';
+
+  @override
+  String subscriptionDailyUsage(int used, int limit) {
+    return '$used/$limit matches used today';
+  }
+
+  @override
+  String subscriptionDailyUnlimited(int used) {
+    return '$used matches today · Unlimited';
+  }
+
+  @override
+  String get subscriptionChangePlan => 'Change Plan';
+
+  @override
+  String get subscriptionFeatureMatches => 'Daily Matches';
+
+  @override
+  String subscriptionFeatureMatchesValue(int count) {
+    return '$count/day';
+  }
+
+  @override
+  String get subscriptionFeatureUnlimited => 'Unlimited';
+
+  @override
+  String get subscriptionFreePlanDesc => 'Free Plan';
+
+  @override
+  String get subscriptionStandardPlanDesc => 'Standard Plan';
+
+  @override
+  String get subscriptionPremiumPlanDesc => 'Premium Plan';
+
+  @override
+  String get subscriptionRestoreTitle => 'Restore Purchases';
+
+  @override
+  String get subscriptionRestoreSuccess => 'Purchases restored';
+
+  @override
+  String get subscriptionRestoreFailed => 'No purchases to restore';
+
+  @override
+  String get subscriptionNotConfigured =>
+      'Subscription service is being set up';
+
+  @override
+  String get notificationSettingsTitle => 'Notification Settings';
+
+  @override
+  String get notificationSettingsDesc =>
+      'Choose which notifications you\'d like to receive as push notifications. In-app notifications are always shown.';
+
+  @override
+  String get notificationSettingsMatch => 'Match Notifications';
+
+  @override
+  String get notificationSettingsMatchDesc =>
+      'Match requests, accepts, and declines';
+
+  @override
+  String get notificationSettingsMessage => 'Chat Notifications';
+
+  @override
+  String get notificationSettingsMessageDesc => 'New message alerts';
+
+  @override
+  String get notificationSettingsVerification => 'Verification Notifications';
+
+  @override
+  String get notificationSettingsVerificationDesc =>
+      'Manager verification approval/rejection';
+
+  @override
+  String get notificationSettingsSystem => 'System Notifications';
+
+  @override
+  String get notificationSettingsSystemDesc =>
+      'Announcements, subscription expiry, etc.';
+
+  @override
+  String get notificationSettingsFcmNote =>
+      'Push notifications will be activated after Firebase is configured. In-app notifications are always received.';
+
+  @override
+  String get notificationSettingsSaved => 'Notification settings saved';
+
+  @override
+  String get matchDetailTitle => 'Match Detail';
+
+  @override
+  String get matchDetailNotFound => 'Match not found';
+
+  @override
+  String get matchDetailClientA => 'Client A';
+
+  @override
+  String get matchDetailClientB => 'Client B';
+
+  @override
+  String get matchDetailCreatedBy => 'Created by';
+
+  @override
+  String get matchDetailCreatedAt => 'Created at';
+
+  @override
+  String get matchDetailRespondedAt => 'Responded at';
+
+  @override
+  String get matchDetailOpenChat => 'Open Chat';
+
+  @override
+  String get matchHistoryEmpty => 'No match history';
+
+  @override
+  String get regStep6Title => 'Family / Lifestyle';
+
+  @override
+  String get regMaritalHistoryLabel => 'Marital History';
+
+  @override
+  String get regMaritalFirst => 'First Marriage';
+
+  @override
+  String get regMaritalRemarriage => 'Remarriage';
+
+  @override
+  String get regMaritalDivorced => 'Divorced';
+
+  @override
+  String get regHasChildrenLabel => 'Has Children';
+
+  @override
+  String get regChildrenCountLabel => 'Number of Children';
+
+  @override
+  String get regFamilyDetailLabel => 'Family Detail';
+
+  @override
+  String get regFamilyDetailHint =>
+      'e.g., Eldest son of 1 brother and 2 sisters';
+
+  @override
+  String get regParentsStatusLabel => 'Parents Status';
+
+  @override
+  String get regParentsBothAlive => 'Both Alive';
+
+  @override
+  String get regParentsFatherOnly => 'Father Only';
+
+  @override
+  String get regParentsMotherOnly => 'Mother Only';
+
+  @override
+  String get regParentsDeceased => 'Deceased';
+
+  @override
+  String get regDrinkingLabel => 'Drinking';
+
+  @override
+  String get regDrinkingNone => 'None';
+
+  @override
+  String get regDrinkingSocial => 'Social';
+
+  @override
+  String get regDrinkingRegular => 'Regular';
+
+  @override
+  String get regSmokingLabel => 'Smoking';
+
+  @override
+  String get regSmokingNone => 'None';
+
+  @override
+  String get regSmokingSometimes => 'Sometimes';
+
+  @override
+  String get regSmokingRegular => 'Regular';
+
+  @override
+  String get regAssetRangeLabel => 'Asset Range';
+
+  @override
+  String get regAssetRange1 => 'Under 100M KRW';
+
+  @override
+  String get regAssetRange2 => '100M - 300M KRW';
+
+  @override
+  String get regAssetRange3 => '300M - 500M KRW';
+
+  @override
+  String get regAssetRange4 => '500M - 1B KRW';
+
+  @override
+  String get regAssetRange5 => 'Over 1B KRW';
+
+  @override
+  String get regResidenceAreaLabel => 'Residence Area';
+
+  @override
+  String get regResidenceAreaHint => 'e.g., Gangnam, Seoul';
+
+  @override
+  String get regResidenceTypeLabel => 'Residence Type';
+
+  @override
+  String get regResidenceOwn => 'Own';
+
+  @override
+  String get regResidenceRentDeposit => 'Jeonse (Deposit Rent)';
+
+  @override
+  String get regResidenceRentMonthly => 'Monthly Rent';
+
+  @override
+  String get regResidenceWithParents => 'With Parents';
+
+  @override
+  String get regHealthNotesLabel => 'Health Notes';
+
+  @override
+  String get regHealthNotesHint => 'Enter any health-related notes';
+
+  @override
+  String get regPersonalityTypeLabel => 'Personality Type (MBTI etc)';
+
+  @override
+  String get regPersonalityTypeHint => 'e.g., ENFP';
+
+  @override
+  String get profileFamilyTitle => 'Family Info';
+
+  @override
+  String get profileLifestyleTitle => 'Lifestyle';
+
+  @override
+  String get profileIdealPartnerTitle => 'Ideal Partner';
+
+  @override
+  String get profileResidenceTitle => 'Assets / Residence';
+
+  @override
+  String get profilePersonalityTitle => 'Personality';
+
+  @override
+  String get profileMaritalHistory => 'Marital History';
+
+  @override
+  String get profileChildren => 'Children';
+
+  @override
+  String profileChildrenCount(int count) {
+    return '$count';
+  }
+
+  @override
+  String get profileFamilyDetail => 'Family';
+
+  @override
+  String get profileParentsStatus => 'Parents';
+
+  @override
+  String get profileDrinking => 'Drinking';
+
+  @override
+  String get profileSmoking => 'Smoking';
+
+  @override
+  String get profileHealthNotes => 'Health';
+
+  @override
+  String get profilePersonalityType => 'Personality';
+
+  @override
+  String get profileAssetRange => 'Assets';
+
+  @override
+  String get profileResidenceArea => 'Area';
+
+  @override
+  String get profileResidenceType => 'Residence';
+
+  @override
+  String get profileIdealAge => 'Preferred Age';
+
+  @override
+  String get profileIdealHeight => 'Preferred Height';
+
+  @override
+  String get profileIdealEducation => 'Preferred Education';
+
+  @override
+  String get profileIdealIncome => 'Preferred Income';
+
+  @override
+  String get profileIdealReligion => 'Preferred Religion';
+
+  @override
+  String get profileIdealNotes => 'Other Preferences';
+
+  @override
+  String profileIdealAgeRange(int min, int max) {
+    return '$min ~ $max';
+  }
+
+  @override
+  String profileIdealHeightRange(int min, int max) {
+    return '$min ~ ${max}cm';
+  }
+
+  @override
+  String get marketplaceFilterDrinking => 'Drinking';
+
+  @override
+  String get marketplaceFilterSmoking => 'Smoking';
+
+  @override
+  String get marketplaceFilterMaritalHistory => 'Marital History';
+
+  @override
+  String get marketplaceFilterResidenceArea => 'Residence Area';
+
+  @override
+  String get marketplaceFilterResidenceHint => 'Enter area name';
+
+  @override
+  String get crmNotesTitle => 'Notes & Timeline';
+
+  @override
+  String get crmNoteAdd => 'Add Note';
+
+  @override
+  String get crmNoteTypeGeneral => 'General';
+
+  @override
+  String get crmNoteTypePreference => 'Preference';
+
+  @override
+  String get crmNoteTypeMeetingFeedback => 'Meeting Feedback';
+
+  @override
+  String get crmNoteTypeSchedule => 'Schedule';
+
+  @override
+  String get crmNoteContentHint => 'Enter note content';
+
+  @override
+  String get crmNoteScheduleAt => 'Schedule Date';
+
+  @override
+  String get crmNoteSaved => 'Note saved';
+
+  @override
+  String get crmNoteDeleted => 'Note deleted';
+
+  @override
+  String get crmNoteDeleteConfirm => 'Delete this note?';
+
+  @override
+  String get crmNoteEmpty => 'No notes yet';
+
+  @override
+  String get crmNoteCompleted => 'Completed';
+
+  @override
+  String get crmScheduleTitle => 'Upcoming Schedules';
+
+  @override
+  String get crmScheduleEmpty => 'No upcoming schedules';
+
+  @override
+  String homeTodaySchedules(int count) {
+    return '$count upcoming schedules';
+  }
+
+  @override
+  String get customerSupportUrl => 'https://cupplus.channel.io';
 }

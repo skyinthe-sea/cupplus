@@ -4,9 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ChatInputArea extends StatefulWidget {
-  const ChatInputArea({super.key, required this.onSend});
+  const ChatInputArea({super.key, required this.onSend, this.onImageSend});
 
   final ValueChanged<String> onSend;
+  final VoidCallback? onImageSend;
 
   @override
   State<ChatInputArea> createState() => _ChatInputAreaState();
@@ -65,7 +66,7 @@ class _ChatInputAreaState extends State<ChatInputArea> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: widget.onImageSend,
               icon: Icon(
                 Icons.add_rounded,
                 color: const Color(0xFF7B5EA7),

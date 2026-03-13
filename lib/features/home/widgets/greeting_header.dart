@@ -7,11 +7,17 @@ class GreetingHeader extends StatelessWidget {
   const GreetingHeader({
     super.key,
     required this.userName,
-    required this.recommendedCount,
   });
 
   final String userName;
-  final int recommendedCount;
+
+  String _getGreeting(AppLocalizations l10n, String name) {
+    final hour = DateTime.now().hour;
+    if (hour >= 6 && hour < 12) return l10n.homeGreetingMorning(name);
+    if (hour >= 12 && hour < 18) return l10n.homeGreetingAfternoon(name);
+    if (hour >= 18 && hour < 22) return l10n.homeGreetingEvening(name);
+    return l10n.homeGreetingNight(name);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,25 +29,13 @@ class GreetingHeader extends StatelessWidget {
         left: 24.w,
         right: 24.w,
         top: 8.h,
-        bottom: 16.h,
+        bottom: 8.h,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.homeGreeting(userName),
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            l10n.homeRecommendedCount(recommendedCount),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+      child: Text(
+        _getGreeting(l10n, userName),
+        style: theme.textTheme.headlineSmall?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

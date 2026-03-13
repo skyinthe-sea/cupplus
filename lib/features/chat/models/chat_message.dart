@@ -23,4 +23,21 @@ class ChatMessage {
   final bool isRead;
   final DateTime createdAt;
   final bool isMine;
+
+  factory ChatMessage.fromMap(
+    Map<String, dynamic> map, {
+    required String currentUserId,
+  }) {
+    return ChatMessage(
+      id: map['id'] as String,
+      conversationId: map['conversation_id'] as String,
+      senderId: map['sender_id'] as String,
+      content: map['content'] as String? ?? '',
+      type: map['type'] as String? ?? 'text',
+      imageUrl: map['image_url'] as String?,
+      isRead: map['is_read'] as bool? ?? false,
+      createdAt: DateTime.parse(map['created_at'] as String),
+      isMine: map['sender_id'] == currentUserId,
+    );
+  }
 }

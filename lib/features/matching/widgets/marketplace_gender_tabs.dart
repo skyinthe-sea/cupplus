@@ -12,12 +12,14 @@ class MarketplaceGenderTabs extends StatelessWidget {
     required this.allCount,
     required this.femaleCount,
     required this.maleCount,
+    required this.likesCount,
   });
 
   final TabController controller;
   final int allCount;
   final int femaleCount;
   final int maleCount;
+  final int likesCount;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +82,7 @@ class MarketplaceGenderTabs extends StatelessWidget {
                   maleCount,
                   const Color(0xFF2D5A8E),
                 ),
+                _buildLikesTab(likesCount),
               ],
             ),
           ),
@@ -108,6 +111,36 @@ class MarketplaceGenderTabs extends StatelessWidget {
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                   color: badgeColor,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLikesTab(int count) {
+    const dustyRose = Color(0xFFB4637A);
+    return Tab(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.favorite_rounded, size: 14.r, color: dustyRose),
+          if (count > 0) ...[
+            SizedBox(width: 4.w),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
+              decoration: BoxDecoration(
+                color: dustyRose.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Text(
+                '$count',
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w700,
+                  color: dustyRose,
                 ),
               ),
             ),
