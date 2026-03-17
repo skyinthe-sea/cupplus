@@ -221,6 +221,10 @@ class _MarketplaceFilterSheetState
                         value: SortOrder.mostLikes,
                         label: Text(l10n.marketplaceSortMostLikes),
                       ),
+                      ButtonSegment(
+                        value: SortOrder.recommended,
+                        label: Text(l10n.marketplaceSortRecommended),
+                      ),
                     ],
                     selected: {_sortOrder},
                     onSelectionChanged: (value) {

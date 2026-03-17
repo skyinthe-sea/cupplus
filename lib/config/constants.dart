@@ -19,8 +19,12 @@ abstract final class AppConstants {
   static const int employmentCertMaxDimension = 2048;
 
   // Subscription limits
-  static const int freeMatchDailyLimit = 1;
+  static const int freeMatchDailyLimit = 3;
   static const int standardMatchDailyLimit = 10;
+
+  // Daily reset time (04:44 KST) — before this hour:minute, counts as previous day
+  static const int dailyResetHour = 4;
+  static const int dailyResetMinute = 44;
 
   // Storage paths
   static const String verificationDocsBucket = 'verification-documents';

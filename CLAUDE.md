@@ -20,8 +20,12 @@
 
 ### 현재 앱 상태
 - Auth(Google/Kakao/Dev): 완성
-- UI: 대부분 더미데이터 기반 완성 (Supabase 연동 필요)
+- 홈/매칭/채팅/마이 탭: Supabase 연동 완료
 - 로컬 Supabase: `127.0.0.1:54321`에서 실행 중, 마이그레이션 적용 완료
+- **푸시 알림(FCM)**: 클라이언트 코드 완성 (딥링크 포함), Firebase 프로젝트 미설정
+  - `flutterfire configure` 실행 후 즉시 활성화됨
+  - Edge Function `notify-push` 작성 완료, DB 트리거 4종 완료
+  - 활성화 절차: `flutterfire configure` → `supabase secrets set GOOGLE_SERVICE_ACCOUNT_JSON=...` → `supabase functions deploy notify-push`
 
 ---
 

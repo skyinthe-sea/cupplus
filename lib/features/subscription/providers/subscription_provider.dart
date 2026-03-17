@@ -8,13 +8,32 @@ import '../../../config/supabase_config.dart';
 
 part 'subscription_provider.g.dart';
 
+/// Business date: before 04:44 counts as previous day
+String _businessDate() {
+  final now = DateTime.now();
+  final resetToday = DateTime(now.year, now.month, now.day,
+      AppConstants.dailyResetHour, AppConstants.dailyResetMinute);
+  final effective = now.isBefore(resetToday)
+      ? now.subtract(const Duration(days: 1))
+      : now;
+  return effective.toIso8601String().substring(0, 10);
+}
+
 /// Subscription tier enum
 enum SubscriptionTier { free, standard, premium }
+
+/// Whether RevenueCat SDK has been configured.
+/// Set to true after Purchases.configure() in main.dart.
+bool _revenueCatConfigured = false;
+
+/// Call this after Purchases.configure() succeeds.
+void markRevenueCatConfigured() => _revenueCatConfigured = true;
 
 /// Current subscription tier based on RevenueCat entitlements.
 /// Falls back to [SubscriptionTier.free] if RevenueCat is not configured.
 @riverpod
 Future<SubscriptionTier> currentSubscriptionTier(Ref ref) async {
+  if (!_revenueCatConfigured) return SubscriptionTier.free;
   try {
     final customerInfo = await Purchases.getCustomerInfo();
     if (customerInfo.entitlements.all['premium']?.isActive == true) {
@@ -24,7 +43,6 @@ Future<SubscriptionTier> currentSubscriptionTier(Ref ref) async {
       return SubscriptionTier.standard;
     }
   } catch (e) {
-    // RevenueCat not configured or error — default to free
     debugPrint('RevenueCat not available: $e');
   }
   return SubscriptionTier.free;
@@ -48,7 +66,7 @@ Future<int> todayMatchUsage(Ref ref) async {
   final user = client.auth.currentUser;
   if (user == null) return 0;
 
-  final today = DateTime.now().toIso8601String().substring(0, 10);
+  final today = _businessDate();
   final result = await client
       .from('daily_match_counts')
       .select('count')
@@ -72,6 +90,7 @@ Future<bool> canCreateMatch(Ref ref) async {
 /// Restore purchases via RevenueCat
 @riverpod
 Future<bool> restorePurchases(Ref ref) async {
+  if (!_revenueCatConfigured) return false;
   try {
     final info = await Purchases.restorePurchases();
     ref.invalidate(currentSubscriptionTierProvider);
@@ -84,6 +103,7 @@ Future<bool> restorePurchases(Ref ref) async {
 /// Available packages from RevenueCat offerings
 @riverpod
 Future<List<Package>> availablePackages(Ref ref) async {
+  if (!_revenueCatConfigured) return [];
   try {
     final offerings = await Purchases.getOfferings();
     return offerings.current?.availablePackages ?? [];
@@ -95,6 +115,7 @@ Future<List<Package>> availablePackages(Ref ref) async {
 /// Purchase a specific package
 @riverpod
 Future<bool> purchasePackage(Ref ref, Package package) async {
+  if (!_revenueCatConfigured) return false;
   try {
     await Purchases.purchasePackage(package);
     ref.invalidate(currentSubscriptionTierProvider);

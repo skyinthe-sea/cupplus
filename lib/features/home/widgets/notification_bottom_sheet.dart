@@ -36,10 +36,7 @@ class _NotificationBottomSheetState
           .update({'is_read': true})
           .eq('user_id', user.id)
           .eq('is_read', false);
-
-      if (!mounted) return;
-      ref.invalidate(unreadNotificationCountProvider);
-      ref.invalidate(notificationsListProvider);
+      // Realtime will auto-refetch — no need to invalidate
     } catch (_) {
       // Silently fail — RLS policy may not be applied yet
     }
@@ -158,6 +155,13 @@ class _NotificationItem extends StatelessWidget {
 
     switch (type) {
       case 'new_match' || 'match_response':
+        final requiresVerification =
+            data['requires_verification'] == true ||
+                data['requires_verification'] == 'true';
+        if (requiresVerification) {
+          context.push(AppRoutes.verification);
+          return;
+        }
         final matchId = data['match_id'] as String?;
         if (matchId != null) {
           context.push(AppRoutes.matchDetail(matchId));
@@ -169,6 +173,11 @@ class _NotificationItem extends StatelessWidget {
         }
       case 'verification_result':
         context.go(AppRoutes.my);
+      case 'system':
+        final clientId = data['client_id'] as String?;
+        if (clientId != null) {
+          context.push(AppRoutes.profileDetail(clientId));
+        }
       default:
         break;
     }
@@ -188,6 +197,7 @@ class _NotificationItem extends StatelessWidget {
       'new_match' || 'match_response' => Icons.favorite_rounded,
       'new_message' => Icons.chat_bubble_rounded,
       'verification_result' => Icons.verified_rounded,
+      'system' => Icons.person_add_rounded,
       _ => Icons.notifications_rounded,
     };
 
@@ -195,6 +205,7 @@ class _NotificationItem extends StatelessWidget {
       'new_match' || 'match_response' => theme.colorScheme.tertiary,
       'new_message' => theme.colorScheme.primary,
       'verification_result' => theme.colorScheme.secondary,
+      'system' => Colors.green,
       _ => theme.colorScheme.onSurfaceVariant,
     };
 

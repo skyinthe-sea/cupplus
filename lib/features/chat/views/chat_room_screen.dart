@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +14,7 @@ import '../providers/chat_providers.dart';
 import '../widgets/chat_input_area.dart';
 import '../widgets/date_separator.dart';
 import '../widgets/message_bubble.dart';
+import '../widgets/typing_indicator.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
   const ChatRoomScreen({super.key, required this.conversationId});
@@ -23,23 +27,29 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
 
 class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   final _scrollController = ScrollController();
+  late final SupabaseClient _supabaseClient;
   RealtimeChannel? _messageChannel;
+  RealtimeChannel? _typingChannel;
   bool _isLoadingMore = false;
   bool _isMarkingRead = false;
+  bool _isOtherTyping = false;
+  Timer? _typingDebounce;
+  Timer? _typingTimeout;
 
   @override
   void initState() {
     super.initState();
+    _supabaseClient = ref.read(supabaseClientProvider);
     _scrollController.addListener(_onScroll);
-    // Mark as read on entry
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _markAsRead();
     });
     _subscribeToMessages();
+    _subscribeToTyping();
   }
 
   void _subscribeToMessages() {
-    final client = ref.read(supabaseClientProvider);
+    final client = _supabaseClient;
     final user = client.auth.currentUser;
     if (user == null) return;
 
@@ -61,14 +71,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             if (newRecord.isEmpty) return;
 
             final senderId = newRecord['sender_id'] as String?;
-            if (senderId == user.id) return; // Skip own messages (already optimistic)
+            if (senderId == user.id) return;
 
             final msg = ChatMessage.fromMap(newRecord, currentUserId: user.id);
             ref
                 .read(localMessagesProvider(widget.conversationId).notifier)
                 .add(msg);
 
-            // Auto-scroll to bottom
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted && _scrollController.hasClients) {
                 _scrollController.animateTo(
@@ -79,11 +88,61 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
               }
             });
 
-            // Mark as read (debounced)
             _markAsRead();
           },
         )
         .subscribe();
+  }
+
+  void _subscribeToTyping() {
+    final client = _supabaseClient;
+    final user = client.auth.currentUser;
+    if (user == null) return;
+
+    _typingChannel = client
+        .channel('typing-${widget.conversationId}')
+        .onBroadcast(
+          event: 'typing',
+          callback: (payload) {
+            if (!mounted) return;
+            final senderId = payload['user_id'] as String?;
+            if (senderId == null || senderId == user.id) return;
+
+            setState(() => _isOtherTyping = true);
+
+            // Auto-clear typing after 3 seconds of no new events
+            _typingTimeout?.cancel();
+            _typingTimeout = Timer(const Duration(seconds: 3), () {
+              if (mounted) setState(() => _isOtherTyping = false);
+            });
+          },
+        )
+        .subscribe();
+  }
+
+  void _onTypingChanged(bool isTyping) {
+    final user = _supabaseClient.auth.currentUser;
+    if (user == null || _typingChannel == null) return;
+
+    if (isTyping) {
+      // Send immediately, then throttle to once every 2 seconds
+      // This ensures the remote 3-second timeout is always reset
+      _sendTypingEvent(user.id);
+      _typingDebounce?.cancel();
+      _typingDebounce = Timer.periodic(const Duration(seconds: 2), (_) {
+        if (mounted) _sendTypingEvent(user.id);
+      });
+    } else {
+      _typingDebounce?.cancel();
+      _typingDebounce = null;
+    }
+  }
+
+  void _sendTypingEvent(String userId) {
+    _typingChannel?.sendBroadcastMessage(
+      event: 'typing',
+      payload: {'user_id': userId},
+    );
   }
 
   void _onScroll() {
@@ -111,7 +170,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     try {
       await ref.read(markAsReadProvider(widget.conversationId).future);
     } catch (_) {
-      // Silently fail — read status is non-critical
     } finally {
       _isMarkingRead = false;
     }
@@ -119,7 +177,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   void dispose() {
-    _messageChannel?.unsubscribe();
+    if (_messageChannel != null) _supabaseClient.removeChannel(_messageChannel!);
+    if (_typingChannel != null) _supabaseClient.removeChannel(_typingChannel!);
+    _typingDebounce?.cancel();
+    _typingTimeout?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -161,7 +222,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       ).future);
     } catch (e) {
       if (!mounted) return;
-      // Remove failed optimistic message
       ref
           .read(localMessagesProvider(widget.conversationId).notifier)
           .remove(localMsg.id);
@@ -206,17 +266,23 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     if (source == null || !mounted) return;
 
     final picker = ImagePicker();
-    final file = await picker.pickImage(source: source, imageQuality: 80, maxWidth: 1024);
+    final file = await picker.pickImage(source: source);
     if (file == null || !mounted) return;
 
-    final bytes = await file.readAsBytes();
-    if (!mounted) return;
+    // Compress with flutter_image_compress (better quality + EXIF removal)
+    final compressed = await FlutterImageCompress.compressWithFile(
+      file.path,
+      quality: 70,
+      minWidth: 1024,
+      minHeight: 1024,
+      format: CompressFormat.jpeg,
+    );
+    if (compressed == null || !mounted) return;
 
     final client = ref.read(supabaseClientProvider);
     final user = client.auth.currentUser;
     if (user == null) return;
 
-    // Optimistic: show uploading placeholder
     final localMsg = ChatMessage(
       id: 'local-img-${DateTime.now().millisecondsSinceEpoch}',
       conversationId: widget.conversationId,
@@ -235,8 +301,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     try {
       final storagePath = await ref.read(uploadChatImageProvider(
         conversationId: widget.conversationId,
-        bytes: bytes.toList(),
+        bytes: compressed.toList(),
       ).future);
+
+      // Cache compressed bytes so thumbnail renders instantly (no signed URL round-trip)
+      final cacheKey = storagePath.replaceFirst('chat-images/', '');
+      LocalImageCache.put(cacheKey, compressed);
 
       await ref.read(sendMessageProvider(
         conversationId: widget.conversationId,
@@ -244,9 +314,27 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         type: 'image',
         imageUrl: storagePath,
       ).future);
+
+      // Replace local placeholder with a proper message (correct imageUrl, no local- prefix)
+      if (!mounted) return;
+      ref
+          .read(localMessagesProvider(widget.conversationId).notifier)
+          .replace(
+            localMsg.id,
+            ChatMessage(
+              id: 'sent-${DateTime.now().millisecondsSinceEpoch}',
+              conversationId: widget.conversationId,
+              senderId: user.id,
+              content: '',
+              type: 'image',
+              imageUrl: storagePath,
+              isRead: false,
+              createdAt: localMsg.createdAt,
+              isMine: true,
+            ),
+          );
     } catch (e) {
       if (!mounted) return;
-      // Remove failed optimistic image message
       ref
           .read(localMessagesProvider(widget.conversationId).notifier)
           .remove(localMsg.id);
@@ -268,7 +356,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final conversation = ref.watch(
       conversationDetailProvider(widget.conversationId),
     );
-    // Entries computed in provider — not recomputed on UI-only rebuilds
     final entries = ref.watch(
       chatRoomEntriesProvider(widget.conversationId),
     );
@@ -342,9 +429,43 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 controller: _scrollController,
                 reverse: true,
                 padding: EdgeInsets.symmetric(vertical: 8.h),
-                itemCount: entries.length,
+                itemCount: entries.length + (_isOtherTyping ? 1 : 0),
                 itemBuilder: (context, index) {
-                  final entry = entries[index];
+                  // Typing indicator at position 0 (bottom of reversed list)
+                  if (_isOtherTyping && index == 0) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: 56.w,
+                        right: 48.w,
+                        top: 4.h,
+                        bottom: 4.h,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 14.w,
+                            vertical: 10.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? theme.colorScheme.surfaceContainer
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                              color: theme.colorScheme.outlineVariant
+                                  .withValues(alpha: 0.5),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: const TypingIndicator(),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final entryIndex = _isOtherTyping ? index - 1 : index;
+                  final entry = entries[entryIndex];
                   return switch (entry) {
                     DateEntry(:final date) => DateSeparator(date: date),
                     MessageEntry(:final message, :final showAvatar) => MessageBubble(
@@ -360,6 +481,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           ChatInputArea(
             onSend: _handleSend,
             onImageSend: _handleImageSend,
+            onTypingChanged: _onTypingChanged,
           ),
         ],
       ),

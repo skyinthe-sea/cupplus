@@ -23,44 +23,36 @@ class TodayTasks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (pendingMatches == 0 && newMessages == 0 && upcomingSchedules == 0) {
-      return const SizedBox.shrink();
-    }
-
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    final items = <Widget>[];
-
-    if (pendingMatches > 0) {
-      items.add(_TaskItem(
+    final items = <Widget>[
+      _TaskItem(
         icon: Icons.link_rounded,
         iconColor: Colors.amber.shade700,
         text: l10n.homeTodayPendingMatches(pendingMatches),
         actionLabel: l10n.homeTodayView,
         onTap: onPendingMatchesTap,
-      ));
-    }
-
-    if (newMessages > 0) {
-      items.add(_TaskItem(
+        muted: pendingMatches == 0,
+      ),
+      _TaskItem(
         icon: Icons.chat_bubble_rounded,
         iconColor: theme.colorScheme.primary,
         text: l10n.homeTodayNewMessages(newMessages),
         actionLabel: l10n.homeTodayView,
         onTap: onNewMessagesTap,
-      ));
-    }
-
-    if (upcomingSchedules > 0 && onSchedulesTap != null) {
-      items.add(_TaskItem(
-        icon: Icons.calendar_today_rounded,
-        iconColor: Colors.blue.shade600,
-        text: l10n.homeTodaySchedules(upcomingSchedules),
-        actionLabel: l10n.homeTodayView,
-        onTap: onSchedulesTap!,
-      ));
-    }
+        muted: newMessages == 0,
+      ),
+      if (onSchedulesTap != null)
+        _TaskItem(
+          icon: Icons.calendar_today_rounded,
+          iconColor: Colors.blue.shade600,
+          text: l10n.homeTodaySchedules(upcomingSchedules),
+          actionLabel: l10n.homeTodayView,
+          onTap: onSchedulesTap!,
+          muted: upcomingSchedules == 0,
+        ),
+    ];
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -95,6 +87,7 @@ class _TaskItem extends StatelessWidget {
     required this.text,
     required this.actionLabel,
     required this.onTap,
+    this.muted = false,
   });
 
   final IconData icon;
@@ -102,6 +95,7 @@ class _TaskItem extends StatelessWidget {
   final String text;
   final String actionLabel;
   final VoidCallback onTap;
+  final bool muted;
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +125,18 @@ class _TaskItem extends StatelessWidget {
                 width: 32.r,
                 height: 32.r,
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.12),
+                  color: (muted
+                          ? theme.colorScheme.onSurfaceVariant
+                          : iconColor)
+                      .withValues(alpha: muted ? 0.08 : 0.12),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Icon(icon, size: 18.r, color: iconColor),
+                child: Icon(icon,
+                    size: 18.r,
+                    color: muted
+                        ? theme.colorScheme.onSurfaceVariant
+                            .withValues(alpha: 0.4)
+                        : iconColor),
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -142,13 +144,20 @@ class _TaskItem extends StatelessWidget {
                   text,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: muted
+                        ? theme.colorScheme.onSurfaceVariant
+                            .withValues(alpha: 0.5)
+                        : null,
                   ),
                 ),
               ),
               Text(
                 actionLabel,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.primary,
+                  color: muted
+                      ? theme.colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.3)
+                      : theme.colorScheme.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -156,7 +165,10 @@ class _TaskItem extends StatelessWidget {
               Icon(
                 Icons.chevron_right_rounded,
                 size: 16.r,
-                color: theme.colorScheme.primary,
+                color: muted
+                    ? theme.colorScheme.onSurfaceVariant
+                        .withValues(alpha: 0.3)
+                    : theme.colorScheme.primary,
               ),
             ],
           ),

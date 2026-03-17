@@ -9,6 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../config/routes.dart';
 import '../config/supabase_config.dart';
 import '../features/auth/views/login_screen.dart';
+import '../features/chat/providers/chat_providers.dart';
 import '../features/chat/views/chat_list_screen.dart';
 import '../features/chat/views/chat_room_screen.dart';
 import '../features/home/views/home_screen.dart';
@@ -29,14 +30,15 @@ import '../shared/utils/auth_guard.dart';
 
 part 'router.g.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+/// Global navigator key — shared with FcmService for deep linking
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
-@riverpod
+@Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
   final user = ref.watch(currentUserProvider);
 
-  return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+  final router = GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/',
     redirect: (context, state) {
       final isAuthenticated = user != null;
@@ -87,62 +89,63 @@ GoRouter router(Ref ref) {
       ),
       GoRoute(
         path: '/my/clients',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const MyClientsScreen(),
       ),
       GoRoute(
         path: '/my/clients/:clientId',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => MyClientDetailScreen(
           clientId: state.pathParameters['clientId']!,
         ),
       ),
       GoRoute(
         path: '/my/clients/:clientId/edit',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => MyClientEditScreen(
           clientId: state.pathParameters['clientId']!,
         ),
       ),
       GoRoute(
         path: '/my/subscription',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const SubscriptionScreen(),
       ),
       GoRoute(
         path: '/my/notification-settings',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const NotificationSettingsScreen(),
       ),
       GoRoute(
         path: '/my/match-history',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const MatchHistoryScreen(),
       ),
       GoRoute(
         path: '/my/clients/:clientId/contracts',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => ContractHistoryScreen(
           clientId: state.pathParameters['clientId']!,
         ),
       ),
       GoRoute(
         path: '/matches/detail/:matchId',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => MatchDetailScreen(
           matchId: state.pathParameters['matchId']!,
         ),
       ),
       GoRoute(
         path: '/marketplace/:profileId',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => ProfileDetailScreen(
           profileId: state.pathParameters['profileId']!,
+          hideMatchButton: state.extra == true,
         ),
       ),
       GoRoute(
         path: '/register-client',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => const MaterialPage(
           fullscreenDialog: true,
           child: ClientRegistrationScreen(),
@@ -150,24 +153,27 @@ GoRouter router(Ref ref) {
       ),
       GoRoute(
         path: '/verification',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const VerificationScreen(),
       ),
       GoRoute(
         path: '/chat/:conversationId',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => ChatRoomScreen(
           conversationId: state.pathParameters['conversationId']!,
         ),
       ),
       GoRoute(
         path: '/auth',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const LoginScreen(),
       ),
     ],
     errorBuilder: (context, state) => _ErrorScreen(error: state.error),
   );
+
+  ref.onDispose(() => router.dispose());
+  return router;
 }
 
 class MainShellScreen extends ConsumerWidget {
@@ -178,6 +184,7 @@ class MainShellScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final chatUnread = ref.watch(totalUnreadCountProvider);
 
     return Scaffold(
       extendBody: true,
@@ -208,6 +215,7 @@ class MainShellScreen extends ConsumerWidget {
             icon: Icons.chat_bubble_outline_rounded,
             selectedIcon: Icons.chat_bubble_rounded,
             label: l10n.navChat,
+            badgeCount: chatUnread,
           ),
           _NavItem(
             icon: Icons.person_outline_rounded,
@@ -225,11 +233,13 @@ class _NavItem {
     required this.icon,
     required this.selectedIcon,
     required this.label,
+    this.badgeCount = 0,
   });
 
   final IconData icon;
   final IconData selectedIcon;
   final String label;
+  final int badgeCount;
 }
 
 class _FloatingGlassNavBar extends StatelessWidget {
@@ -339,11 +349,18 @@ class _GlassNavItem extends StatelessWidget {
             ),
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 250),
-              child: Icon(
-                isSelected ? item.selectedIcon : item.icon,
-                key: ValueKey(isSelected),
-                color: isSelected ? primaryColor : mutedColor,
-                size: 28,
+              child: Badge(
+                isLabelVisible: item.badgeCount > 0,
+                label: Text(
+                  item.badgeCount > 99 ? '99+' : '${item.badgeCount}',
+                  style: const TextStyle(fontSize: 10),
+                ),
+                child: Icon(
+                  isSelected ? item.selectedIcon : item.icon,
+                  key: ValueKey(isSelected),
+                  color: isSelected ? primaryColor : mutedColor,
+                  size: 28,
+                ),
               ),
             ),
           ),

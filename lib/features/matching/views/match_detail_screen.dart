@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../config/routes.dart';
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/providers/home_providers.dart';
+import '../../verification/providers/verification_provider.dart';
 
 class MatchDetailScreen extends ConsumerWidget {
   const MatchDetailScreen({super.key, required this.matchId});
@@ -18,19 +19,15 @@ class MatchDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    final client = ref.watch(supabaseClientProvider);
+    final detailAsync = ref.watch(matchDetailProvider(matchId));
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.matchDetailTitle),
       ),
-      body: FutureBuilder<Map<String, dynamic>?>(
-        future: _fetchMatchDetail(client, matchId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData || snapshot.data == null) {
+      body: detailAsync.when(
+        data: (data) {
+          if (data == null) {
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -47,86 +44,23 @@ class MatchDetailScreen extends ConsumerWidget {
             );
           }
 
-          final data = snapshot.data!;
-          return _MatchDetailBody(data: data);
+          return _MatchDetailBody(data: data, matchId: matchId);
         },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => Center(child: Text(l10n.commonError)),
       ),
     );
   }
-
-  Future<Map<String, dynamic>?> _fetchMatchDetail(
-    SupabaseClient client,
-    String matchId,
-  ) async {
-    final matchRows = await client
-        .from('matches')
-        .select()
-        .eq('id', matchId)
-        .limit(1);
-
-    if (matchRows.isEmpty) return null;
-    final match = matchRows.first;
-
-    // Fetch both clients
-    final clientAId = match['client_a_id'] as String?;
-    final clientBId = match['client_b_id'] as String?;
-
-    final clientIds = [
-      if (clientAId != null) clientAId,
-      if (clientBId != null) clientBId,
-    ];
-
-    Map<String, Map<String, dynamic>> clientMap = {};
-    if (clientIds.isNotEmpty) {
-      final clientRows =
-          await client.from('clients').select().inFilter('id', clientIds);
-      for (final c in clientRows) {
-        clientMap[c['id'] as String] = c;
-      }
-    }
-
-    // Fetch manager name
-    final managerId = match['manager_id'] as String?;
-    String? managerName;
-    if (managerId != null) {
-      final mgrRows = await client
-          .from('managers')
-          .select('full_name')
-          .eq('id', managerId)
-          .limit(1);
-      if (mgrRows.isNotEmpty) {
-        managerName = mgrRows.first['full_name'] as String?;
-      }
-    }
-
-    // Fetch conversation if exists (for chat navigation)
-    String? conversationId;
-    final convRows = await client
-        .from('conversations')
-        .select('id')
-        .eq('match_id', matchId)
-        .limit(1);
-    if (convRows.isNotEmpty) {
-      conversationId = convRows.first['id'] as String;
-    }
-
-    return {
-      'match': match,
-      'client_a': clientMap[clientAId],
-      'client_b': clientMap[clientBId],
-      'manager_name': managerName,
-      'conversation_id': conversationId,
-    };
-  }
 }
 
-class _MatchDetailBody extends StatelessWidget {
-  const _MatchDetailBody({required this.data});
+class _MatchDetailBody extends ConsumerWidget {
+  const _MatchDetailBody({required this.data, required this.matchId});
 
   final Map<String, dynamic> data;
+  final String matchId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final match = data['match'] as Map<String, dynamic>;
@@ -134,9 +68,14 @@ class _MatchDetailBody extends StatelessWidget {
     final clientB = data['client_b'] as Map<String, dynamic>?;
     final managerName = data['manager_name'] as String?;
     final conversationId = data['conversation_id'] as String?;
+    final isSender = data['is_sender'] as bool? ?? true;
     final status = match['status'] as String? ?? 'pending';
 
+    final myClient = isSender ? clientA : clientB;
+    final otherClient = isSender ? clientB : clientA;
+
     final (statusLabel, statusColor) = _statusInfo(status, l10n, theme);
+    final showReceivedActions = !isSender && status == 'pending';
 
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
@@ -163,6 +102,15 @@ class _MatchDetailBody extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                if (isSender && status == 'pending') ...[
+                  SizedBox(width: 8.w),
+                  Text(
+                    '(${l10n.matchCardSent})',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: statusColor.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -170,43 +118,51 @@ class _MatchDetailBody extends StatelessWidget {
 
         SizedBox(height: 24.h),
 
-        // Bilateral profile cards
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: _ClientProfileCard(
-                client: clientA,
-                label: l10n.matchDetailClientA,
-                theme: theme,
-                l10n: l10n,
-                onTap: clientA != null
-                    ? () => context
-                        .push(AppRoutes.profileDetail(clientA['id'] as String))
-                    : null,
+        // My client card (primary border)
+        _ProfileCard(
+          client: myClient,
+          label: l10n.matchCardMyClient,
+          theme: theme,
+          l10n: l10n,
+          isPrimary: true,
+          onTap: myClient != null
+              ? () => context.push(
+                  AppRoutes.profileDetail(myClient['id'] as String),
+                  extra: true)
+              : null,
+        ),
+
+        // Heart divider
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 12.h),
+          child: Row(
+            children: [
+              Expanded(child: Divider(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3))),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Icon(
+                  Icons.favorite_rounded,
+                  color: theme.colorScheme.tertiary.withValues(alpha: 0.5),
+                  size: 24.r,
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 40.h),
-              child: Icon(
-                Icons.favorite_rounded,
-                color: theme.colorScheme.tertiary.withValues(alpha: 0.5),
-                size: 24.r,
-              ),
-            ),
-            Expanded(
-              child: _ClientProfileCard(
-                client: clientB,
-                label: l10n.matchDetailClientB,
-                theme: theme,
-                l10n: l10n,
-                onTap: clientB != null
-                    ? () => context
-                        .push(AppRoutes.profileDetail(clientB['id'] as String))
-                    : null,
-              ),
-            ),
-          ],
+              Expanded(child: Divider(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3))),
+            ],
+          ),
+        ),
+
+        // Other client card
+        _ProfileCard(
+          client: otherClient,
+          label: l10n.matchCardOtherClient,
+          theme: theme,
+          l10n: l10n,
+          isPrimary: false,
+          onTap: otherClient != null
+              ? () => context.push(
+                  AppRoutes.profileDetail(otherClient['id'] as String),
+                  extra: true)
+              : null,
         ),
 
         SizedBox(height: 24.h),
@@ -243,8 +199,91 @@ class _MatchDetailBody extends StatelessWidget {
 
         SizedBox(height: 24.h),
 
-        // Actions
-        if (conversationId != null)
+        // Action buttons
+        if (showReceivedActions) ...[
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: () =>
+                      _acceptMatch(context, ref, match, l10n),
+                  icon: const Icon(Icons.check_rounded),
+                  label: Text(l10n.homeMatchAccept),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF2E7D32),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () =>
+                      _declineMatch(context, ref, match, l10n),
+                  icon: const Icon(Icons.close_rounded),
+                  label: Text(l10n.homeMatchDecline),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFFC62828),
+                    side: const BorderSide(color: Color(0xFFC62828)),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+        ],
+
+        if (isSender && status == 'pending') ...[
+          Container(
+            padding: EdgeInsets.all(16.r),
+            decoration: BoxDecoration(
+              color: Colors.amber.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: Colors.amber.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.hourglass_top_rounded,
+                    size: 20.r, color: Colors.amber.shade700),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    l10n.matchDetailWaitingResponse,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.amber.shade800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 12.h),
+          OutlinedButton.icon(
+            onPressed: () => _cancelMatch(context, ref, match, l10n),
+            icon: const Icon(Icons.close_rounded),
+            label: Text(l10n.homeMatchCancel),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFFC62828),
+              side: const BorderSide(color: Color(0xFFC62828)),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+          ),
+        ],
+
+        if (conversationId != null) ...[
+          SizedBox(height: 12.h),
           FilledButton.icon(
             onPressed: () => context.push(AppRoutes.chatRoom(conversationId)),
             icon: const Icon(Icons.chat_bubble_rounded),
@@ -256,10 +295,239 @@ class _MatchDetailBody extends StatelessWidget {
               ),
             ),
           ),
+        ],
 
         SizedBox(height: 40.h),
       ],
     );
+  }
+
+  Future<bool> _checkVerification(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
+    final status = await ref.read(managerVerificationStatusProvider.future);
+    if (status == 'verified') return true;
+
+    if (!context.mounted) return false;
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: Icon(
+          Icons.verified_user_outlined,
+          size: 40.r,
+          color: Theme.of(ctx).colorScheme.primary,
+        ),
+        title: Text(l10n.matchSheetVerificationRequired),
+        content: Text(
+          l10n.matchSheetVerificationBody,
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              context.push(AppRoutes.verification);
+            },
+            child: Text(l10n.matchSheetGoVerify),
+          ),
+        ],
+      ),
+    );
+
+    return false;
+  }
+
+  Future<void> _acceptMatch(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, dynamic> match,
+    AppLocalizations l10n,
+  ) async {
+    if (!await _checkVerification(context, ref, l10n)) return;
+
+    if (!context.mounted) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.homeMatchAccept),
+        content: Text(l10n.matchDetailAcceptConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.homeMatchAccept),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      final client = ref.read(supabaseClientProvider);
+      await client.from('matches').update({
+        'status': 'accepted',
+        'responded_at': DateTime.now().toIso8601String(),
+      }).eq('id', match['id']);
+
+      ref.invalidate(matchDetailProvider(matchId));
+      ref.invalidate(matchesByStatusProvider('pending'));
+      ref.invalidate(matchesByStatusProvider('active'));
+      ref.invalidate(homeTodayStatsProvider);
+      ref.invalidate(activityFeedProvider);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.homeMatchAcceptSuccess)),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.commonError)),
+        );
+      }
+    }
+  }
+
+  Future<void> _declineMatch(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, dynamic> match,
+    AppLocalizations l10n,
+  ) async {
+    if (!await _checkVerification(context, ref, l10n)) return;
+
+    if (!context.mounted) return;
+    final reasonController = TextEditingController();
+    try {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.homeMatchDecline),
+          content: TextField(
+            controller: reasonController,
+            decoration: InputDecoration(
+              hintText: l10n.homeMatchDeclineReason,
+            ),
+            maxLines: 2,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l10n.commonCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFC62828),
+              ),
+              child: Text(l10n.homeMatchDecline),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+
+      final client = ref.read(supabaseClientProvider);
+      final updates = <String, dynamic>{
+        'status': 'declined',
+        'responded_at': DateTime.now().toIso8601String(),
+      };
+      if (reasonController.text.trim().isNotEmpty) {
+        updates['notes'] = reasonController.text.trim();
+      }
+
+      await client.from('matches').update(updates).eq('id', match['id']);
+
+      ref.invalidate(matchDetailProvider(matchId));
+      ref.invalidate(matchesByStatusProvider('pending'));
+      ref.invalidate(matchesByStatusProvider('done'));
+      ref.invalidate(homeTodayStatsProvider);
+      ref.invalidate(activityFeedProvider);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.homeMatchDeclineSuccess)),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.commonError)),
+        );
+      }
+    } finally {
+      reasonController.dispose();
+    }
+  }
+
+  Future<void> _cancelMatch(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, dynamic> match,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.homeMatchCancel),
+        content: Text(l10n.homeMatchCancelConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFC62828),
+            ),
+            child: Text(l10n.homeMatchCancel),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      final client = ref.read(supabaseClientProvider);
+      await client.from('matches').update({
+        'status': 'cancelled',
+        'responded_at': DateTime.now().toIso8601String(),
+      }).eq('id', match['id']);
+
+      ref.invalidate(matchDetailProvider(matchId));
+      ref.invalidate(matchesByStatusProvider('pending'));
+      ref.invalidate(matchesByStatusProvider('done'));
+      ref.invalidate(homeTodayStatsProvider);
+      ref.invalidate(activityFeedProvider);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.homeMatchCancelSuccess)),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.commonError)),
+        );
+      }
+    }
   }
 
   (String, Color) _statusInfo(
@@ -268,6 +536,7 @@ class _MatchDetailBody extends StatelessWidget {
       'pending' => (l10n.matchStatusPending, Colors.amber.shade700),
       'accepted' => (l10n.matchStatusAccepted, Colors.green.shade600),
       'declined' => (l10n.matchStatusDeclined, theme.colorScheme.error),
+      'cancelled' => (l10n.matchStatusCancelled, theme.colorScheme.error),
       'meeting_scheduled' => (
         l10n.matchStatusMeetingScheduled,
         theme.colorScheme.primary
@@ -282,6 +551,7 @@ class _MatchDetailBody extends StatelessWidget {
       'pending' => Icons.schedule_rounded,
       'accepted' => Icons.check_circle_rounded,
       'declined' => Icons.cancel_rounded,
+      'cancelled' => Icons.cancel_rounded,
       'meeting_scheduled' => Icons.event_rounded,
       'completed' => Icons.task_alt_rounded,
       _ => Icons.info_rounded,
@@ -299,12 +569,13 @@ class _MatchDetailBody extends StatelessWidget {
   }
 }
 
-class _ClientProfileCard extends StatelessWidget {
-  const _ClientProfileCard({
+class _ProfileCard extends StatelessWidget {
+  const _ProfileCard({
     required this.client,
     required this.label,
     required this.theme,
     required this.l10n,
+    required this.isPrimary,
     this.onTap,
   });
 
@@ -312,6 +583,7 @@ class _ClientProfileCard extends StatelessWidget {
   final String label;
   final ThemeData theme;
   final AppLocalizations l10n;
+  final bool isPrimary;
   final VoidCallback? onTap;
 
   @override
@@ -319,7 +591,7 @@ class _ClientProfileCard extends StatelessWidget {
     if (client == null) {
       return Card(
         child: Padding(
-          padding: EdgeInsets.all(12.r),
+          padding: EdgeInsets.all(16.r),
           child: Center(child: Text('-', style: theme.textTheme.bodyLarge)),
         ),
       );
@@ -328,6 +600,7 @@ class _ClientProfileCard extends StatelessWidget {
     final name = client!['full_name'] as String? ?? '-';
     final gender = client!['gender'] as String? ?? '';
     final occupation = client!['occupation'] as String? ?? '';
+    final education = client!['education'] as String? ?? '';
     final birthDate = client!['birth_date'] as String?;
     final heightCm = client!['height_cm'] as int?;
 
@@ -344,78 +617,114 @@ class _ClientProfileCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.r),
-          side: BorderSide(
-            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
+            color: isPrimary
+                ? theme.colorScheme.primary.withValues(alpha: 0.5)
+                : theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+            width: isPrimary ? 1.5 : 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.shadow.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Padding(
-          padding: EdgeInsets.all(12.r),
-          child: Column(
+          padding: EdgeInsets.all(16.r),
+          child: Row(
             children: [
-              Text(
-                label,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              SizedBox(height: 8.h),
               CircleAvatar(
                 radius: 28.r,
                 backgroundColor: genderColor.withValues(alpha: 0.12),
                 child: Icon(genderIcon, color: genderColor, size: 24.r),
               ),
-              SizedBox(height: 8.h),
-              Text(
-                name,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+              SizedBox(width: 16.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 6.w, vertical: 2.h),
+                          decoration: BoxDecoration(
+                            color: isPrimary
+                                ? theme.colorScheme.primary
+                                    .withValues(alpha: 0.1)
+                                : theme.colorScheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w600,
+                              color: isPrimary
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      name,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Wrap(
+                      spacing: 8.w,
+                      children: [
+                        if (age != null)
+                          _InfoChip(
+                              text: l10n.homeAgeSuffix(age), theme: theme),
+                        if (occupation.isNotEmpty)
+                          _InfoChip(text: occupation, theme: theme),
+                        if (education.isNotEmpty)
+                          _InfoChip(text: education, theme: theme),
+                        if (heightCm != null)
+                          _InfoChip(
+                              text: l10n.homeHeightCm(heightCm), theme: theme),
+                      ],
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(height: 4.h),
-              if (age != null)
-                Text(
-                  l10n.homeAgeSuffix(age),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              if (occupation.isNotEmpty)
-                Text(
-                  occupation,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              if (heightCm != null)
-                Text(
-                  l10n.homeHeightCm(heightCm),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              SizedBox(height: 4.h),
               if (onTap != null)
-                Text(
-                  l10n.myProfileDetail,
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w500,
-                  ),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                 ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({required this.text, required this.theme});
+
+  final String text;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: theme.textTheme.bodySmall?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
       ),
     );
   }

@@ -223,7 +223,7 @@ class _StepBasicInfoState extends ConsumerState<StepBasicInfo>
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[가-힣a-zA-Z\s]')),
+                    FilteringTextInputFormatter.allow(RegExp(r'[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z\s]')),
                     LengthLimitingTextInputFormatter(20),
                   ],
                   decoration: InputDecoration(

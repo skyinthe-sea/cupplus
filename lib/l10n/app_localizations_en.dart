@@ -121,6 +121,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchStatusCompleted => 'Completed';
 
   @override
+  String get matchStatusCancelled => 'Cancelled';
+
+  @override
   String get matchCreate => 'Create Match';
 
   @override
@@ -615,18 +618,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeRecentActivity => 'Recent Activity';
 
   @override
-  String homeActivityMatchCreated(String clientA, String clientB) {
-    return '$clientA ↔ $clientB match created';
+  String homeActivityMatchRequested(String clientA, String clientB) {
+    return '$clientA ↔ $clientB match requested';
+  }
+
+  @override
+  String homeActivityMatchReceived(String clientA, String clientB) {
+    return '$clientA ↔ $clientB match request received';
   }
 
   @override
   String homeActivityMatchAccepted(String clientA, String clientB) {
-    return '$clientA ↔ $clientB match accepted';
+    return '$clientA ↔ $clientB match established';
   }
 
   @override
   String homeActivityMatchDeclined(String clientA, String clientB) {
     return '$clientA ↔ $clientB match declined';
+  }
+
+  @override
+  String homeActivityMatchCancelled(String clientA, String clientB) {
+    return '$clientA ↔ $clientB match cancelled';
   }
 
   @override
@@ -686,10 +699,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeMatchDeclineSuccess => 'Match declined';
 
   @override
+  String get homeMatchCancel => 'Cancel Request';
+
+  @override
+  String get homeMatchCancelConfirm => 'Cancel this match request?';
+
+  @override
+  String get homeMatchCancelSuccess => 'Match request cancelled';
+
+  @override
   String get homeMatchMemoHint => 'Enter a note';
 
   @override
   String get homeMatchMemoSaved => 'Note saved';
+
+  @override
+  String get matchCardSent => 'Sent';
+
+  @override
+  String get matchCardReceived => 'Received';
+
+  @override
+  String get matchCardMyClient => 'My Client';
+
+  @override
+  String get matchCardOtherClient => 'Other Client';
 
   @override
   String get marketplaceLikesTab => 'Likes';
@@ -699,6 +733,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get marketplaceSortMostLikes => 'Most Liked';
+
+  @override
+  String get marketplaceSortRecommended => 'Recommended';
 
   @override
   String get marketplaceFilterEducation => 'Education';
@@ -714,11 +751,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matchRequestVerificationPending =>
-      'Verification is being reviewed. You can request matches after approval.';
+      'We\'re reviewing your documents.\nYou\'ll be able to request matches once approved.\nPlease wait!';
 
   @override
-  String get matchRequestVerificationRequired =>
-      'Manager verification is required to request matches.';
+  String get matchRequestVerificationPendingTitle => 'Verification in Review';
+
+  @override
+  String get matchRequestVerificationRequired => 'Verification Required';
+
+  @override
+  String get matchRequestVerificationRequiredDesc =>
+      'Please submit documents proving your marriage agency affiliation to request matches.';
 
   @override
   String get matchRequestVerify => 'Verify';
@@ -972,6 +1015,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get regAgreeAll => 'Agree to All';
 
   @override
+  String get regAgreeAllRequired => 'Agree to All Required';
+
+  @override
   String get regAgreeTerms => 'Terms of Service';
 
   @override
@@ -1160,7 +1206,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verificationBusinessReg => 'Business Registration';
 
   @override
+  String get verificationAcceptedDocs => 'Accepted documents';
+
+  @override
   String get verificationUpload => 'Upload Document';
+
+  @override
+  String get verificationUploadHint => 'Take a photo or select from gallery';
+
+  @override
+  String get verificationUploadSub => 'Camera or photo library';
+
+  @override
+  String get verificationChangeImage => 'Change';
 
   @override
   String get verificationCamera => 'Camera';
@@ -1339,6 +1397,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matchDetailOpenChat => 'Open Chat';
+
+  @override
+  String get matchDetailAcceptConfirm =>
+      'Accept this match request? A chat room will be created with the other manager.';
+
+  @override
+  String get matchDetailWaitingResponse =>
+      'Waiting for the other manager\'s response';
 
   @override
   String get matchHistoryEmpty => 'No match history';
@@ -1609,4 +1675,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customerSupportUrl => 'https://cupplus.channel.io';
+
+  @override
+  String regPhotoRemaining(int count) {
+    return 'up to $count';
+  }
+
+  @override
+  String get landingHeroTitle => 'Elevate\nYour Matchmaking';
+
+  @override
+  String get landingHeroSubtitle =>
+      'All-in-one matching platform\nfor marriage agency managers';
+
+  @override
+  String get landingFeature1Title => 'Smart Matching';
+
+  @override
+  String get landingFeature1Desc =>
+      'AI-powered recommendations based on member data';
+
+  @override
+  String get landingFeature2Title => 'Real-time Chat';
+
+  @override
+  String get landingFeature2Desc => 'Instant manager-to-manager communication';
+
+  @override
+  String get landingFeature3Title => 'Streamlined Management';
+
+  @override
+  String get landingFeature3Desc =>
+      'From registration to contract, all in one place';
+
+  @override
+  String get landingCta => 'Get Started';
+
+  @override
+  String get landingLoginPrompt => 'Already have an account?';
+
+  @override
+  String get profileDetailMatchContext =>
+      'This client is part of the match request';
+
+  @override
+  String get matchSheetVerificationRequired => 'Verification Required';
+
+  @override
+  String get matchSheetVerificationBody =>
+      'Please complete manager verification before accepting or declining matches.';
+
+  @override
+  String get matchSheetGoVerify => 'Go to Verification';
 }

@@ -39,6 +39,7 @@ class HomeAppBar extends ConsumerWidget {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
+                    useRootNavigator: true,
                     backgroundColor: theme.colorScheme.surface,
                     shape: RoundedRectangleBorder(
                       borderRadius:

@@ -18,6 +18,11 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen>
     with TickerProviderStateMixin {
+  static const _devAccounts = [
+    {'email': 'manager.kim@test.com', 'name': '김서연 매니저'},
+    {'email': 'manager.park@test.com', 'name': '박지훈 매니저'},
+  ];
+
   // Entrance animations
   late final AnimationController _controller;
   late final Animation<double> _brandOpacity;
@@ -164,43 +169,51 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ],
         ),
         SizedBox(height: 20.h),
-        // Dev login button
-        SizedBox(
-          width: double.infinity,
-          height: 52.h,
-          child: FilledButton.icon(
-            onPressed: isLoading
-                ? null
-                : () => ref.read(authNotifierProvider.notifier).devSignIn(),
-            icon: isLoading
-                ? SizedBox(
-                    width: 20.r,
-                    height: 20.r,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      color: cs.onPrimary,
+        // Dev login buttons — 3 test accounts
+        ..._devAccounts.map((acct) => Padding(
+              padding: EdgeInsets.only(bottom: 8.h),
+              child: SizedBox(
+                width: double.infinity,
+                height: 48.h,
+                child: OutlinedButton(
+                  onPressed: isLoading
+                      ? null
+                      : () => ref
+                            .read(authNotifierProvider.notifier)
+                            .devSignIn(acct['email']!),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                  )
-                : Icon(Icons.developer_mode_rounded, size: 22.r),
-            label: Text(
-              l10n.authDevLogin,
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
-            ),
-            style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
+                    side: BorderSide(
+                      color: cs.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person_outline, size: 18.r),
+                      SizedBox(width: 8.w),
+                      Text(
+                        '${acct['name']}',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        acct['email']!,
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        SizedBox(height: 12.h),
-        Text(
-          'admin@test.com / testtest',
-          style: TextStyle(
-            fontSize: 12.sp,
-            color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-          ),
-        ),
+            )),
       ],
     );
   }

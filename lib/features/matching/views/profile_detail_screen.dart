@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/marketplace_profile.dart';
 import '../providers/marketplace_providers.dart';
@@ -17,9 +18,14 @@ import '../widgets/profile_detail_verification_section.dart';
 import '../widgets/request_match_button.dart';
 
 class ProfileDetailScreen extends ConsumerWidget {
-  const ProfileDetailScreen({super.key, required this.profileId});
+  const ProfileDetailScreen({
+    super.key,
+    required this.profileId,
+    this.hideMatchButton = false,
+  });
 
   final String profileId;
+  final bool hideMatchButton;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,9 +103,11 @@ class ProfileDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
-          bottomNavigationBar: RequestMatchButton(
-            profile: profile,
-          ),
+          bottomNavigationBar: hideMatchButton ||
+                  profile.managerId ==
+                      ref.watch(currentUserProvider)?.id
+              ? _MatchContextBar(profile: profile)
+              : RequestMatchButton(profile: profile),
         );
       },
       loading: () => Scaffold(
@@ -161,7 +169,7 @@ class _FamilyLifestyleSection extends StatelessWidget {
         _DetailRow(
           icon: Icons.supervisor_account_outlined,
           label: l10n.profileParentsStatus,
-          value: profile.parentsStatus!,
+          value: _parentsLabel(profile.parentsStatus!, l10n),
         ),
       if (profile.hasChildren)
         _DetailRow(
@@ -313,6 +321,16 @@ class _FamilyLifestyleSection extends StatelessWidget {
       'first_marriage' => l10n.regMaritalFirst,
       'remarriage' => l10n.regMaritalRemarriage,
       'divorced' => l10n.regMaritalDivorced,
+      _ => val,
+    };
+  }
+
+  String _parentsLabel(String val, AppLocalizations l10n) {
+    return switch (val) {
+      'both_alive' => l10n.regParentsBothAlive,
+      'father_only' => l10n.regParentsFatherOnly,
+      'mother_only' => l10n.regParentsMotherOnly,
+      'deceased' => l10n.regParentsDeceased,
       _ => val,
     };
   }
@@ -481,6 +499,66 @@ class _IdealPartnerSection extends StatelessWidget {
                     )),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MatchContextBar extends StatelessWidget {
+  const _MatchContextBar({required this.profile});
+
+  final MarketplaceProfile profile;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
+        child: Container(
+          padding: EdgeInsets.only(
+            left: 20.w,
+            right: 20.w,
+            top: 12.h,
+            bottom: bottomPadding + 12.h,
+          ),
+          decoration: BoxDecoration(
+            color: isDark
+                ? theme.colorScheme.surfaceContainer.withValues(alpha: 0.85)
+                : theme.colorScheme.surface.withValues(alpha: 0.9),
+            border: Border(
+              top: BorderSide(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.black.withValues(alpha: 0.06),
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.info_outline_rounded,
+                size: 18.r,
+                color: theme.colorScheme.primary.withValues(alpha: 0.7),
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                l10n.profileDetailMatchContext,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
         ),
       ),

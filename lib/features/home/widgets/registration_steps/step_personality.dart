@@ -310,67 +310,65 @@ class _StepPersonalityState extends ConsumerState<StepPersonality> {
                     ],
                   ),
                 ),
-                AnimatedSize(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOutCubic,
-                  child: _showCustomInput
-                      ? Padding(
-                          padding: EdgeInsets.only(top: 10.h),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: _customHobbyController,
-                                  textInputAction: TextInputAction.done,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(10),
-                                  ],
-                                  decoration: InputDecoration(
-                                    hintText: '취미를 입력하세요',
-                                    filled: true,
-                                    fillColor: surfaceVariant.withValues(
-                                      alpha: 0.5,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(10.r),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(10.r),
-                                      borderSide: BorderSide(
-                                        color: primary,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 12.w,
-                                      vertical: 10.h,
-                                    ),
-                                  ),
-                                  onFieldSubmitted: (_) => _addCustomHobby(),
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
-                              FilledButton(
-                                onPressed: _addCustomHobby,
-                                style: FilledButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                    vertical: 10.h,
-                                  ),
-                                ),
-                                child: Text(
-                                  l10n.regHobbiesAdd,
-                                  style: TextStyle(fontSize: 13.sp),
-                                ),
-                              ),
+                if (_showCustomInput)
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.h),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _customHobbyController,
+                            textInputAction: TextInputAction.done,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(10),
                             ],
+                            decoration: InputDecoration(
+                              hintText: '취미를 입력하세요',
+                              filled: true,
+                              fillColor: surfaceVariant.withValues(
+                                alpha: 0.5,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.circular(10.r),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.circular(10.r),
+                                borderSide: BorderSide(
+                                  color: primary,
+                                  width: 1.5,
+                                ),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 10.h,
+                              ),
+                            ),
+                            onFieldSubmitted: (_) => _addCustomHobby(),
                           ),
-                        )
-                      : const SizedBox.shrink(),
-                ),
+                        ),
+                        SizedBox(width: 8.w),
+                        SizedBox(
+                          height: 48.h,
+                          child: FilledButton(
+                            onPressed: _addCustomHobby,
+                            style: FilledButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                              ),
+                            ),
+                            child: Text(
+                              l10n.regHobbiesAdd,
+                              style: TextStyle(fontSize: 13.sp),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 if (_selectedHobbies.isNotEmpty) ...[
                   SizedBox(height: 12.h),
                   Wrap(

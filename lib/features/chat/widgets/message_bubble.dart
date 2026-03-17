@@ -1,9 +1,23 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../models/chat_message.dart';
+import 'fullscreen_image_viewer.dart';
+
+/// In-memory cache for just-sent images to avoid signed URL + download round-trips.
+class LocalImageCache {
+  LocalImageCache._();
+  static final Map<String, Uint8List> _cache = {};
+
+  static void put(String storagePath, Uint8List bytes) =>
+      _cache[storagePath] = bytes;
+  static Uint8List? get(String storagePath) => _cache[storagePath];
+  static void remove(String storagePath) => _cache.remove(storagePath);
+}
 
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
@@ -314,14 +328,45 @@ class _SignedImageWidget extends StatefulWidget {
   State<_SignedImageWidget> createState() => _SignedImageWidgetState();
 }
 
-class _SignedImageWidgetState extends State<_SignedImageWidget> {
+class _SignedImageWidgetState extends State<_SignedImageWidget>
+    with SingleTickerProviderStateMixin {
   String? _signedUrl;
   bool _hasError = false;
+  late final AnimationController _fadeController;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeIn,
+    );
+    // If cached locally (just-sent), show immediately
+    if (LocalImageCache.get(widget.storagePath) != null) {
+      _fadeController.value = 1.0;
+    }
     _loadSignedUrl();
+  }
+
+  @override
+  void didUpdateWidget(_SignedImageWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.storagePath != widget.storagePath) {
+      _signedUrl = null;
+      _hasError = false;
+      _loadSignedUrl();
+    }
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadSignedUrl() async {
@@ -341,20 +386,50 @@ class _SignedImageWidgetState extends State<_SignedImageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_hasError || _signedUrl == null) {
-      if (_hasError) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.broken_image_outlined, size: 16.r, color: widget.secondaryColor),
-            SizedBox(width: 4.w),
-            Text(
-              widget.l10n.chatImageMessage,
-              style: TextStyle(fontSize: 14.sp, color: widget.secondaryColor),
+    final cachedBytes = LocalImageCache.get(widget.storagePath);
+    final heroTag = 'chat-image-${widget.storagePath}';
+
+    // Show from memory cache instantly (just-sent images)
+    if (cachedBytes != null) {
+      return GestureDetector(
+        onTap: _signedUrl != null
+            ? () => FullscreenImageViewer.show(
+                  context,
+                  imageUrl: _signedUrl!,
+                  heroTag: heroTag,
+                )
+            : null,
+        child: Hero(
+          tag: heroTag,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 200.w, maxHeight: 200.h),
+              child: Image.memory(
+                cachedBytes,
+                fit: BoxFit.cover,
+              ),
             ),
-          ],
-        );
-      }
+          ),
+        ),
+      );
+    }
+
+    if (_hasError) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.broken_image_outlined, size: 16.r, color: widget.secondaryColor),
+          SizedBox(width: 4.w),
+          Text(
+            widget.l10n.chatImageMessage,
+            style: TextStyle(fontSize: 14.sp, color: widget.secondaryColor),
+          ),
+        ],
+      );
+    }
+
+    if (_signedUrl == null) {
       return SizedBox(
         width: 150.w,
         height: 100.h,
@@ -362,38 +437,47 @@ class _SignedImageWidgetState extends State<_SignedImageWidget> {
       );
     }
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8.r),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 200.w, maxHeight: 200.h),
-        child: Image.network(
-          _signedUrl!,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, progress) {
-            if (progress == null) return child;
-            return SizedBox(
-              width: 150.w,
-              height: 100.h,
-              child: Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  value: progress.expectedTotalBytes != null
-                      ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
-                      : null,
-                ),
+    return GestureDetector(
+      onTap: () => FullscreenImageViewer.show(
+        context,
+        imageUrl: _signedUrl!,
+        heroTag: heroTag,
+      ),
+      child: Hero(
+        tag: heroTag,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8.r),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 200.w, maxHeight: 200.h),
+            child: Image.network(
+              _signedUrl!,
+              fit: BoxFit.cover,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (wasSynchronouslyLoaded) return child;
+                if (frame != null) {
+                  _fadeController.forward();
+                  return FadeTransition(opacity: _fadeAnimation, child: child);
+                }
+                return SizedBox(
+                  width: 150.w,
+                  height: 100.h,
+                  child: const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                );
+              },
+              errorBuilder: (_, __, ___) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.broken_image_outlined, size: 16.r, color: widget.secondaryColor),
+                  SizedBox(width: 4.w),
+                  Text(
+                    widget.l10n.chatImageMessage,
+                    style: TextStyle(fontSize: 14.sp, color: widget.secondaryColor),
+                  ),
+                ],
               ),
-            );
-          },
-          errorBuilder: (_, __, ___) => Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.broken_image_outlined, size: 16.r, color: widget.secondaryColor),
-              SizedBox(width: 4.w),
-              Text(
-                widget.l10n.chatImageMessage,
-                style: TextStyle(fontSize: 14.sp, color: widget.secondaryColor),
-              ),
-            ],
+            ),
           ),
         ),
       ),

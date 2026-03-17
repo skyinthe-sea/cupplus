@@ -467,9 +467,9 @@ class _InfoSection extends StatelessWidget {
       if (detail.company != null)
         _InfoItem(l10n.profileCompany, detail.company!),
       if (detail.annualIncomeRange != null)
-        _InfoItem(l10n.profileIncome, detail.annualIncomeRange!),
+        _InfoItem(l10n.profileIncome, _incomeLabel(detail.annualIncomeRange!, l10n)),
       if (detail.religion != null)
-        _InfoItem(l10n.profileReligion, detail.religion!),
+        _InfoItem(l10n.profileReligion, _religionLabel(detail.religion!, l10n)),
       if (detail.maritalHistory != null)
         _InfoItem(l10n.profileMaritalHistory, _maritalLabel(detail.maritalHistory!, l10n)),
       if (detail.hasChildren)
@@ -608,6 +608,29 @@ class _InfoSection extends StatelessWidget {
       'father_only' => l10n.regParentsFatherOnly,
       'mother_only' => l10n.regParentsMotherOnly,
       'deceased' => l10n.regParentsDeceased,
+      _ => val,
+    };
+  }
+
+  String _religionLabel(String val, AppLocalizations l10n) {
+    return switch (val) {
+      'none' => l10n.regReligionNone,
+      'christian' => l10n.regReligionChristian,
+      'catholic' => l10n.regReligionCatholic,
+      'buddhist' => l10n.regReligionBuddhist,
+      'other' => l10n.regReligionOther,
+      _ => val,
+    };
+  }
+
+  String _incomeLabel(String val, AppLocalizations l10n) {
+    return switch (val) {
+      'under_30m' => l10n.regIncome1,
+      '30m_50m' => l10n.regIncome2,
+      '50m_70m' => l10n.regIncome3,
+      '70m_100m' => l10n.regIncome4,
+      '100m_150m' => l10n.regIncome5,
+      'over_150m' => l10n.regIncome6,
       _ => val,
     };
   }

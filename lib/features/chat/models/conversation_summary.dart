@@ -33,6 +33,7 @@ class ConversationSummary {
     String? lastMessageType,
     DateTime? lastMessageAt,
     int? unreadCount,
+    bool? isOnline,
   }) {
     return ConversationSummary(
       id: id,
@@ -43,7 +44,7 @@ class ConversationSummary {
       lastMessageType: lastMessageType ?? this.lastMessageType,
       lastMessageAt: lastMessageAt ?? this.lastMessageAt,
       unreadCount: unreadCount ?? this.unreadCount,
-      isOnline: isOnline,
+      isOnline: isOnline ?? this.isOnline,
       matchId: matchId,
       matchContext: matchContext,
     );

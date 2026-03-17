@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,6 +37,7 @@ class _ClientRegistrationScreenState
   final PageController _pageController = PageController();
   int _currentStep = 0;
   bool _isLoading = false;
+  int _draftRevision = 0;
 
   // Direction tracking for animation
   bool _goingForward = true;
@@ -101,6 +103,7 @@ class _ClientRegistrationScreenState
   }
 
   Future<void> _saveDraft() async {
+    if (!_hasAnyInput()) return;
     final managerId = await _getManagerId();
     if (managerId == null) return;
     try {
@@ -111,8 +114,14 @@ class _ClientRegistrationScreenState
       };
       for (int i = 0; i < _stepData.length; i++) {
         final stepCopy = Map<String, dynamic>.from(_stepData[i]);
-        // Remove non-serializable fields (XFile photos)
-        stepCopy.remove('photos');
+        // Convert XFile photos to path strings for serialization
+        final photos = stepCopy.remove('photos');
+        if (photos is List && photos.isNotEmpty) {
+          stepCopy['photo_paths'] = photos
+              .whereType<XFile>()
+              .map((x) => x.path)
+              .toList();
+        }
         draftData['step_$i'] = stepCopy;
       }
       await prefs.setString(_draftKey(managerId), jsonEncode(draftData));
@@ -149,9 +158,28 @@ class _ClientRegistrationScreenState
     } catch (_) {}
   }
 
+  bool _draftHasData(Map<String, dynamic> draft) {
+    for (int i = 0; i < _totalSteps; i++) {
+      final stepMap = draft['step_$i'] as Map<String, dynamic>?;
+      if (stepMap == null) continue;
+      for (final value in stepMap.values) {
+        if (value == null) continue;
+        if (value is String && value.trim().isNotEmpty) return true;
+        if (value is bool && value) return true;
+        if (value is List && value.isNotEmpty) return true;
+        if (value is int || value is double) return true;
+      }
+    }
+    return false;
+  }
+
   Future<void> _checkForDraft() async {
     final draft = await _loadDraft();
     if (draft == null || !mounted) return;
+    if (!_draftHasData(draft)) {
+      await _deleteDraft();
+      return;
+    }
     final l10n = AppLocalizations.of(context)!;
     final resume = await showDialog<bool>(
       context: context,
@@ -181,12 +209,34 @@ class _ClientRegistrationScreenState
       for (int i = 0; i < _stepData.length; i++) {
         final saved = draft['step_$i'] as Map<String, dynamic>?;
         if (saved != null) {
-          _stepData[i] = Map<String, dynamic>.from(saved);
+          final stepMap = Map<String, dynamic>.from(saved);
+          // Restore photo paths to XFile objects
+          final paths = stepMap.remove('photo_paths');
+          if (paths is List && paths.isNotEmpty) {
+            final validPhotos = <XFile>[];
+            for (final p in paths) {
+              if (p is String) {
+                final file = File(p);
+                if (file.existsSync()) {
+                  validPhotos.add(XFile(p));
+                }
+              }
+            }
+            if (validPhotos.isNotEmpty) {
+              stepMap['photos'] = validPhotos;
+            }
+          }
+          _stepData[i] = stepMap;
         }
       }
+      setState(() {
+        _currentStep = savedStep;
+        _draftRevision++;
+      });
       if (savedStep > 0) {
-        setState(() => _currentStep = savedStep);
-        _pageController.jumpToPage(savedStep);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _pageController.jumpToPage(savedStep);
+        });
       }
     }
   }
@@ -283,7 +333,7 @@ class _ClientRegistrationScreenState
       final defaultHeight = gender == 'M' ? 170 : 160;
       final heightCm = (d3['height_cm'] as int?) ?? defaultHeight;
 
-      final hobbies = (d4['hobbies'] as List<String>?) ?? [];
+      final hobbies = (d4['hobbies'] as List?)?.cast<String>() ?? <String>[];
 
       final insertData = <String, dynamic>{
         'manager_id': user.id,
@@ -414,13 +464,15 @@ class _ClientRegistrationScreenState
           transitionDuration: const Duration(milliseconds: 400),
         ),
       );
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('Registration error: $e\n$st');
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.commonError),
+          content: Text('${l10n.commonError}: $e'),
           backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 5),
           action: SnackBarAction(
             label: l10n.commonRetry,
             textColor: Colors.white,
@@ -454,7 +506,22 @@ class _ClientRegistrationScreenState
 
   // ── Exit dialog ───────────────────────────────────────────────────────────
 
+  bool _hasAnyInput() {
+    for (final stepMap in _stepData) {
+      for (final value in stepMap.values) {
+        if (value == null) continue;
+        if (value is String && value.trim().isNotEmpty) return true;
+        if (value is bool && value) return true;
+        if (value is List && value.isNotEmpty) return true;
+        if (value is int || value is double) return true;
+      }
+    }
+    return false;
+  }
+
   Future<bool> _onWillPop() async {
+    if (!_hasAnyInput()) return true;
+
     final l10n = AppLocalizations.of(context)!;
     final shouldLeave = await showDialog<bool>(
       context: context,
@@ -639,37 +706,36 @@ class _ClientRegistrationScreenState
             // Page content
             Expanded(
               child: PageView(
+                key: ValueKey(_draftRevision),
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   StepBasicInfo(
                     data: Map<String, dynamic>.from(_stepData[0]),
-                    onDataChanged: (d) => _stepData[0] = d,
+                    onDataChanged: (d) => setState(() => _stepData[0] = d),
                   ),
                   StepCareerEducation(
                     data: Map<String, dynamic>.from(_stepData[1]),
-                    onDataChanged: (d) => _stepData[1] = d,
+                    onDataChanged: (d) => setState(() => _stepData[1] = d),
                   ),
                   StepAppearance(
                     data: {
                       ..._stepData[2],
                       'gender': _stepData[0]['gender'],
                     },
-                    onDataChanged: (d) => _stepData[2] = d,
+                    onDataChanged: (d) => setState(() => _stepData[2] = d),
                   ),
                   StepPersonality(
                     data: Map<String, dynamic>.from(_stepData[3]),
-                    onDataChanged: (d) => _stepData[3] = d,
+                    onDataChanged: (d) => setState(() => _stepData[3] = d),
                   ),
                   StepFamilyLifestyle(
                     data: Map<String, dynamic>.from(_stepData[4]),
-                    onDataChanged: (d) => _stepData[4] = d,
+                    onDataChanged: (d) => setState(() => _stepData[4] = d),
                   ),
                   StepAgreement(
                     data: Map<String, dynamic>.from(_stepData[5]),
-                    onDataChanged: (d) {
-                      setState(() => _stepData[5] = d);
-                    },
+                    onDataChanged: (d) => setState(() => _stepData[5] = d),
                   ),
                 ],
               ),

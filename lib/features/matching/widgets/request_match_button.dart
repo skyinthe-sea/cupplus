@@ -165,26 +165,48 @@ class _RequestMatchButtonState extends ConsumerState<RequestMatchButton>
 
   void _showVerificationDialog(AppLocalizations l10n,
       {required bool isUnverified}) {
+    final theme = Theme.of(context);
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        content: Text(
+        icon: Icon(
+          isUnverified
+              ? Icons.verified_user_outlined
+              : Icons.hourglass_top_rounded,
+          size: 40,
+          color: isUnverified
+              ? theme.colorScheme.primary
+              : Colors.amber.shade700,
+        ),
+        title: Text(
           isUnverified
               ? l10n.matchRequestVerificationRequired
-              : l10n.matchRequestVerificationPending,
+              : l10n.matchRequestVerificationPendingTitle,
         ),
+        content: Text(
+          isUnverified
+              ? l10n.matchRequestVerificationRequiredDesc
+              : l10n.matchRequestVerificationPending,
+          textAlign: TextAlign.center,
+        ),
+        actionsAlignment: MainAxisAlignment.center,
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l10n.commonConfirm),
-          ),
-          if (isUnverified)
+          if (isUnverified) ...[
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.commonCancel),
+            ),
             FilledButton(
               onPressed: () {
                 Navigator.of(ctx).pop();
                 context.push(AppRoutes.verification);
               },
               child: Text(l10n.matchRequestVerify),
+            ),
+          ] else
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.commonConfirm),
             ),
         ],
       ),

@@ -12,6 +12,7 @@ import '../widgets/activity_feed.dart';
 import '../../../config/routes.dart';
 import '../widgets/greeting_header.dart';
 import '../widgets/home_app_bar.dart';
+import '../widgets/landing_home.dart';
 import '../widgets/match_creation_sheet.dart';
 import '../widgets/match_management_sheet.dart';
 import '../widgets/quick_actions.dart';
@@ -27,6 +28,10 @@ class HomeScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final user = ref.watch(currentUserProvider);
+
+    // Show landing page when not logged in
+    if (user == null) return const LandingHome();
+
     final managerProfile = ref.watch(managerProfileProvider);
     final statsAsync = ref.watch(homeTodayStatsProvider);
     final feedAsync = ref.watch(activityFeedProvider);
@@ -35,8 +40,8 @@ class HomeScreen extends ConsumerWidget {
     final managerName = managerProfile.valueOrNull?['full_name'] as String?;
     final userName = _nonEmpty(nickname) ??
         _nonEmpty(managerName) ??
-        _nonEmpty(user?.userMetadata?['full_name'] as String?) ??
-        _nonEmpty(user?.email?.split('@').first) ??
+        _nonEmpty(user.userMetadata?['full_name'] as String?) ??
+        _nonEmpty(user.email?.split('@').first) ??
         'User';
 
     return Scaffold(
@@ -158,6 +163,7 @@ class HomeScreen extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
@@ -170,6 +176,7 @@ class HomeScreen extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),

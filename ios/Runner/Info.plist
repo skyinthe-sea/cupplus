@@ -41,7 +41,9 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
-		<key>CADisableMinimumFrameDurationOnPhone</key>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>채팅 이미지를 사진첩에 저장하기 위해 접근 권한이 필요합니다.</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>

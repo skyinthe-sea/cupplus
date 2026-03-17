@@ -85,7 +85,7 @@ class _StepAppearanceState extends ConsumerState<StepAppearance> {
     _notifyParent();
   }
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickSingleImage(ImageSource source) async {
     if (_photos.length >= 5) {
       _showMaxPhotosSnackbar();
       return;
@@ -98,32 +98,58 @@ class _StepAppearanceState extends ConsumerState<StepAppearance> {
         imageQuality: 80,
       );
       if (xfile != null && mounted) {
-        final newIndex = _photos.length;
-        setState(() {
-          _photos.add(xfile);
-        });
-        // Trigger animation for new slot
-        Future.delayed(const Duration(milliseconds: 50), () {
-          if (mounted && newIndex < _photoVisible.length) {
-            setState(() => _photoVisible[newIndex] = true);
-          }
-        });
-        HapticFeedback.lightImpact();
-        _notifyParent();
+        _addPhotos([xfile]);
       }
     } catch (_) {}
+  }
+
+  Future<void> _pickMultiImages() async {
+    if (_photos.length >= 5) {
+      _showMaxPhotosSnackbar();
+      return;
+    }
+    try {
+      final remaining = 5 - _photos.length;
+      final picked = await _imagePicker.pickMultiImage(
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 80,
+        limit: remaining,
+      );
+      if (picked.isNotEmpty && mounted) {
+        _addPhotos(picked.take(remaining).toList());
+      }
+    } catch (_) {}
+  }
+
+  void _addPhotos(List<XFile> newPhotos) {
+    final startIndex = _photos.length;
+    setState(() {
+      _photos.addAll(newPhotos);
+    });
+    for (int i = 0; i < newPhotos.length; i++) {
+      final idx = startIndex + i;
+      Future.delayed(Duration(milliseconds: 50 * (i + 1)), () {
+        if (mounted && idx < _photoVisible.length) {
+          setState(() => _photoVisible[idx] = true);
+        }
+      });
+    }
+    HapticFeedback.lightImpact();
+    _notifyParent();
   }
 
   void _showImageSourceSheet() {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final remaining = 5 - _photos.length;
     showModalBottomSheet(
       context: context,
       backgroundColor: theme.colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder: (_) => SafeArea(
+      builder: (sheetCtx) => SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 12.h),
           child: Column(
@@ -139,25 +165,25 @@ class _StepAppearanceState extends ConsumerState<StepAppearance> {
                 ),
               ),
               ListTile(
+                leading: Icon(Icons.photo_library_outlined, size: 24.r),
+                title: Text(
+                  '${l10n.chatImagePickerGallery} (${l10n.regPhotoRemaining(remaining)})',
+                  style: TextStyle(fontSize: 15.sp),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  _pickMultiImages();
+                },
+              ),
+              ListTile(
                 leading: Icon(Icons.camera_alt_outlined, size: 24.r),
                 title: Text(
                   l10n.chatImagePickerCamera,
                   style: TextStyle(fontSize: 15.sp),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.camera);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_library_outlined, size: 24.r),
-                title: Text(
-                  l10n.chatImagePickerGallery,
-                  style: TextStyle(fontSize: 15.sp),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(sheetCtx);
+                  _pickSingleImage(ImageSource.camera);
                 },
               ),
             ],

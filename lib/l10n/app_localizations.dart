@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'완료'**
   String get matchStatusCompleted;
 
+  /// No description provided for @matchStatusCancelled.
+  ///
+  /// In ko, this message translates to:
+  /// **'취소됨'**
+  String get matchStatusCancelled;
+
   /// No description provided for @matchCreate.
   ///
   /// In ko, this message translates to:
@@ -1208,23 +1214,35 @@ abstract class AppLocalizations {
   /// **'최근 활동'**
   String get homeRecentActivity;
 
-  /// No description provided for @homeActivityMatchCreated.
+  /// No description provided for @homeActivityMatchRequested.
   ///
   /// In ko, this message translates to:
-  /// **'{clientA} ↔ {clientB} 매칭 생성'**
-  String homeActivityMatchCreated(String clientA, String clientB);
+  /// **'{clientA} ↔ {clientB} 매칭 요청'**
+  String homeActivityMatchRequested(String clientA, String clientB);
+
+  /// No description provided for @homeActivityMatchReceived.
+  ///
+  /// In ko, this message translates to:
+  /// **'{clientA} ↔ {clientB} 매칭 요청 받음'**
+  String homeActivityMatchReceived(String clientA, String clientB);
 
   /// No description provided for @homeActivityMatchAccepted.
   ///
   /// In ko, this message translates to:
-  /// **'{clientA} ↔ {clientB} 매칭 수락됨'**
+  /// **'{clientA} ↔ {clientB} 매칭 성사'**
   String homeActivityMatchAccepted(String clientA, String clientB);
 
   /// No description provided for @homeActivityMatchDeclined.
   ///
   /// In ko, this message translates to:
-  /// **'{clientA} ↔ {clientB} 매칭 거절됨'**
+  /// **'{clientA} ↔ {clientB} 매칭 거절'**
   String homeActivityMatchDeclined(String clientA, String clientB);
+
+  /// No description provided for @homeActivityMatchCancelled.
+  ///
+  /// In ko, this message translates to:
+  /// **'{clientA} ↔ {clientB} 매칭 취소'**
+  String homeActivityMatchCancelled(String clientA, String clientB);
 
   /// No description provided for @homeActivityClientRegistered.
   ///
@@ -1334,6 +1352,24 @@ abstract class AppLocalizations {
   /// **'매칭이 거절되었습니다'**
   String get homeMatchDeclineSuccess;
 
+  /// No description provided for @homeMatchCancel.
+  ///
+  /// In ko, this message translates to:
+  /// **'요청 취소'**
+  String get homeMatchCancel;
+
+  /// No description provided for @homeMatchCancelConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 매칭 요청을 취소하시겠습니까?'**
+  String get homeMatchCancelConfirm;
+
+  /// No description provided for @homeMatchCancelSuccess.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 요청이 취소되었습니다'**
+  String get homeMatchCancelSuccess;
+
   /// No description provided for @homeMatchMemoHint.
   ///
   /// In ko, this message translates to:
@@ -1345,6 +1381,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'메모가 저장되었습니다'**
   String get homeMatchMemoSaved;
+
+  /// No description provided for @matchCardSent.
+  ///
+  /// In ko, this message translates to:
+  /// **'보낸 요청'**
+  String get matchCardSent;
+
+  /// No description provided for @matchCardReceived.
+  ///
+  /// In ko, this message translates to:
+  /// **'받은 요청'**
+  String get matchCardReceived;
+
+  /// No description provided for @matchCardMyClient.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 회원'**
+  String get matchCardMyClient;
+
+  /// No description provided for @matchCardOtherClient.
+  ///
+  /// In ko, this message translates to:
+  /// **'상대 회원'**
+  String get matchCardOtherClient;
 
   /// No description provided for @marketplaceLikesTab.
   ///
@@ -1363,6 +1423,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'좋아요순'**
   String get marketplaceSortMostLikes;
+
+  /// No description provided for @marketplaceSortRecommended.
+  ///
+  /// In ko, this message translates to:
+  /// **'추천순'**
+  String get marketplaceSortRecommended;
 
   /// No description provided for @marketplaceFilterEducation.
   ///
@@ -1391,14 +1457,26 @@ abstract class AppLocalizations {
   /// No description provided for @matchRequestVerificationPending.
   ///
   /// In ko, this message translates to:
-  /// **'인증 검토 중입니다. 승인 후 매칭 요청이 가능합니다.'**
+  /// **'제출하신 서류를 검토하고 있습니다.\n승인 완료 후 매칭 요청이 가능합니다.\n잠시만 기다려주세요!'**
   String get matchRequestVerificationPending;
+
+  /// No description provided for @matchRequestVerificationPendingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 검토 중'**
+  String get matchRequestVerificationPendingTitle;
 
   /// No description provided for @matchRequestVerificationRequired.
   ///
   /// In ko, this message translates to:
-  /// **'매칭 요청을 위해 매니저 인증이 필요합니다.'**
+  /// **'매니저 인증이 필요합니다'**
   String get matchRequestVerificationRequired;
+
+  /// No description provided for @matchRequestVerificationRequiredDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 요청을 위해 결혼정보회사 소속을\n증명하는 서류를 제출해주세요.'**
+  String get matchRequestVerificationRequiredDesc;
 
   /// No description provided for @matchRequestVerify.
   ///
@@ -1874,6 +1952,12 @@ abstract class AppLocalizations {
   /// **'전체 동의'**
   String get regAgreeAll;
 
+  /// No description provided for @regAgreeAllRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'필수 전체 동의'**
+  String get regAgreeAllRequired;
+
   /// No description provided for @regAgreeTerms.
   ///
   /// In ko, this message translates to:
@@ -2228,11 +2312,35 @@ abstract class AppLocalizations {
   /// **'사업자등록증'**
   String get verificationBusinessReg;
 
+  /// No description provided for @verificationAcceptedDocs.
+  ///
+  /// In ko, this message translates to:
+  /// **'인정되는 서류'**
+  String get verificationAcceptedDocs;
+
   /// No description provided for @verificationUpload.
   ///
   /// In ko, this message translates to:
   /// **'서류 업로드'**
   String get verificationUpload;
+
+  /// No description provided for @verificationUploadHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'서류 사진을 촬영하거나 선택하세요'**
+  String get verificationUploadHint;
+
+  /// No description provided for @verificationUploadSub.
+  ///
+  /// In ko, this message translates to:
+  /// **'카메라 촬영 또는 갤러리에서 선택'**
+  String get verificationUploadSub;
+
+  /// No description provided for @verificationChangeImage.
+  ///
+  /// In ko, this message translates to:
+  /// **'변경'**
+  String get verificationChangeImage;
 
   /// No description provided for @verificationCamera.
   ///
@@ -2557,6 +2665,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'채팅 열기'**
   String get matchDetailOpenChat;
+
+  /// No description provided for @matchDetailAcceptConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 매칭 요청을 수락하시겠습니까? 수락 시 상대 매니저와 채팅방이 생성됩니다.'**
+  String get matchDetailAcceptConfirm;
+
+  /// No description provided for @matchDetailWaitingResponse.
+  ///
+  /// In ko, this message translates to:
+  /// **'상대 매니저의 응답을 기다리고 있습니다'**
+  String get matchDetailWaitingResponse;
 
   /// No description provided for @matchHistoryEmpty.
   ///
@@ -3079,6 +3199,96 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'https://cupplus.channel.io'**
   String get customerSupportUrl;
+
+  /// No description provided for @regPhotoRemaining.
+  ///
+  /// In ko, this message translates to:
+  /// **'최대 {count}장'**
+  String regPhotoRemaining(int count);
+
+  /// No description provided for @landingHeroTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'당신의 매칭,\n한 차원 높게'**
+  String get landingHeroTitle;
+
+  /// No description provided for @landingHeroSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'결혼정보회사 매니저를 위한\n올인원 매칭 관리 플랫폼'**
+  String get landingHeroSubtitle;
+
+  /// No description provided for @landingFeature1Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'스마트 매칭'**
+  String get landingFeature1Title;
+
+  /// No description provided for @landingFeature1Desc.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 데이터 기반 최적의 매칭 추천'**
+  String get landingFeature1Desc;
+
+  /// No description provided for @landingFeature2Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'실시간 소통'**
+  String get landingFeature2Title;
+
+  /// No description provided for @landingFeature2Desc.
+  ///
+  /// In ko, this message translates to:
+  /// **'매니저간 즉시 채팅으로 빠른 매칭 성사'**
+  String get landingFeature2Desc;
+
+  /// No description provided for @landingFeature3Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'체계적 관리'**
+  String get landingFeature3Title;
+
+  /// No description provided for @landingFeature3Desc.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 등록부터 계약까지 한 곳에서'**
+  String get landingFeature3Desc;
+
+  /// No description provided for @landingCta.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금 시작하기'**
+  String get landingCta;
+
+  /// No description provided for @landingLoginPrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'이미 계정이 있으신가요?'**
+  String get landingLoginPrompt;
+
+  /// No description provided for @profileDetailMatchContext.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 요청에 포함된 회원입니다'**
+  String get profileDetailMatchContext;
+
+  /// No description provided for @matchSheetVerificationRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'매니저 인증이 필요합니다'**
+  String get matchSheetVerificationRequired;
+
+  /// No description provided for @matchSheetVerificationBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭을 수락/거절하려면 매니저 인증을 먼저 완료해주세요.'**
+  String get matchSheetVerificationBody;
+
+  /// No description provided for @matchSheetGoVerify.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증하러 가기'**
+  String get matchSheetGoVerify;
 }
 
 class _AppLocalizationsDelegate

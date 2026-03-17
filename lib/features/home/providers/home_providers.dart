@@ -11,7 +11,7 @@ import '../models/activity_feed_item.dart';
 part 'home_providers.g.dart';
 
 DateTime _parseDateTime(dynamic value) {
-  if (value is String) return DateTime.parse(value);
+  if (value is String) return DateTime.parse(value).toLocal();
   return DateTime.now();
 }
 
@@ -25,12 +25,14 @@ Stream<T> _realtimeStream<T>({
   required String channelName,
   required List<String> tables,
   required Future<T> Function() fetcher,
+  Duration debounce = const Duration(milliseconds: 300),
 }) async* {
   // Initial fetch
   yield await fetcher();
 
   // Subscribe to Realtime changes on all specified tables
-  final controller = StreamController<void>.broadcast();
+  final controller = StreamController<T>.broadcast();
+  Timer? debounceTimer;
   var ch = client.channel(channelName);
   for (final table in tables) {
     ch = ch.onPostgresChanges(
@@ -38,20 +40,28 @@ Stream<T> _realtimeStream<T>({
       schema: 'public',
       table: table,
       callback: (_) {
-        if (!controller.isClosed) controller.add(null);
+        if (controller.isClosed) return;
+        debounceTimer?.cancel();
+        debounceTimer = Timer(debounce, () async {
+          if (controller.isClosed) return;
+          try {
+            controller.add(await fetcher());
+          } catch (_) {}
+        });
       },
     );
   }
 
   ref.onDispose(() {
+    debounceTimer?.cancel();
     controller.close();
     client.removeChannel(ch);
   });
 
   ch.subscribe();
 
-  await for (final _ in controller.stream) {
-    yield await fetcher();
+  await for (final data in controller.stream) {
+    yield data;
   }
 }
 
@@ -60,7 +70,8 @@ Stream<T> _realtimeStream<T>({
 @riverpod
 Stream<({int pendingMatches, int newMessages})> homeTodayStats(Ref ref) {
   final client = ref.watch(supabaseClientProvider);
-  final user = client.auth.currentUser;
+  // Watch currentUser so provider rebuilds on login/logout
+  final user = ref.watch(currentUserProvider);
   if (user == null) {
     return Stream.value((pendingMatches: 0, newMessages: 0));
   }
@@ -71,11 +82,35 @@ Stream<({int pendingMatches, int newMessages})> homeTodayStats(Ref ref) {
     channelName: 'home-stats-rt',
     tables: ['matches', 'messages'],
     fetcher: () async {
-      final pendingResult = await client
-          .from('matches')
+      // Get my client IDs to find both sent and received pending matches
+      final myClientsForStats = await client
+          .from('clients')
           .select('id')
-          .eq('manager_id', user.id)
-          .eq('status', 'pending');
+          .eq('manager_id', user.id);
+      final myClientIdsForStats =
+          myClientsForStats.map((c) => c['id'] as String).toList();
+
+      List<dynamic> pendingResult = [];
+      if (myClientIdsForStats.isNotEmpty) {
+        final sentPending = await client
+            .from('matches')
+            .select('id')
+            .inFilter('client_a_id', myClientIdsForStats)
+            .eq('status', 'pending');
+        final receivedPending = await client
+            .from('matches')
+            .select('id')
+            .inFilter('client_b_id', myClientIdsForStats)
+            .eq('status', 'pending');
+        final pendingIds = <String>{};
+        for (final m in sentPending) {
+          pendingIds.add(m['id'] as String);
+        }
+        for (final m in receivedPending) {
+          pendingIds.add(m['id'] as String);
+        }
+        pendingResult = pendingIds.toList();
+      }
 
       final conversations = await client
           .from('conversations')
@@ -105,7 +140,7 @@ Stream<({int pendingMatches, int newMessages})> homeTodayStats(Ref ref) {
 @riverpod
 Stream<int> unreadNotificationCount(Ref ref) {
   final client = ref.watch(supabaseClientProvider);
-  final user = client.auth.currentUser;
+  final user = ref.watch(currentUserProvider);
   if (user == null) return Stream.value(0);
 
   return _realtimeStream(
@@ -118,6 +153,7 @@ Stream<int> unreadNotificationCount(Ref ref) {
           .from('notifications')
           .select('id')
           .eq('user_id', user.id)
+          .neq('type', 'new_message')
           .eq('is_read', false);
       return result.length;
     },
@@ -129,7 +165,7 @@ Stream<int> unreadNotificationCount(Ref ref) {
 @riverpod
 Stream<List<Map<String, dynamic>>> notificationsList(Ref ref) {
   final client = ref.watch(supabaseClientProvider);
-  final user = client.auth.currentUser;
+  final user = ref.watch(currentUserProvider);
   if (user == null) return Stream.value([]);
 
   return _realtimeStream(
@@ -142,6 +178,7 @@ Stream<List<Map<String, dynamic>>> notificationsList(Ref ref) {
           .from('notifications')
           .select()
           .eq('user_id', user.id)
+          .neq('type', 'new_message')
           .order('created_at', ascending: false)
           .limit(50);
       return result;
@@ -154,7 +191,7 @@ Stream<List<Map<String, dynamic>>> notificationsList(Ref ref) {
 @riverpod
 Stream<List<ActivityFeedItem>> activityFeed(Ref ref) {
   final client = ref.watch(supabaseClientProvider);
-  final user = client.auth.currentUser;
+  final user = ref.watch(currentUserProvider);
   if (user == null) return Stream.value([]);
 
   return _realtimeStream(
@@ -173,13 +210,49 @@ Future<List<ActivityFeedItem>> _fetchActivityFeed(
   final sevenDaysAgo =
       DateTime.now().subtract(const Duration(days: 7)).toIso8601String();
 
-  final matches = await client
+  // Get my client IDs to find both sent and received matches
+  final myClientsResult = await client
+      .from('clients')
+      .select('id')
+      .eq('manager_id', userId);
+  final myClientIds =
+      myClientsResult.map((c) => c['id'] as String).toList();
+
+  // Fetch sent matches (manager_id == me) and received matches (my client is client_b, other manager sent)
+  List<Map<String, dynamic>> sentMatches = [];
+  List<Map<String, dynamic>> receivedMatches = [];
+
+  // Sent: I created this match
+  sentMatches = await client
       .from('matches')
       .select()
       .eq('manager_id', userId)
       .gte('matched_at', sevenDaysAgo)
       .order('matched_at', ascending: false)
       .limit(20);
+
+  // Received: my client is client_b and someone else created the match
+  if (myClientIds.isNotEmpty) {
+    receivedMatches = await client
+        .from('matches')
+        .select()
+        .inFilter('client_b_id', myClientIds)
+        .neq('manager_id', userId)
+        .gte('matched_at', sevenDaysAgo)
+        .order('matched_at', ascending: false)
+        .limit(20);
+  }
+
+  final matches = <Map<String, dynamic>>[];
+  final seenIds = <String>{};
+  for (final m in sentMatches) {
+    final id = m['id'] as String;
+    if (seenIds.add(id)) matches.add({...m, '_is_sent': true});
+  }
+  for (final m in receivedMatches) {
+    final id = m['id'] as String;
+    if (seenIds.add(id)) matches.add({...m, '_is_sent': false});
+  }
 
   final clientIds = <String>{};
   for (final m in matches) {
@@ -213,24 +286,32 @@ Future<List<ActivityFeedItem>> _fetchActivityFeed(
     final clientBName = clientNames[match['client_b_id'] as String] ?? '?';
     final status = match['status'] as String;
     final matchedAt = _parseDateTime(match['matched_at']);
+    final isSent = match['_is_sent'] as bool;
 
+    // Show "매칭 요청" (sent) or "매칭 요청 받음" (received)
     items.add(ActivityFeedItem(
-      id: '${match['id']}_created',
-      type: ActivityType.matchCreated,
+      id: '${match['id']}_requested',
+      type: isSent
+          ? ActivityType.matchRequested
+          : ActivityType.matchReceivedRequest,
       timestamp: matchedAt,
       clientAName: clientAName,
       clientBName: clientBName,
       matchId: match['id'] as String,
     ));
 
+    // Show "매칭 성사", "매칭 거절", or "매칭 취소" when responded
     final respondedAt = match['responded_at'] as String?;
     if (respondedAt != null &&
-        (status == 'accepted' || status == 'declined')) {
+        (status == 'accepted' || status == 'declined' || status == 'cancelled')) {
+      final activityType = switch (status) {
+        'accepted' => ActivityType.matchAccepted,
+        'cancelled' => ActivityType.matchCancelled,
+        _ => ActivityType.matchDeclined,
+      };
       items.add(ActivityFeedItem(
         id: '${match['id']}_$status',
-        type: status == 'accepted'
-            ? ActivityType.matchAccepted
-            : ActivityType.matchDeclined,
+        type: activityType,
         timestamp: _parseDateTime(respondedAt),
         clientAName: clientAName,
         clientBName: clientBName,
@@ -258,7 +339,7 @@ Future<List<ActivityFeedItem>> _fetchActivityFeed(
 @riverpod
 Future<List<ClientSummary>> homeRecommendedClients(Ref ref) async {
   final client = ref.watch(supabaseClientProvider);
-  final user = client.auth.currentUser;
+  final user = ref.watch(currentUserProvider);
   if (user == null) return [];
 
   final result = await client
@@ -295,7 +376,7 @@ Future<List<ClientSummary>> homeRecommendedClients(Ref ref) async {
 @riverpod
 Future<int> upcomingScheduleCount(Ref ref) async {
   final client = ref.watch(supabaseClientProvider);
-  final user = client.auth.currentUser;
+  final user = ref.watch(currentUserProvider);
   if (user == null) return 0;
 
   final result = await client
@@ -316,8 +397,19 @@ Stream<List<Map<String, dynamic>>> matchesByStatus(
   Ref ref,
   String status,
 ) {
+  // Keep data alive for 30s after last listener detaches (prevents data loss on back navigation)
+  final link = ref.keepAlive();
+  Timer? timer;
+  ref.onCancel(() {
+    timer = Timer(const Duration(seconds: 30), link.close);
+  });
+  ref.onResume(() {
+    timer?.cancel();
+  });
+
   final client = ref.watch(supabaseClientProvider);
-  final user = client.auth.currentUser;
+  // Watch currentUser so provider rebuilds on login/logout
+  final user = ref.watch(currentUserProvider);
   if (user == null) return Stream.value([]);
 
   return _realtimeStream(
@@ -341,41 +433,161 @@ Future<List<Map<String, dynamic>>> _fetchMatchesByStatus(
     case 'active':
       statuses = ['accepted', 'meeting_scheduled'];
     case 'done':
-      statuses = ['completed', 'declined'];
+      statuses = ['completed', 'declined', 'cancelled'];
     default:
       statuses = [status];
   }
 
-  final matches = await client
+  // First, get all client IDs belonging to the current user
+  final myClients = await client
+      .from('clients')
+      .select('id')
+      .eq('manager_id', userId);
+  final myClientIds =
+      myClients.map((c) => c['id'] as String).toSet();
+
+  if (myClientIds.isEmpty) return [];
+
+  // Fetch matches where client_a OR client_b belongs to one of my clients
+  final sentMatches = await client
       .from('matches')
       .select()
-      .eq('manager_id', userId)
+      .inFilter('client_a_id', myClientIds.toList())
       .inFilter('status', statuses)
       .order('matched_at', ascending: false)
       .limit(50);
 
+  final receivedMatches = await client
+      .from('matches')
+      .select()
+      .inFilter('client_b_id', myClientIds.toList())
+      .inFilter('status', statuses)
+      .order('matched_at', ascending: false)
+      .limit(50);
+
+  // Merge and deduplicate (a match could appear in both if both clients are mine)
+  final matchMap = <String, Map<String, dynamic>>{};
+  for (final m in sentMatches) {
+    matchMap[m['id'] as String] = {...m, 'is_sender': true};
+  }
+  for (final m in receivedMatches) {
+    final id = m['id'] as String;
+    if (!matchMap.containsKey(id)) {
+      matchMap[id] = {...m, 'is_sender': false};
+    }
+    // If already exists from sent, keep is_sender: true
+  }
+
+  final matches = matchMap.values.toList()
+    ..sort((a, b) {
+      final aTime = a['matched_at'] as String? ?? '';
+      final bTime = b['matched_at'] as String? ?? '';
+      return bTime.compareTo(aTime);
+    });
+
+  // Fetch client details
   final clientIds = <String>{};
   for (final m in matches) {
     if (m['client_a_id'] != null) clientIds.add(m['client_a_id'] as String);
     if (m['client_b_id'] != null) clientIds.add(m['client_b_id'] as String);
   }
 
-  final clientMap = <String, Map<String, dynamic>>{};
+  final clientDetailMap = <String, Map<String, dynamic>>{};
   if (clientIds.isNotEmpty) {
     final clients = await client
         .from('clients')
-        .select('id, full_name, gender, birth_date')
+        .select('id, full_name, gender, birth_date, manager_id')
         .inFilter('id', clientIds.toList());
     for (final c in clients) {
-      clientMap[c['id'] as String] = c;
+      clientDetailMap[c['id'] as String] = c;
     }
   }
 
   return matches.map((m) {
+    final clientA = clientDetailMap[m['client_a_id']];
+    final clientB = clientDetailMap[m['client_b_id']];
+
+    // Determine which client is "mine" based on manager_id
+    final isSender = m['is_sender'] as bool;
+    final myClient = isSender ? clientA : clientB;
+    final otherClient = isSender ? clientB : clientA;
+
     return {
       ...m,
-      'client_a': clientMap[m['client_a_id']],
-      'client_b': clientMap[m['client_b_id']],
+      'client_a': clientA,
+      'client_b': clientB,
+      'my_client': myClient,
+      'other_client': otherClient,
     };
   }).toList();
+}
+
+// ─── Match Detail (cached via Riverpod) ──────────────────────
+
+@riverpod
+Future<Map<String, dynamic>?> matchDetail(Ref ref, String matchId) async {
+  final client = ref.watch(supabaseClientProvider);
+  final user = ref.watch(currentUserProvider);
+  if (user == null) return null;
+
+  final matchRows = await client
+      .from('matches')
+      .select()
+      .eq('id', matchId)
+      .limit(1);
+
+  if (matchRows.isEmpty) return null;
+  final match = matchRows.first;
+
+  final clientAId = match['client_a_id'] as String?;
+  final clientBId = match['client_b_id'] as String?;
+  final clientIds = [
+    if (clientAId != null) clientAId,
+    if (clientBId != null) clientBId,
+  ];
+
+  final clientMap = <String, Map<String, dynamic>>{};
+  if (clientIds.isNotEmpty) {
+    final clientRows =
+        await client.from('clients').select().inFilter('id', clientIds);
+    for (final c in clientRows) {
+      clientMap[c['id'] as String] = c;
+    }
+  }
+
+  final managerId = match['manager_id'] as String?;
+  String? managerName;
+  if (managerId != null) {
+    final mgrRows = await client
+        .from('managers')
+        .select('full_name')
+        .eq('id', managerId)
+        .limit(1);
+    if (mgrRows.isNotEmpty) {
+      managerName = mgrRows.first['full_name'] as String?;
+    }
+  }
+
+  String? conversationId;
+  final convRows = await client
+      .from('conversations')
+      .select('id')
+      .eq('match_id', matchId)
+      .limit(1);
+  if (convRows.isNotEmpty) {
+    conversationId = convRows.first['id'] as String;
+  }
+
+  // Determine sender perspective
+  final clientA = clientMap[clientAId];
+  final isSender = clientA != null && clientA['manager_id'] == user.id;
+
+  return {
+    'match': match,
+    'client_a': clientA,
+    'client_b': clientMap[clientBId],
+    'manager_name': managerName,
+    'conversation_id': conversationId,
+    'is_sender': isSender,
+  };
 }

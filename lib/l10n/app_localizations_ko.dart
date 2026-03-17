@@ -120,6 +120,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get matchStatusCompleted => '완료';
 
   @override
+  String get matchStatusCancelled => '취소됨';
+
+  @override
   String get matchCreate => '매칭 생성';
 
   @override
@@ -612,18 +615,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeRecentActivity => '최근 활동';
 
   @override
-  String homeActivityMatchCreated(String clientA, String clientB) {
-    return '$clientA ↔ $clientB 매칭 생성';
+  String homeActivityMatchRequested(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭 요청';
+  }
+
+  @override
+  String homeActivityMatchReceived(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭 요청 받음';
   }
 
   @override
   String homeActivityMatchAccepted(String clientA, String clientB) {
-    return '$clientA ↔ $clientB 매칭 수락됨';
+    return '$clientA ↔ $clientB 매칭 성사';
   }
 
   @override
   String homeActivityMatchDeclined(String clientA, String clientB) {
-    return '$clientA ↔ $clientB 매칭 거절됨';
+    return '$clientA ↔ $clientB 매칭 거절';
+  }
+
+  @override
+  String homeActivityMatchCancelled(String clientA, String clientB) {
+    return '$clientA ↔ $clientB 매칭 취소';
   }
 
   @override
@@ -683,10 +696,31 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeMatchDeclineSuccess => '매칭이 거절되었습니다';
 
   @override
+  String get homeMatchCancel => '요청 취소';
+
+  @override
+  String get homeMatchCancelConfirm => '이 매칭 요청을 취소하시겠습니까?';
+
+  @override
+  String get homeMatchCancelSuccess => '매칭 요청이 취소되었습니다';
+
+  @override
   String get homeMatchMemoHint => '메모를 입력하세요';
 
   @override
   String get homeMatchMemoSaved => '메모가 저장되었습니다';
+
+  @override
+  String get matchCardSent => '보낸 요청';
+
+  @override
+  String get matchCardReceived => '받은 요청';
+
+  @override
+  String get matchCardMyClient => '내 회원';
+
+  @override
+  String get matchCardOtherClient => '상대 회원';
 
   @override
   String get marketplaceLikesTab => '좋아요';
@@ -696,6 +730,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get marketplaceSortMostLikes => '좋아요순';
+
+  @override
+  String get marketplaceSortRecommended => '추천순';
 
   @override
   String get marketplaceFilterEducation => '학력';
@@ -711,10 +748,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get matchRequestVerificationPending =>
-      '인증 검토 중입니다. 승인 후 매칭 요청이 가능합니다.';
+      '제출하신 서류를 검토하고 있습니다.\n승인 완료 후 매칭 요청이 가능합니다.\n잠시만 기다려주세요!';
 
   @override
-  String get matchRequestVerificationRequired => '매칭 요청을 위해 매니저 인증이 필요합니다.';
+  String get matchRequestVerificationPendingTitle => '인증 검토 중';
+
+  @override
+  String get matchRequestVerificationRequired => '매니저 인증이 필요합니다';
+
+  @override
+  String get matchRequestVerificationRequiredDesc =>
+      '매칭 요청을 위해 결혼정보회사 소속을\n증명하는 서류를 제출해주세요.';
 
   @override
   String get matchRequestVerify => '인증하기';
@@ -966,6 +1010,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get regAgreeAll => '전체 동의';
 
   @override
+  String get regAgreeAllRequired => '필수 전체 동의';
+
+  @override
   String get regAgreeTerms => '서비스 이용 약관';
 
   @override
@@ -1152,7 +1199,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get verificationBusinessReg => '사업자등록증';
 
   @override
+  String get verificationAcceptedDocs => '인정되는 서류';
+
+  @override
   String get verificationUpload => '서류 업로드';
+
+  @override
+  String get verificationUploadHint => '서류 사진을 촬영하거나 선택하세요';
+
+  @override
+  String get verificationUploadSub => '카메라 촬영 또는 갤러리에서 선택';
+
+  @override
+  String get verificationChangeImage => '변경';
 
   @override
   String get verificationCamera => '카메라';
@@ -1325,6 +1384,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get matchDetailOpenChat => '채팅 열기';
+
+  @override
+  String get matchDetailAcceptConfirm =>
+      '이 매칭 요청을 수락하시겠습니까? 수락 시 상대 매니저와 채팅방이 생성됩니다.';
+
+  @override
+  String get matchDetailWaitingResponse => '상대 매니저의 응답을 기다리고 있습니다';
 
   @override
   String get matchHistoryEmpty => '매칭 이력이 없습니다';
@@ -1594,4 +1660,51 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get customerSupportUrl => 'https://cupplus.channel.io';
+
+  @override
+  String regPhotoRemaining(int count) {
+    return '최대 $count장';
+  }
+
+  @override
+  String get landingHeroTitle => '당신의 매칭,\n한 차원 높게';
+
+  @override
+  String get landingHeroSubtitle => '결혼정보회사 매니저를 위한\n올인원 매칭 관리 플랫폼';
+
+  @override
+  String get landingFeature1Title => '스마트 매칭';
+
+  @override
+  String get landingFeature1Desc => '회원 데이터 기반 최적의 매칭 추천';
+
+  @override
+  String get landingFeature2Title => '실시간 소통';
+
+  @override
+  String get landingFeature2Desc => '매니저간 즉시 채팅으로 빠른 매칭 성사';
+
+  @override
+  String get landingFeature3Title => '체계적 관리';
+
+  @override
+  String get landingFeature3Desc => '회원 등록부터 계약까지 한 곳에서';
+
+  @override
+  String get landingCta => '지금 시작하기';
+
+  @override
+  String get landingLoginPrompt => '이미 계정이 있으신가요?';
+
+  @override
+  String get profileDetailMatchContext => '매칭 요청에 포함된 회원입니다';
+
+  @override
+  String get matchSheetVerificationRequired => '매니저 인증이 필요합니다';
+
+  @override
+  String get matchSheetVerificationBody => '매칭을 수락/거절하려면 매니저 인증을 먼저 완료해주세요.';
+
+  @override
+  String get matchSheetGoVerify => '인증하러 가기';
 }

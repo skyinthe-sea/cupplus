@@ -1,5 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+String? _nonDefaultRegion(String? regionId) {
+  if (regionId == null || regionId == 'default') return null;
+  return regionId;
+}
+
 @immutable
 class MarketplaceProfile {
   const MarketplaceProfile({
@@ -87,7 +92,7 @@ class MarketplaceProfile {
       profilePhotoUrl: row['profile_photo_url'] as String?,
       religion: row['religion'] as String?,
       annualIncomeRange: row['annual_income_range'] as String?,
-      regionName: row['region_id'] as String?,
+      regionName: _nonDefaultRegion(row['region_id'] as String?),
       managerName: managerName,
       managerId: row['manager_id'] as String?,
       registeredAt: row['created_at'] != null

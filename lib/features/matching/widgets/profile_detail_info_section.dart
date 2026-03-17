@@ -41,13 +41,13 @@ class ProfileDetailInfoSection extends StatelessWidget {
         _InfoItem(
           icon: Icons.brightness_7_outlined,
           label: l10n.profileReligion,
-          value: profile.religion!,
+          value: _religionLabel(profile.religion!, l10n),
         ),
       if (profile.annualIncomeRange != null)
         _InfoItem(
           icon: Icons.account_balance_wallet_outlined,
           label: l10n.profileIncome,
-          value: profile.annualIncomeRange!,
+          value: _incomeLabel(profile.annualIncomeRange!, l10n),
         ),
       if (profile.drinking != null)
         _InfoItem(
@@ -190,6 +190,29 @@ class ProfileDetailInfoSection extends StatelessWidget {
       'first_marriage' => l10n.regMaritalFirst,
       'remarriage' => l10n.regMaritalRemarriage,
       'divorced' => l10n.regMaritalDivorced,
+      _ => val,
+    };
+  }
+
+  String _religionLabel(String val, AppLocalizations l10n) {
+    return switch (val) {
+      'none' => l10n.regReligionNone,
+      'christian' => l10n.regReligionChristian,
+      'catholic' => l10n.regReligionCatholic,
+      'buddhist' => l10n.regReligionBuddhist,
+      'other' => l10n.regReligionOther,
+      _ => val,
+    };
+  }
+
+  String _incomeLabel(String val, AppLocalizations l10n) {
+    return switch (val) {
+      'under_30m' => l10n.regIncome1,
+      '30m_50m' => l10n.regIncome2,
+      '50m_70m' => l10n.regIncome3,
+      '70m_100m' => l10n.regIncome4,
+      '100m_150m' => l10n.regIncome5,
+      'over_150m' => l10n.regIncome6,
       _ => val,
     };
   }

@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 enum ActivityType {
-  matchCreated,
+  matchRequested,
+  matchReceivedRequest,
   matchAccepted,
   matchDeclined,
+  matchCancelled,
   clientRegistered,
 }
 

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../notification/services/fcm_service.dart';
 
 class LogoutButton extends ConsumerWidget {
   const LogoutButton({super.key});
@@ -55,6 +56,8 @@ class LogoutButton extends ConsumerWidget {
     );
 
     if (confirmed == true && context.mounted) {
+      // Clean up FCM tokens before signing out
+      await FcmService.removeTokens();
       await ref.read(supabaseClientProvider).auth.signOut();
       if (context.mounted) {
         context.go(AppRoutes.home);

@@ -30,7 +30,7 @@ class _StepAgreementState extends ConsumerState<StepAgreement> {
   bool _bounceMarketing = false;
   bool _bounceAll = false;
 
-  bool get _allChecked => _agreeTerms && _agreePrivacy && _agreeMarketing;
+  bool get _requiredChecked => _agreeTerms && _agreePrivacy;
 
   @override
   void initState() {
@@ -68,11 +68,10 @@ class _StepAgreementState extends ConsumerState<StepAgreement> {
     });
   }
 
-  void _toggleAgreeAll() {
-    final newVal = !_allChecked;
+  void _toggleAgreeRequired() {
+    final newVal = !_requiredChecked;
     if (newVal) {
-      // Sequential check with 50ms delay each
-      Future.delayed(const Duration(milliseconds: 0), () {
+      Future.delayed(Duration.zero, () {
         if (!mounted) return;
         setState(() {
           _agreeTerms = true;
@@ -84,22 +83,14 @@ class _StepAgreementState extends ConsumerState<StepAgreement> {
             _agreePrivacy = true;
             _bouncePrivacy = true;
           });
-          Future.delayed(const Duration(milliseconds: 50), () {
-            if (!mounted) return;
-            setState(() {
-              _agreeMarketing = true;
-              _bounceMarketing = true;
-            });
-            _notifyParent();
-            Future.delayed(const Duration(milliseconds: 200), () {
-              if (mounted) {
-                setState(() {
-                  _bounceTerms = false;
-                  _bouncePrivacy = false;
-                  _bounceMarketing = false;
-                });
-              }
-            });
+          _notifyParent();
+          Future.delayed(const Duration(milliseconds: 200), () {
+            if (mounted) {
+              setState(() {
+                _bounceTerms = false;
+                _bouncePrivacy = false;
+              });
+            }
           });
         });
       });
@@ -108,7 +99,6 @@ class _StepAgreementState extends ConsumerState<StepAgreement> {
       setState(() {
         _agreeTerms = false;
         _agreePrivacy = false;
-        _agreeMarketing = false;
       });
       _triggerBounce('all');
       _notifyParent();
@@ -260,14 +250,14 @@ class _StepAgreementState extends ConsumerState<StepAgreement> {
                   child: Row(
                     children: [
                       _BounceCheckbox(
-                        value: _allChecked,
+                        value: _requiredChecked,
                         bounce: _bounceAll,
-                        onChanged: (_) => _toggleAgreeAll(),
+                        onChanged: (_) => _toggleAgreeRequired(),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
                         child: Text(
-                          l10n.regAgreeAll,
+                          l10n.regAgreeAllRequired,
                           style: TextStyle(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w700,

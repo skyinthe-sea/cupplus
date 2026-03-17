@@ -64,8 +64,7 @@ class AuthService {
     }
   }
 
-  Future<AuthResponse> devSignIn() async {
-    const email = 'admin@test.com';
+  Future<AuthResponse> devSignIn([String email = 'admin@test.com']) async {
     const password = 'testtest';
     try {
       return await _client.auth.signInWithPassword(

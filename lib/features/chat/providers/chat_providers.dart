@@ -31,14 +31,27 @@ class DateEntry extends ChatListEntry {
 
 @Riverpod(keepAlive: true)
 class ConversationsList extends _$ConversationsList {
+  final _onlineUserIds = <String>{};
+
   @override
   Future<List<ConversationSummary>> build() async {
     final client = ref.read(supabaseClientProvider);
-    final user = client.auth.currentUser;
+    // Watch currentUser so provider rebuilds on login/logout
+    final user = ref.watch(currentUserProvider);
     if (user == null) return [];
 
     _subscribeRealtime(client, user.id);
-    return _fetchConversations(client, user.id);
+    _subscribePresence(client, user.id);
+    final conversations = await _fetchConversations(client, user.id);
+    // Apply cached online status from Presence
+    if (_onlineUserIds.isNotEmpty) {
+      return conversations.map((conv) {
+        return conv.copyWith(
+          isOnline: _onlineUserIds.contains(conv.participantId),
+        );
+      }).toList();
+    }
+    return conversations;
   }
 
   void _subscribeRealtime(SupabaseClient client, String userId) {
@@ -75,6 +88,61 @@ class ConversationsList extends _$ConversationsList {
 
     convChannel.subscribe();
     msgChannel.subscribe();
+  }
+
+  void _subscribePresence(SupabaseClient client, String userId) {
+    final presenceChannel = client.channel('managers-presence');
+
+    presenceChannel
+        .onPresenceSync((payload) {
+          final states = presenceChannel.presenceState();
+          _onlineUserIds.clear();
+          for (final state in states) {
+            for (final p in state.presences) {
+              final uid = p.payload['user_id'] as String?;
+              if (uid != null) _onlineUserIds.add(uid);
+            }
+          }
+          _updateOnlineStatus();
+        })
+        .onPresenceJoin((payload) {
+          for (final p in payload.newPresences) {
+            final uid = p.payload['user_id'] as String?;
+            if (uid != null) _onlineUserIds.add(uid);
+          }
+          _updateOnlineStatus();
+        })
+        .onPresenceLeave((payload) {
+          for (final p in payload.leftPresences) {
+            final uid = p.payload['user_id'] as String?;
+            if (uid != null) _onlineUserIds.remove(uid);
+          }
+          _updateOnlineStatus();
+        })
+        .subscribe((status, [ref]) async {
+          if (status == RealtimeSubscribeStatus.subscribed) {
+            await presenceChannel.track({
+              'user_id': userId,
+              'online_at': DateTime.now().toUtc().toIso8601String(),
+            });
+          }
+        });
+
+    ref.onDispose(() {
+      presenceChannel.untrack();
+      client.removeChannel(presenceChannel);
+    });
+  }
+
+  void _updateOnlineStatus() {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    state = AsyncData(current.map((conv) {
+      final online = _onlineUserIds.contains(conv.participantId);
+      if (online == conv.isOnline) return conv;
+      return conv.copyWith(isOnline: online);
+    }).toList());
   }
 
   void _handleNewMessage(Map<String, dynamic> record, String userId) {
@@ -330,6 +398,10 @@ class LocalMessages extends _$LocalMessages {
 
   void remove(String id) {
     state = state.where((m) => m.id != id).toList();
+  }
+
+  void replace(String id, ChatMessage replacement) {
+    state = state.map((m) => m.id == id ? replacement : m).toList();
   }
 }
 

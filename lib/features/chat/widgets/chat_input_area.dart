@@ -4,10 +4,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ChatInputArea extends StatefulWidget {
-  const ChatInputArea({super.key, required this.onSend, this.onImageSend});
+  const ChatInputArea({
+    super.key,
+    required this.onSend,
+    this.onImageSend,
+    this.onTypingChanged,
+  });
 
   final ValueChanged<String> onSend;
   final VoidCallback? onImageSend;
+  final ValueChanged<bool>? onTypingChanged;
 
   @override
   State<ChatInputArea> createState() => _ChatInputAreaState();
@@ -27,6 +33,7 @@ class _ChatInputAreaState extends State<ChatInputArea> {
     final hasText = _controller.text.trim().isNotEmpty;
     if (hasText != _hasText) {
       setState(() => _hasText = hasText);
+      widget.onTypingChanged?.call(hasText);
     }
   }
 

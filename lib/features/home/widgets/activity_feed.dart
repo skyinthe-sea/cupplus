@@ -128,14 +128,20 @@ class _FeedItem extends StatelessWidget {
     final timeFormat = DateFormat('HH:mm');
 
     final (icon, color, text) = switch (item.type) {
-      ActivityType.matchCreated => (
-          Icons.favorite_rounded,
-          theme.colorScheme.tertiary,
-          l10n.homeActivityMatchCreated(
+      ActivityType.matchRequested => (
+          Icons.send_rounded,
+          Colors.amber.shade700,
+          l10n.homeActivityMatchRequested(
+              item.clientAName ?? '?', item.clientBName ?? '?'),
+        ),
+      ActivityType.matchReceivedRequest => (
+          Icons.call_received_rounded,
+          Colors.amber.shade700,
+          l10n.homeActivityMatchReceived(
               item.clientAName ?? '?', item.clientBName ?? '?'),
         ),
       ActivityType.matchAccepted => (
-          Icons.check_circle_rounded,
+          Icons.favorite_rounded,
           const Color(0xFF2E7D32),
           l10n.homeActivityMatchAccepted(
               item.clientAName ?? '?', item.clientBName ?? '?'),
@@ -144,6 +150,12 @@ class _FeedItem extends StatelessWidget {
           Icons.cancel_rounded,
           const Color(0xFFC62828),
           l10n.homeActivityMatchDeclined(
+              item.clientAName ?? '?', item.clientBName ?? '?'),
+        ),
+      ActivityType.matchCancelled => (
+          Icons.cancel_rounded,
+          const Color(0xFFC62828),
+          l10n.homeActivityMatchCancelled(
               item.clientAName ?? '?', item.clientBName ?? '?'),
         ),
       ActivityType.clientRegistered => (

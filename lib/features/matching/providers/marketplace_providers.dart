@@ -7,6 +7,7 @@ import '../../../shared/models/client_summary.dart';
 import '../../subscription/providers/subscription_provider.dart';
 import '../models/marketplace_filter.dart';
 import '../models/marketplace_profile.dart';
+import '../utils/match_scoring.dart';
 
 part 'marketplace_providers.g.dart';
 
@@ -97,6 +98,7 @@ class MarketplaceFilterNotifier extends _$MarketplaceFilterNotifier {
 class MarketplaceProfileList extends _$MarketplaceProfileList {
   int _currentPage = 0;
   bool _hasMore = true;
+  List<MarketplaceProfile>? _cachedMyClients;
 
   bool get hasMore => _hasMore;
 
@@ -104,6 +106,7 @@ class MarketplaceProfileList extends _$MarketplaceProfileList {
   Future<List<MarketplaceProfile>> build({String? genderOverride}) async {
     _currentPage = 0;
     _hasMore = true;
+    _cachedMyClients = null; // Reset cache on filter change
     // Watch filter changes to refetch from page 0
     ref.watch(marketplaceFilterNotifierProvider);
     return _fetchPage(0, genderOverride: genderOverride);
@@ -201,7 +204,7 @@ class MarketplaceProfileList extends _$MarketplaceProfileList {
     final from = page * _pageSize;
     final to = from + _pageSize - 1;
 
-    // Server-side sort: newest or most likes
+    // Server-side sort (recommended uses created_at, then re-sorts client-side)
     final sortColumn = filter.sortOrder == SortOrder.mostLikes
         ? 'like_count'
         : 'created_at';
@@ -293,6 +296,19 @@ class MarketplaceProfileList extends _$MarketplaceProfileList {
       profiles = profiles.where((p) => p.isVerified).toList();
     }
 
+    // Recommended sort: score each profile against my clients' ideal preferences
+    if (filter.sortOrder == SortOrder.recommended && profiles.isNotEmpty) {
+      _cachedMyClients ??= await _fetchMyClients(client, user.id);
+      final myClients = _cachedMyClients!;
+      if (myClients.isNotEmpty) {
+        profiles.sort((a, b) {
+          final scoreA = _bestMatchScore(myClients, a);
+          final scoreB = _bestMatchScore(myClients, b);
+          return scoreB.compareTo(scoreA);
+        });
+      }
+    }
+
     return profiles;
   }
 
@@ -309,6 +325,38 @@ class MarketplaceProfileList extends _$MarketplaceProfileList {
 
     state = AsyncData([...currentState.value, ...nextPage]);
   }
+}
+
+// ─── Recommendation helpers ──────────────────────────────────
+
+/// Fetch current user's active clients as MarketplaceProfile for scoring
+Future<List<MarketplaceProfile>> _fetchMyClients(
+  dynamic client,
+  String userId,
+) async {
+  final rows = await client
+      .from('clients')
+      .select()
+      .eq('manager_id', userId)
+      .eq('status', 'active')
+      .limit(20);
+
+  return (rows as List<dynamic>)
+      .map((row) => MarketplaceProfile.fromMap(row as Map<String, dynamic>))
+      .toList();
+}
+
+/// Returns the best score among all my clients for a given target profile
+double _bestMatchScore(
+  List<MarketplaceProfile> myClients,
+  MarketplaceProfile target,
+) {
+  double best = 0;
+  for (final myClient in myClients) {
+    final score = computeMatchScore(source: myClient, target: target);
+    if (score > best) best = score;
+  }
+  return best;
 }
 
 @riverpod

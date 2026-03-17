@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum SortOrder { newest, mostLikes }
+enum SortOrder { newest, mostLikes, recommended }
 
 @immutable
 class MarketplaceFilter {
