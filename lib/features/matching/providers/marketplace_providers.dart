@@ -604,7 +604,7 @@ Future<String?> createMatch(
     final limitOrNull = await ref.read(dailyMatchLimitProvider.future);
     dailyLimit = limitOrNull ?? 999999; // null = unlimited (premium)
   } catch (_) {
-    dailyLimit = AppConstants.freeMatchDailyLimit; // fallback to free tier
+    dailyLimit = AppConstants.freeMatchDailyLimit;
   }
 
   final result = await client.rpc('create_match_atomic', params: {

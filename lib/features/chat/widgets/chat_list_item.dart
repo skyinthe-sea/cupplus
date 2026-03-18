@@ -35,6 +35,7 @@ class ChatListItem extends StatelessWidget {
 
   String _lastMessagePreview(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    if (conversation.lastMessageIsDeleted) return l10n.chatMessageDeleted;
     return switch (conversation.lastMessageType) {
       'image' => l10n.chatImageMessage,
       'file' => l10n.chatFileMessage,
@@ -152,12 +153,17 @@ class ChatListItem extends StatelessWidget {
                             Text(
                               _lastMessagePreview(context),
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: conversation.unreadCount > 0
-                                    ? theme.colorScheme.onSurface
-                                    : theme.colorScheme.onSurfaceVariant,
+                                color: conversation.lastMessageIsDeleted
+                                    ? theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)
+                                    : conversation.unreadCount > 0
+                                        ? theme.colorScheme.onSurface
+                                        : theme.colorScheme.onSurfaceVariant,
                                 fontWeight: conversation.unreadCount > 0
                                     ? FontWeight.w500
                                     : FontWeight.w400,
+                                fontStyle: conversation.lastMessageIsDeleted
+                                    ? FontStyle.italic
+                                    : FontStyle.normal,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

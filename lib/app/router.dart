@@ -184,12 +184,13 @@ class MainShellScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final user = ref.watch(currentUserProvider);
     final chatUnread = ref.watch(totalUnreadCountProvider);
 
     return Scaffold(
       extendBody: true,
       body: navigationShell,
-      bottomNavigationBar: _FloatingGlassNavBar(
+      bottomNavigationBar: user == null ? null : _FloatingGlassNavBar(
         currentIndex: navigationShell.currentIndex,
         onTap: (index) async {
           if (index >= 2) {

@@ -112,8 +112,8 @@
 
   "subscriptionTitle": "Subscription",
   "subscriptionFree": "Free",
-  "subscriptionStandard": "Standard",
-  "subscriptionPremium": "Premium",
+  "subscriptionSilver": "Silver",
+  "subscriptionGold": "Gold",
   "subscriptionDailyLimit": "Daily match limit: {count}",
 
   "notificationTitle": "Notifications",
@@ -196,7 +196,10 @@
   "mySettingsLanguage": "Language",
   "mySettingsLanguageKo": "한국어",
   "mySettingsLanguageEn": "English",
-  "mySettingsDarkMode": "Dark Mode",
+  "mySettingsTheme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
   "myGeneralTitle": "General",
   "myMatchHistory": "Match History",
   "mySubscriptionManage": "Subscription",
@@ -573,8 +576,17 @@
   "@subscriptionFeatureMatchesValue": { "placeholders": { "count": { "type": "int" } } },
   "subscriptionFeatureUnlimited": "Unlimited",
   "subscriptionFreePlanDesc": "Free Plan",
-  "subscriptionStandardPlanDesc": "Standard Plan",
-  "subscriptionPremiumPlanDesc": "Premium Plan",
+  "subscriptionSilverPlanDesc": "Silver Plan",
+  "subscriptionGoldPlanDesc": "Gold Plan",
+  "subscriptionClientLimit": "Client limit: {count}",
+  "@subscriptionClientLimit": { "placeholders": { "count": { "type": "int" } } },
+  "subscriptionClientUsage": "{used}/{limit} clients",
+  "@subscriptionClientUsage": { "placeholders": { "used": { "type": "int" }, "limit": { "type": "int" } } },
+  "subscriptionClientLimitReached": "Client limit reached",
+  "subscriptionUpgradePrompt": "Please upgrade your plan",
+  "subscriptionLaunchPrice": "Launch Special",
+  "subscriptionSilverPrice": "₩7,700/mo",
+  "subscriptionGoldPrice": "₩14,900/mo",
   "subscriptionRestoreTitle": "Restore Purchases",
   "subscriptionRestoreSuccess": "Purchases restored",
   "subscriptionRestoreFailed": "No purchases to restore",
@@ -721,5 +733,17 @@
 
   "matchSheetVerificationRequired": "Verification Required",
   "matchSheetVerificationBody": "Please complete manager verification before accepting or declining matches.",
-  "matchSheetGoVerify": "Go to Verification"
+  "matchSheetGoVerify": "Go to Verification",
+
+  "chatMessageDeleted": "This message was deleted",
+  "chatDeleteTitle": "Delete message",
+  "chatDeleteConfirm": "Delete this message?\nIt will be hidden for everyone.",
+  "chatDeleteFailed": "Failed to delete message",
+  "chatReplyToMe": "You",
+  "chatReply": "Reply",
+  "chatShowMore": "Show more",
+  "chatShowLess": "Show less",
+
+  "matchConflictCancelledTitle": "Match Auto-Cancelled",
+  "matchConflictCancelledBody": "Another match was completed first"
 }

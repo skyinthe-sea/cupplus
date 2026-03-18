@@ -12,6 +12,7 @@ import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/manager_profile_provider.dart';
 import '../../contract/services/contract_service.dart';
+import '../../subscription/providers/subscription_provider.dart';
 import '../providers/home_providers.dart';
 import '../widgets/registration_steps/step_basic_info.dart';
 import '../widgets/registration_steps/step_career_education.dart';
@@ -38,6 +39,7 @@ class _ClientRegistrationScreenState
   int _currentStep = 0;
   bool _isLoading = false;
   int _draftRevision = 0;
+  bool _userHasInteracted = false;
 
   // Direction tracking for animation
   bool _goingForward = true;
@@ -79,6 +81,7 @@ class _ClientRegistrationScreenState
     _dotControllers[0].forward(from: 0);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkClientLimit();
       _checkForDraft();
     });
   }
@@ -90,6 +93,33 @@ class _ClientRegistrationScreenState
       c.dispose();
     }
     super.dispose();
+  }
+
+  // ── Client limit check ───────────────────────────────────────────────────
+
+  Future<void> _checkClientLimit() async {
+    final canRegister = await ref.read(canRegisterClientProvider.future);
+    if (!canRegister && mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: Text(l10n.subscriptionClientLimitReached),
+          content: Text(l10n.subscriptionUpgradePrompt),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.commonConfirm),
+            ),
+          ],
+        ),
+      );
+      if (mounted) Navigator.of(context).pop();
+    }
   }
 
   // ── Draft management ──────────────────────────────────────────────────────
@@ -167,7 +197,11 @@ class _ClientRegistrationScreenState
         if (value is String && value.trim().isNotEmpty) return true;
         if (value is bool && value) return true;
         if (value is List && value.isNotEmpty) return true;
-        if (value is int || value is double) return true;
+        if (value is int) {
+          if (value == 170 || value == 160) continue;
+          return true;
+        }
+        if (value is double) return true;
       }
     }
     return false;
@@ -232,6 +266,7 @@ class _ClientRegistrationScreenState
       setState(() {
         _currentStep = savedStep;
         _draftRevision++;
+        _userHasInteracted = true;
       });
       if (savedStep > 0) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -283,6 +318,7 @@ class _ClientRegistrationScreenState
   void _goToNextStep() async {
     if (_currentStep >= _totalSteps - 1) return;
     await _saveDraft();
+    if (!mounted) return;
     setState(() {
       _goingForward = true;
       _currentStep++;
@@ -298,6 +334,7 @@ class _ClientRegistrationScreenState
   void _goToPrevStep() async {
     if (_currentStep <= 0) return;
     await _saveDraft();
+    if (!mounted) return;
     setState(() {
       _goingForward = false;
       _currentStep--;
@@ -311,6 +348,19 @@ class _ClientRegistrationScreenState
 
   Future<void> _onComplete() async {
     if (!_isStepValid(5)) return;
+
+    // Re-check client limit (race condition guard)
+    final canRegister = await ref.read(canRegisterClientProvider.future);
+    if (!canRegister) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.subscriptionClientLimitReached)),
+        );
+      }
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
@@ -507,6 +557,7 @@ class _ClientRegistrationScreenState
   // ── Exit dialog ───────────────────────────────────────────────────────────
 
   bool _hasAnyInput() {
+    if (!_userHasInteracted) return false;
     for (final stepMap in _stepData) {
       for (final value in stepMap.values) {
         if (value == null) continue;
@@ -712,30 +763,48 @@ class _ClientRegistrationScreenState
                 children: [
                   StepBasicInfo(
                     data: Map<String, dynamic>.from(_stepData[0]),
-                    onDataChanged: (d) => setState(() => _stepData[0] = d),
+                    onDataChanged: (d) => setState(() {
+                      _stepData[0] = d;
+                      _userHasInteracted = true;
+                    }),
                   ),
                   StepCareerEducation(
                     data: Map<String, dynamic>.from(_stepData[1]),
-                    onDataChanged: (d) => setState(() => _stepData[1] = d),
+                    onDataChanged: (d) => setState(() {
+                      _stepData[1] = d;
+                      _userHasInteracted = true;
+                    }),
                   ),
                   StepAppearance(
                     data: {
                       ..._stepData[2],
                       'gender': _stepData[0]['gender'],
                     },
-                    onDataChanged: (d) => setState(() => _stepData[2] = d),
+                    onDataChanged: (d) => setState(() {
+                      _stepData[2] = d;
+                      _userHasInteracted = true;
+                    }),
                   ),
                   StepPersonality(
                     data: Map<String, dynamic>.from(_stepData[3]),
-                    onDataChanged: (d) => setState(() => _stepData[3] = d),
+                    onDataChanged: (d) => setState(() {
+                      _stepData[3] = d;
+                      _userHasInteracted = true;
+                    }),
                   ),
                   StepFamilyLifestyle(
                     data: Map<String, dynamic>.from(_stepData[4]),
-                    onDataChanged: (d) => setState(() => _stepData[4] = d),
+                    onDataChanged: (d) => setState(() {
+                      _stepData[4] = d;
+                      _userHasInteracted = true;
+                    }),
                   ),
                   StepAgreement(
                     data: Map<String, dynamic>.from(_stepData[5]),
-                    onDataChanged: (d) => setState(() => _stepData[5] = d),
+                    onDataChanged: (d) => setState(() {
+                      _stepData[5] = d;
+                      _userHasInteracted = true;
+                    }),
                   ),
                 ],
               ),

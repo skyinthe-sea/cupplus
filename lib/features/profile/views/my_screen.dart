@@ -219,20 +219,31 @@ class MyScreen extends ConsumerWidget {
                     icon: isDark
                         ? Icons.dark_mode_rounded
                         : Icons.light_mode_rounded,
-                    label: l10n.mySettingsDarkMode,
-                    trailing: Switch.adaptive(
-                      value: _isDarkEnabled(themeMode, isDark),
-                      onChanged: (_) {
-                        ref
-                            .read(themeModeNotifierProvider.notifier)
-                            .toggleDarkMode();
-                      },
-                    ),
-                    onTap: () {
-                      ref
+                    label: l10n.mySettingsTheme,
+                    trailing: SegmentedButton<ThemeMode>(
+                      segments: [
+                        ButtonSegment(
+                          value: ThemeMode.system,
+                          label: Text(l10n.themeSystem),
+                        ),
+                        ButtonSegment(
+                          value: ThemeMode.light,
+                          icon: Icon(Icons.light_mode, size: 16.r),
+                        ),
+                        ButtonSegment(
+                          value: ThemeMode.dark,
+                          icon: Icon(Icons.dark_mode, size: 16.r),
+                        ),
+                      ],
+                      selected: {themeMode},
+                      onSelectionChanged: (s) => ref
                           .read(themeModeNotifierProvider.notifier)
-                          .toggleDarkMode();
-                    },
+                          .setThemeMode(s.first),
+                      showSelectedIcon: false,
+                      style: SegmentedButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -320,11 +331,4 @@ class MyScreen extends ConsumerWidget {
     context.push(AppRoutes.verification);
   }
 
-  bool _isDarkEnabled(ThemeMode themeMode, bool currentIsDark) {
-    return switch (themeMode) {
-      ThemeMode.dark => true,
-      ThemeMode.light => false,
-      ThemeMode.system => currentIsDark,
-    };
-  }
 }

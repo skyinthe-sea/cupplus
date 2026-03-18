@@ -560,17 +560,17 @@ abstract class AppLocalizations {
   /// **'무료'**
   String get subscriptionFree;
 
-  /// No description provided for @subscriptionStandard.
+  /// No description provided for @subscriptionSilver.
   ///
   /// In ko, this message translates to:
-  /// **'스탠다드'**
-  String get subscriptionStandard;
+  /// **'실버'**
+  String get subscriptionSilver;
 
-  /// No description provided for @subscriptionPremium.
+  /// No description provided for @subscriptionGold.
   ///
   /// In ko, this message translates to:
-  /// **'프리미엄'**
-  String get subscriptionPremium;
+  /// **'골드'**
+  String get subscriptionGold;
 
   /// No description provided for @subscriptionDailyLimit.
   ///
@@ -848,11 +848,29 @@ abstract class AppLocalizations {
   /// **'English'**
   String get mySettingsLanguageEn;
 
-  /// No description provided for @mySettingsDarkMode.
+  /// No description provided for @mySettingsTheme.
   ///
   /// In ko, this message translates to:
-  /// **'다크 모드'**
-  String get mySettingsDarkMode;
+  /// **'테마'**
+  String get mySettingsTheme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In ko, this message translates to:
+  /// **'라이트'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In ko, this message translates to:
+  /// **'다크'**
+  String get themeDark;
 
   /// No description provided for @myGeneralTitle.
   ///
@@ -2510,17 +2528,59 @@ abstract class AppLocalizations {
   /// **'무료 플랜'**
   String get subscriptionFreePlanDesc;
 
-  /// No description provided for @subscriptionStandardPlanDesc.
+  /// No description provided for @subscriptionSilverPlanDesc.
   ///
   /// In ko, this message translates to:
-  /// **'스탠다드 플랜'**
-  String get subscriptionStandardPlanDesc;
+  /// **'실버 플랜'**
+  String get subscriptionSilverPlanDesc;
 
-  /// No description provided for @subscriptionPremiumPlanDesc.
+  /// No description provided for @subscriptionGoldPlanDesc.
   ///
   /// In ko, this message translates to:
-  /// **'프리미엄 플랜'**
-  String get subscriptionPremiumPlanDesc;
+  /// **'골드 플랜'**
+  String get subscriptionGoldPlanDesc;
+
+  /// No description provided for @subscriptionClientLimit.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 등록 한도: {count}명'**
+  String subscriptionClientLimit(int count);
+
+  /// No description provided for @subscriptionClientUsage.
+  ///
+  /// In ko, this message translates to:
+  /// **'{used}/{limit}명 등록'**
+  String subscriptionClientUsage(int used, int limit);
+
+  /// No description provided for @subscriptionClientLimitReached.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 등록 한도에 도달했습니다'**
+  String get subscriptionClientLimitReached;
+
+  /// No description provided for @subscriptionUpgradePrompt.
+  ///
+  /// In ko, this message translates to:
+  /// **'플랜을 업그레이드해주세요'**
+  String get subscriptionUpgradePrompt;
+
+  /// No description provided for @subscriptionLaunchPrice.
+  ///
+  /// In ko, this message translates to:
+  /// **'론칭 특가'**
+  String get subscriptionLaunchPrice;
+
+  /// No description provided for @subscriptionSilverPrice.
+  ///
+  /// In ko, this message translates to:
+  /// **'₩7,700/월'**
+  String get subscriptionSilverPrice;
+
+  /// No description provided for @subscriptionGoldPrice.
+  ///
+  /// In ko, this message translates to:
+  /// **'₩14,900/월'**
+  String get subscriptionGoldPrice;
 
   /// No description provided for @subscriptionRestoreTitle.
   ///
@@ -3289,6 +3349,66 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'인증하러 가기'**
   String get matchSheetGoVerify;
+
+  /// No description provided for @chatMessageDeleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'삭제된 메시지입니다'**
+  String get chatMessageDeleted;
+
+  /// No description provided for @chatDeleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'메시지 삭제'**
+  String get chatDeleteTitle;
+
+  /// No description provided for @chatDeleteConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 메시지를 삭제하시겠습니까?\n상대방에게도 보이지 않습니다.'**
+  String get chatDeleteConfirm;
+
+  /// No description provided for @chatDeleteFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'메시지 삭제에 실패했습니다'**
+  String get chatDeleteFailed;
+
+  /// No description provided for @chatReplyToMe.
+  ///
+  /// In ko, this message translates to:
+  /// **'나'**
+  String get chatReplyToMe;
+
+  /// No description provided for @chatReply.
+  ///
+  /// In ko, this message translates to:
+  /// **'답장'**
+  String get chatReply;
+
+  /// No description provided for @chatShowMore.
+  ///
+  /// In ko, this message translates to:
+  /// **'더보기'**
+  String get chatShowMore;
+
+  /// No description provided for @chatShowLess.
+  ///
+  /// In ko, this message translates to:
+  /// **'접기'**
+  String get chatShowLess;
+
+  /// No description provided for @matchConflictCancelledTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 자동 취소'**
+  String get matchConflictCancelledTitle;
+
+  /// No description provided for @matchConflictCancelledBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 회원과 매칭이 먼저 완료되었습니다'**
+  String get matchConflictCancelledBody;
 }
 
 class _AppLocalizationsDelegate

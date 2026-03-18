@@ -252,10 +252,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionFree => 'Free';
 
   @override
-  String get subscriptionStandard => 'Standard';
+  String get subscriptionSilver => 'Silver';
 
   @override
-  String get subscriptionPremium => 'Premium';
+  String get subscriptionGold => 'Gold';
 
   @override
   String subscriptionDailyLimit(int count) {
@@ -411,7 +411,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mySettingsLanguageEn => 'English';
 
   @override
-  String get mySettingsDarkMode => 'Dark Mode';
+  String get mySettingsTheme => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
 
   @override
   String get myGeneralTitle => 'General';
@@ -1315,10 +1324,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionFreePlanDesc => 'Free Plan';
 
   @override
-  String get subscriptionStandardPlanDesc => 'Standard Plan';
+  String get subscriptionSilverPlanDesc => 'Silver Plan';
 
   @override
-  String get subscriptionPremiumPlanDesc => 'Premium Plan';
+  String get subscriptionGoldPlanDesc => 'Gold Plan';
+
+  @override
+  String subscriptionClientLimit(int count) {
+    return 'Client limit: $count';
+  }
+
+  @override
+  String subscriptionClientUsage(int used, int limit) {
+    return '$used/$limit clients';
+  }
+
+  @override
+  String get subscriptionClientLimitReached => 'Client limit reached';
+
+  @override
+  String get subscriptionUpgradePrompt => 'Please upgrade your plan';
+
+  @override
+  String get subscriptionLaunchPrice => 'Launch Special';
+
+  @override
+  String get subscriptionSilverPrice => '₩7,700/mo';
+
+  @override
+  String get subscriptionGoldPrice => '₩14,900/mo';
 
   @override
   String get subscriptionRestoreTitle => 'Restore Purchases';
@@ -1727,4 +1761,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matchSheetGoVerify => 'Go to Verification';
+
+  @override
+  String get chatMessageDeleted => 'This message was deleted';
+
+  @override
+  String get chatDeleteTitle => 'Delete message';
+
+  @override
+  String get chatDeleteConfirm =>
+      'Delete this message?\nIt will be hidden for everyone.';
+
+  @override
+  String get chatDeleteFailed => 'Failed to delete message';
+
+  @override
+  String get chatReplyToMe => 'You';
+
+  @override
+  String get chatReply => 'Reply';
+
+  @override
+  String get chatShowMore => 'Show more';
+
+  @override
+  String get chatShowLess => 'Show less';
+
+  @override
+  String get matchConflictCancelledTitle => 'Match Auto-Cancelled';
+
+  @override
+  String get matchConflictCancelledBody => 'Another match was completed first';
 }

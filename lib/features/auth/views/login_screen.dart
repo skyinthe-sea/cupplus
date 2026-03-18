@@ -19,6 +19,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen>
     with TickerProviderStateMixin {
   static const _devAccounts = [
+    {'email': 'manager.lim@test.com', 'name': '임준섭 매니저'},
     {'email': 'manager.kim@test.com', 'name': '김서연 매니저'},
     {'email': 'manager.park@test.com', 'name': '박지훈 매니저'},
   ];

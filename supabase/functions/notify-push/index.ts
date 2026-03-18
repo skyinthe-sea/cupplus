@@ -1,11 +1,14 @@
 // Supabase Edge Function: notify-push
 // Unified push notification sender for all notification types.
 //
+// Two invocation modes:
+// 1. Direct call: POST { type, user_id, title, body, data }
+//    → Inserts notification + sends FCM push
+// 2. Database Webhook: POST { type: "INSERT", table: "notifications", record: {...} }
+//    → Reads existing notification row + sends FCM push
+//
 // Triggered by Database Webhooks on:
-// - matches INSERT/UPDATE → match notifications
-// - messages INSERT → chat message notifications
-// - manager_verification_documents UPDATE → verification notifications
-// - manual invocation → system notifications
+// - notifications INSERT → FCM delivery
 //
 // Required secrets (set via `supabase secrets set`):
 // - GOOGLE_SERVICE_ACCOUNT_JSON: Firebase service account for FCM v1 API
@@ -25,6 +28,14 @@ interface NotificationPayload {
   title: string;
   body: string;
   data?: Record<string, string>;
+}
+
+interface WebhookPayload {
+  type: "INSERT" | "UPDATE" | "DELETE";
+  table: string;
+  record: Record<string, unknown>;
+  schema: string;
+  old_record: Record<string, unknown> | null;
 }
 
 // ─── FCM Access Token ────────────────────────────────────────
@@ -165,13 +176,141 @@ async function sendFcmMessage(
   return true;
 }
 
+// ─── Send push for a notification record ─────────────────────
+async function sendPushForNotification(
+  supabase: ReturnType<typeof createClient>,
+  notificationId: string,
+  userId: string,
+  type: string,
+  title: string,
+  body: string,
+  data: Record<string, string>
+): Promise<Response> {
+  // Check user's notification settings
+  const notifTypeKey: Record<string, string> = {
+    new_match: "match_notifications",
+    match_response: "match_notifications",
+    new_message: "message_notifications",
+    verification_result: "verification_notifications",
+    system: "system_notifications",
+  };
+
+  const settingKey = notifTypeKey[type];
+  if (settingKey) {
+    const { data: manager } = await supabase
+      .from("managers")
+      .select("notification_settings")
+      .eq("id", userId)
+      .maybeSingle();
+
+    const settings = manager?.notification_settings ?? {};
+    if (settings[settingKey] === false) {
+      console.log(`Notification skipped: ${type} disabled for user ${userId}`);
+      return new Response(
+        JSON.stringify({ status: "skipped", reason: "notification_disabled" }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  }
+
+  // Fetch FCM tokens for the user
+  const { data: tokens } = await supabase
+    .from("fcm_tokens")
+    .select("token, platform")
+    .eq("user_id", userId);
+
+  if (!tokens || tokens.length === 0) {
+    console.log(`No FCM tokens for user ${userId} — notification saved to DB only`);
+    await supabase
+      .from("notifications")
+      .update({ status: "sent" })
+      .eq("id", notificationId);
+
+    return new Response(
+      JSON.stringify({ status: "saved", notification_id: notificationId, push_sent: false }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  // Get Firebase project ID from service account
+  let projectId = "cupplus";
+  if (GOOGLE_SERVICE_ACCOUNT_JSON) {
+    try {
+      const sa = JSON.parse(GOOGLE_SERVICE_ACCOUNT_JSON);
+      projectId = sa.project_id || projectId;
+    } catch (_) {
+      // use default
+    }
+  }
+
+  // Send push to all user's devices
+  const fcmData: Record<string, string> = {
+    type,
+    notification_id: notificationId,
+    ...Object.fromEntries(
+      Object.entries(data).map(([k, v]) => [k, String(v)])
+    ),
+  };
+
+  let anySent = false;
+  for (const { token } of tokens) {
+    const success = await sendFcmMessage(token, title, body, fcmData, projectId);
+    if (success) anySent = true;
+  }
+
+  // Update notification status
+  await supabase
+    .from("notifications")
+    .update({
+      status: anySent ? "sent" : "failed",
+      sent_at: anySent ? new Date().toISOString() : null,
+      retries: anySent ? 0 : 1,
+    })
+    .eq("id", notificationId);
+
+  return new Response(
+    JSON.stringify({
+      status: anySent ? "sent" : "failed",
+      notification_id: notificationId,
+      tokens_attempted: tokens.length,
+    }),
+    { status: 200, headers: { "Content-Type": "application/json" } }
+  );
+}
+
 // ─── Main Handler ────────────────────────────────────────────
 serve(async (req: Request) => {
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const rawPayload = await req.json();
 
-    // Parse request body
-    const payload: NotificationPayload = await req.json();
+    // ─── Mode 2: Database Webhook (notifications INSERT) ─────
+    // Webhook payload has { type: "INSERT", table: "notifications", record: {...} }
+    if (rawPayload.table === "notifications" && rawPayload.record) {
+      const webhook = rawPayload as WebhookPayload;
+      const record = webhook.record;
+
+      // Skip if already processed
+      if (record.status !== "pending") {
+        return new Response(
+          JSON.stringify({ status: "skipped", reason: "not_pending" }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        );
+      }
+
+      return sendPushForNotification(
+        supabase,
+        record.id as string,
+        record.user_id as string,
+        record.type as string,
+        record.title as string,
+        record.body as string,
+        (record.data as Record<string, string>) ?? {}
+      );
+    }
+
+    // ─── Mode 1: Direct call ─────────────────────────────────
+    const payload: NotificationPayload = rawPayload;
     const { type, user_id, title, body, data = {} } = payload;
 
     if (!type || !user_id || !title || !body) {
@@ -179,32 +318,6 @@ serve(async (req: Request) => {
         JSON.stringify({ error: "Missing required fields: type, user_id, title, body" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
-    }
-
-    // Check user's notification settings
-    const notifTypeKey = {
-      new_match: "match_notifications",
-      match_response: "match_notifications",
-      new_message: "message_notifications",
-      verification_result: "verification_notifications",
-      system: "system_notifications",
-    }[type];
-
-    if (notifTypeKey) {
-      const { data: manager } = await supabase
-        .from("managers")
-        .select("notification_settings")
-        .eq("id", user_id)
-        .maybeSingle();
-
-      const settings = manager?.notification_settings ?? {};
-      if (settings[notifTypeKey] === false) {
-        console.log(`Notification skipped: ${type} disabled for user ${user_id}`);
-        return new Response(
-          JSON.stringify({ status: "skipped", reason: "notification_disabled" }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
-        );
-      }
     }
 
     // Insert notification record into DB
@@ -230,70 +343,14 @@ serve(async (req: Request) => {
       );
     }
 
-    const notificationId = notification.id;
-
-    // Fetch FCM tokens for the user
-    const { data: tokens } = await supabase
-      .from("fcm_tokens")
-      .select("token, platform")
-      .eq("user_id", user_id);
-
-    if (!tokens || tokens.length === 0) {
-      console.log(`No FCM tokens for user ${user_id} — notification saved to DB only`);
-      await supabase
-        .from("notifications")
-        .update({ status: "sent" })
-        .eq("id", notificationId);
-
-      return new Response(
-        JSON.stringify({ status: "saved", notification_id: notificationId, push_sent: false }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // Get Firebase project ID from service account
-    let projectId = "cupplus";
-    if (GOOGLE_SERVICE_ACCOUNT_JSON) {
-      try {
-        const sa = JSON.parse(GOOGLE_SERVICE_ACCOUNT_JSON);
-        projectId = sa.project_id || projectId;
-      } catch (_) {
-        // use default
-      }
-    }
-
-    // Send push to all user's devices
-    const fcmData: Record<string, string> = {
+    return sendPushForNotification(
+      supabase,
+      notification.id,
+      user_id,
       type,
-      notification_id: notificationId,
-      ...Object.fromEntries(
-        Object.entries(data).map(([k, v]) => [k, String(v)])
-      ),
-    };
-
-    let anySent = false;
-    for (const { token } of tokens) {
-      const success = await sendFcmMessage(token, title, body, fcmData, projectId);
-      if (success) anySent = true;
-    }
-
-    // Update notification status
-    await supabase
-      .from("notifications")
-      .update({
-        status: anySent ? "sent" : "failed",
-        sent_at: anySent ? new Date().toISOString() : null,
-        retries: anySent ? 0 : 1,
-      })
-      .eq("id", notificationId);
-
-    return new Response(
-      JSON.stringify({
-        status: anySent ? "sent" : "failed",
-        notification_id: notificationId,
-        tokens_attempted: tokens.length,
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      title,
+      body,
+      data
     );
   } catch (error) {
     console.error("notify-push error:", error);

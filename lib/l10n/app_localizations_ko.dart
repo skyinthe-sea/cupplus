@@ -250,10 +250,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get subscriptionFree => '무료';
 
   @override
-  String get subscriptionStandard => '스탠다드';
+  String get subscriptionSilver => '실버';
 
   @override
-  String get subscriptionPremium => '프리미엄';
+  String get subscriptionGold => '골드';
 
   @override
   String subscriptionDailyLimit(int count) {
@@ -408,7 +408,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mySettingsLanguageEn => 'English';
 
   @override
-  String get mySettingsDarkMode => '다크 모드';
+  String get mySettingsTheme => '테마';
+
+  @override
+  String get themeSystem => '시스템';
+
+  @override
+  String get themeLight => '라이트';
+
+  @override
+  String get themeDark => '다크';
 
   @override
   String get myGeneralTitle => '일반';
@@ -1306,10 +1315,35 @@ class AppLocalizationsKo extends AppLocalizations {
   String get subscriptionFreePlanDesc => '무료 플랜';
 
   @override
-  String get subscriptionStandardPlanDesc => '스탠다드 플랜';
+  String get subscriptionSilverPlanDesc => '실버 플랜';
 
   @override
-  String get subscriptionPremiumPlanDesc => '프리미엄 플랜';
+  String get subscriptionGoldPlanDesc => '골드 플랜';
+
+  @override
+  String subscriptionClientLimit(int count) {
+    return '회원 등록 한도: $count명';
+  }
+
+  @override
+  String subscriptionClientUsage(int used, int limit) {
+    return '$used/$limit명 등록';
+  }
+
+  @override
+  String get subscriptionClientLimitReached => '회원 등록 한도에 도달했습니다';
+
+  @override
+  String get subscriptionUpgradePrompt => '플랜을 업그레이드해주세요';
+
+  @override
+  String get subscriptionLaunchPrice => '론칭 특가';
+
+  @override
+  String get subscriptionSilverPrice => '₩7,700/월';
+
+  @override
+  String get subscriptionGoldPrice => '₩14,900/월';
 
   @override
   String get subscriptionRestoreTitle => '구매 복원';
@@ -1707,4 +1741,34 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get matchSheetGoVerify => '인증하러 가기';
+
+  @override
+  String get chatMessageDeleted => '삭제된 메시지입니다';
+
+  @override
+  String get chatDeleteTitle => '메시지 삭제';
+
+  @override
+  String get chatDeleteConfirm => '이 메시지를 삭제하시겠습니까?\n상대방에게도 보이지 않습니다.';
+
+  @override
+  String get chatDeleteFailed => '메시지 삭제에 실패했습니다';
+
+  @override
+  String get chatReplyToMe => '나';
+
+  @override
+  String get chatReply => '답장';
+
+  @override
+  String get chatShowMore => '더보기';
+
+  @override
+  String get chatShowLess => '접기';
+
+  @override
+  String get matchConflictCancelledTitle => '매칭 자동 취소';
+
+  @override
+  String get matchConflictCancelledBody => '다른 회원과 매칭이 먼저 완료되었습니다';
 }

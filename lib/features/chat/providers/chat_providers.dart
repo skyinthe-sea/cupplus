@@ -12,6 +12,10 @@ part 'chat_providers.g.dart';
 
 const _messagePageSize = 30;
 
+/// Select query that joins reply_to original message (no nested sender join — resolved in UI)
+const _messageSelect =
+    '*, reply_to:reply_to_id(id, content, type, sender_id, deleted_at)';
+
 // ─── Chat List Entry Types ──────────────────────────────────
 
 sealed class ChatListEntry {}
@@ -25,6 +29,22 @@ class MessageEntry extends ChatListEntry {
 class DateEntry extends ChatListEntry {
   DateEntry(this.date);
   final DateTime date;
+}
+
+// ─── Reply Target State ─────────────────────────────────────
+
+@riverpod
+class ReplyTarget extends _$ReplyTarget {
+  @override
+  ChatMessage? build(String conversationId) => null;
+
+  void setReply(ChatMessage message) {
+    state = message;
+  }
+
+  void clear() {
+    state = null;
+  }
 }
 
 // ─── Conversations List (Notifier + Realtime) ────────────────
@@ -78,6 +98,20 @@ class ConversationsList extends _$ConversationsList {
             final record = payload.newRecord;
             if (record.isEmpty) return;
             _handleNewMessage(record, userId);
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'messages',
+          callback: (payload) {
+            final record = payload.newRecord;
+            if (record.isEmpty) return;
+            // If the most recent message was soft-deleted, refresh last message
+            final deletedAt = record['deleted_at'];
+            if (deletedAt != null) {
+              _handleMessageDeleted(record, userId);
+            }
           },
         );
 
@@ -171,6 +205,29 @@ class ConversationsList extends _$ConversationsList {
     state = AsyncData(updated);
   }
 
+  void _handleMessageDeleted(Map<String, dynamic> record, String userId) {
+    final convId = record['conversation_id'] as String?;
+    if (convId == null) return;
+
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    final conv = current.where((c) => c.id == convId).firstOrNull;
+    if (conv == null) return;
+
+    // If the deleted message content matches the last message, refresh
+    final deletedContent = record['content'] as String? ?? '';
+    if (conv.lastMessage == deletedContent ||
+        conv.lastMessage.isEmpty ||
+        deletedContent.isEmpty) {
+      // Refetch to get the latest non-deleted message
+      final client = ref.read(supabaseClientProvider);
+      _fetchConversations(client, userId).then((convs) {
+        state = AsyncData(convs);
+      }).catchError((_) {});
+    }
+  }
+
   void markConversationAsRead(String conversationId) {
     final current = state.valueOrNull;
     if (current == null) return;
@@ -219,9 +276,10 @@ Future<List<ConversationSummary>> _fetchConversations(
       .select('id, full_name')
       .inFilter('id', participantIds.toList());
 
+  // Fetch last message per conversation (including deleted — shown as placeholder)
   final lastMessagesFuture = client
       .from('messages')
-      .select('conversation_id, content, type, created_at')
+      .select('conversation_id, content, type, created_at, deleted_at')
       .inFilter('conversation_id', convIds)
       .order('created_at', ascending: false)
       .limit(convIds.length * 3);
@@ -313,6 +371,7 @@ Future<List<ConversationSummary>> _fetchConversations(
       isOnline: false,
       matchId: matchId,
       matchContext: matchId != null ? matchContextMap[matchId] : null,
+      lastMessageIsDeleted: lastMsg?['deleted_at'] != null,
     );
   }).toList();
 }
@@ -359,7 +418,7 @@ class ConversationMessages extends _$ConversationMessages {
 
     final rows = await client
         .from('messages')
-        .select()
+        .select(_messageSelect)
         .eq('conversation_id', conversationId)
         .order('created_at', ascending: false)
         .range(from, to);
@@ -383,6 +442,17 @@ class ConversationMessages extends _$ConversationMessages {
 
     state = AsyncData([...olderMessages, ...currentState.value]);
   }
+
+  /// Update a specific message in-place (e.g., soft-delete from Realtime)
+  void updateMessage(ChatMessage updated) {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    state = AsyncData(current.map((m) {
+      if (m.id == updated.id) return updated;
+      return m;
+    }).toList());
+  }
 }
 
 // ─── Local Messages (optimistic + realtime incoming) ─────────
@@ -402,6 +472,11 @@ class LocalMessages extends _$LocalMessages {
 
   void replace(String id, ChatMessage replacement) {
     state = state.map((m) => m.id == id ? replacement : m).toList();
+  }
+
+  /// Update a specific message (e.g., soft-delete from Realtime)
+  void updateMessage(ChatMessage updated) {
+    state = state.map((m) => m.id == updated.id ? updated : m).toList();
   }
 }
 
@@ -470,18 +545,47 @@ Future<void> sendMessage(
   required String content,
   String type = 'text',
   String? imageUrl,
+  String? replyToId,
 }) async {
   final client = ref.read(supabaseClientProvider);
   final user = client.auth.currentUser;
   if (user == null) return;
 
-  await client.from('messages').insert({
+  final data = <String, dynamic>{
     'conversation_id': conversationId,
     'sender_id': user.id,
     'content': content,
     'type': type,
     'image_url': imageUrl,
-  });
+  };
+  if (replyToId != null) {
+    data['reply_to_id'] = replyToId;
+  }
+
+  await client.from('messages').insert(data);
+}
+
+@riverpod
+Future<void> deleteMessage(
+  Ref ref, {
+  required String messageId,
+}) async {
+  final client = ref.read(supabaseClientProvider);
+  final user = client.auth.currentUser;
+  if (user == null) throw Exception('Not authenticated');
+
+  print('[deleteMessage] messageId=$messageId userId=${user.id}');
+
+  await client
+      .from('messages')
+      .update({
+        'deleted_at': DateTime.now().toUtc().toIso8601String(),
+        'deleted_by': user.id,
+      })
+      .eq('id', messageId)
+      .eq('sender_id', user.id); // Only allow deleting own messages
+
+  print('[deleteMessage] success');
 }
 
 @riverpod

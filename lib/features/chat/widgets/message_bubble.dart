@@ -8,15 +8,30 @@ import '../../../l10n/app_localizations.dart';
 import '../models/chat_message.dart';
 import 'fullscreen_image_viewer.dart';
 
-/// In-memory cache for just-sent images to avoid signed URL + download round-trips.
+/// In-memory LRU cache for just-sent images (max 20 entries).
 class LocalImageCache {
   LocalImageCache._();
   static final Map<String, Uint8List> _cache = {};
+  static final List<String> _order = [];
+  static const _maxSize = 20;
 
-  static void put(String storagePath, Uint8List bytes) =>
-      _cache[storagePath] = bytes;
+  static void put(String storagePath, Uint8List bytes) {
+    // If already cached, move to end (most recent)
+    _order.remove(storagePath);
+    _cache[storagePath] = bytes;
+    _order.add(storagePath);
+    // Evict oldest if over limit
+    while (_order.length > _maxSize) {
+      final oldest = _order.removeAt(0);
+      _cache.remove(oldest);
+    }
+  }
+
   static Uint8List? get(String storagePath) => _cache[storagePath];
-  static void remove(String storagePath) => _cache.remove(storagePath);
+  static void remove(String storagePath) {
+    _cache.remove(storagePath);
+    _order.remove(storagePath);
+  }
 }
 
 class MessageBubble extends StatelessWidget {
@@ -25,11 +40,19 @@ class MessageBubble extends StatelessWidget {
     required this.message,
     this.showAvatar = false,
     this.participantName,
+    this.onLongPress,
+    this.onReply,
+    this.onScrollToMessage,
+    required this.currentUserId,
   });
 
   final ChatMessage message;
   final bool showAvatar;
   final String? participantName;
+  final ValueChanged<ChatMessage>? onLongPress;
+  final ValueChanged<ChatMessage>? onReply;
+  final ValueChanged<String>? onScrollToMessage;
+  final String currentUserId;
 
   @override
   Widget build(BuildContext context) {
@@ -40,25 +63,63 @@ class MessageBubble extends StatelessWidget {
     final maxWidth = screenWidth * 0.72;
     final timeText = _formatTime(message.createdAt);
 
+    // Deleted message placeholder
+    if (message.isDeleted) {
+      return _DeletedMessagePlaceholder(
+        message: message,
+        theme: theme,
+        isDark: isDark,
+        showAvatar: showAvatar,
+        participantName: participantName,
+        l10n: l10n,
+      );
+    }
+
+    // Resolve reply sender name from ID
+    String? resolvedReplySenderName;
+    if (message.replyToSenderId != null) {
+      resolvedReplySenderName = message.replyToSenderId == currentUserId
+          ? l10n.chatReplyToMe
+          : (participantName ?? '?');
+    }
+
+    Widget bubble;
     if (message.isMine) {
-      return _MineBubble(
+      bubble = _MineBubble(
         message: message,
         theme: theme,
         maxWidth: maxWidth,
         timeText: timeText,
         l10n: l10n,
+        onLongPress: onLongPress != null ? () => onLongPress!(message) : null,
+        onScrollToMessage: onScrollToMessage,
+        replySenderName: resolvedReplySenderName,
+      );
+    } else {
+      bubble = _OtherBubble(
+        message: message,
+        theme: theme,
+        isDark: isDark,
+        maxWidth: maxWidth,
+        timeText: timeText,
+        showAvatar: showAvatar,
+        participantName: participantName,
+        l10n: l10n,
+        onLongPress: onLongPress != null ? () => onLongPress!(message) : null,
+        onScrollToMessage: onScrollToMessage,
+        replySenderName: resolvedReplySenderName,
       );
     }
-    return _OtherBubble(
-      message: message,
-      theme: theme,
-      isDark: isDark,
-      maxWidth: maxWidth,
-      timeText: timeText,
-      showAvatar: showAvatar,
-      participantName: participantName,
-      l10n: l10n,
-    );
+
+    // Wrap with swipe-to-reply
+    if (onReply != null) {
+      return _SwipeToReply(
+        onReply: () => onReply!(message),
+        child: bubble,
+      );
+    }
+
+    return bubble;
   }
 
   static String _formatTime(DateTime dateTime) {
@@ -68,6 +129,273 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
+// ─── Swipe to Reply ──────────────────────────────────────────
+
+class _SwipeToReply extends StatefulWidget {
+  const _SwipeToReply({required this.onReply, required this.child});
+
+  final VoidCallback onReply;
+  final Widget child;
+
+  @override
+  State<_SwipeToReply> createState() => _SwipeToReplyState();
+}
+
+class _SwipeToReplyState extends State<_SwipeToReply>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  double _dragExtent = 0;
+  static const _threshold = 60.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onHorizontalDragUpdate: (details) {
+        _dragExtent += details.delta.dx;
+        if (_dragExtent < 0) _dragExtent = 0;
+        if (_dragExtent > _threshold * 1.5) _dragExtent = _threshold * 1.5;
+        _controller.value = _dragExtent / (_threshold * 1.5);
+      },
+      onHorizontalDragEnd: (_) {
+        if (_dragExtent >= _threshold) {
+          widget.onReply();
+        }
+        _dragExtent = 0;
+        _controller.animateTo(0, curve: Curves.easeOut);
+      },
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          final offset = _controller.value * _threshold * 1.5;
+          return Stack(
+            children: [
+              if (offset > 10)
+                Positioned(
+                  left: 8.w,
+                  top: 0,
+                  bottom: 0,
+                  child: Center(
+                    child: Opacity(
+                      opacity: (offset / _threshold).clamp(0.0, 1.0),
+                      child: Icon(
+                        Icons.reply_rounded,
+                        size: 20.r,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              Transform.translate(
+                offset: Offset(offset, 0),
+                child: child,
+              ),
+            ],
+          );
+        },
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+// ─── Deleted Message Placeholder ─────────────────────────────
+
+class _DeletedMessagePlaceholder extends StatelessWidget {
+  const _DeletedMessagePlaceholder({
+    required this.message,
+    required this.theme,
+    required this.isDark,
+    required this.showAvatar,
+    this.participantName,
+    required this.l10n,
+  });
+
+  final ChatMessage message;
+  final ThemeData theme;
+  final bool isDark;
+  final bool showAvatar;
+  final String? participantName;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMine = message.isMine;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: isMine ? 48.w : 16.w,
+        right: isMine ? 16.w : 48.w,
+        top: 2.h,
+        bottom: 2.h,
+      ),
+      child: Row(
+        mainAxisAlignment:
+            isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (!isMine) ...[
+            if (showAvatar)
+              CircleAvatar(
+                radius: 16.r,
+                backgroundColor: theme.colorScheme.primaryContainer,
+                child: Text(
+                  participantName?.characters.first ?? '?',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
+                ),
+              )
+            else
+              SizedBox(width: 32.r),
+            SizedBox(width: 8.w),
+          ],
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+            decoration: BoxDecoration(
+              color: (isDark
+                      ? theme.colorScheme.surfaceContainer
+                      : Colors.grey.shade200)
+                  .withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                width: 0.5,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.block_rounded,
+                  size: 14.r,
+                  color:
+                      theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                ),
+                SizedBox(width: 4.w),
+                Text(
+                  l10n.chatMessageDeleted,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontStyle: FontStyle.italic,
+                    color: theme.colorScheme.onSurfaceVariant
+                        .withValues(alpha: 0.5),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Reply Quote Widget ──────────────────────────────────────
+
+class ReplyQuote extends StatelessWidget {
+  const ReplyQuote({
+    super.key,
+    required this.senderName,
+    required this.content,
+    required this.type,
+    required this.isDeleted,
+    required this.isMine,
+    required this.l10n,
+    this.onTap,
+  });
+
+  final String senderName;
+  final String? content;
+  final String? type;
+  final bool isDeleted;
+  final bool isMine; // Whether the parent bubble is mine (affects colors)
+  final AppLocalizations l10n;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final barColor = isMine
+        ? Colors.white.withValues(alpha: 0.6)
+        : theme.colorScheme.primary;
+
+    String previewText;
+    if (isDeleted) {
+      previewText = l10n.chatMessageDeleted;
+    } else if (type == 'image') {
+      previewText = l10n.chatImageMessage;
+    } else {
+      final text = content ?? '';
+      previewText = text.length > 50 ? '${text.substring(0, 50)}...' : text;
+    }
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 4.h),
+        padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 4.h, bottom: 4.h),
+        decoration: BoxDecoration(
+          color: isMine
+              ? Colors.white.withValues(alpha: 0.1)
+              : theme.colorScheme.primary.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border(
+            left: BorderSide(color: barColor, width: 2.5),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              senderName,
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w600,
+                color: isMine
+                    ? Colors.white.withValues(alpha: 0.8)
+                    : theme.colorScheme.primary,
+              ),
+            ),
+            SizedBox(height: 1.h),
+            Text(
+              previewText,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontStyle: isDeleted ? FontStyle.italic : FontStyle.normal,
+                color: isMine
+                    ? Colors.white.withValues(alpha: 0.6)
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Mine Bubble ─────────────────────────────────────────────
+
 class _MineBubble extends StatelessWidget {
   const _MineBubble({
     required this.message,
@@ -75,6 +403,9 @@ class _MineBubble extends StatelessWidget {
     required this.maxWidth,
     required this.timeText,
     required this.l10n,
+    this.onLongPress,
+    this.onScrollToMessage,
+    this.replySenderName,
   });
 
   final ChatMessage message;
@@ -82,60 +413,86 @@ class _MineBubble extends StatelessWidget {
   final double maxWidth;
   final String timeText;
   final AppLocalizations l10n;
+  final VoidCallback? onLongPress;
+  final ValueChanged<String>? onScrollToMessage;
+  final String? replySenderName;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 48.w, right: 16.w, top: 2.h, bottom: 2.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(right: 4.w, bottom: 2.h),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  timeText,
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    color: theme.colorScheme.onSurfaceVariant
-                        .withValues(alpha: 0.6),
+    return GestureDetector(
+      onLongPress: onLongPress,
+      child: Padding(
+        padding:
+            EdgeInsets.only(left: 48.w, right: 16.w, top: 2.h, bottom: 2.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(right: 4.w, bottom: 2.h),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    timeText,
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      color: theme.colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.6),
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  Icon(
+                    message.isRead ? Icons.done_all : Icons.done,
+                    size: 14.r,
+                    color: message.isRead
+                        ? const Color(0xFF2D5A8E)
+                        : theme.colorScheme.onSurfaceVariant
+                            .withValues(alpha: 0.4),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2D5A8E),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16.r),
+                    topRight: Radius.circular(4.r),
+                    bottomLeft: Radius.circular(16.r),
+                    bottomRight: Radius.circular(16.r),
                   ),
                 ),
-                SizedBox(width: 2.w),
-                Icon(
-                  message.isRead ? Icons.done_all : Icons.done,
-                  size: 14.r,
-                  color: message.isRead
-                      ? const Color(0xFF2D5A8E)
-                      : theme.colorScheme.onSurfaceVariant
-                          .withValues(alpha: 0.4),
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            child: Container(
-              constraints: BoxConstraints(maxWidth: maxWidth),
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2D5A8E),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16.r),
-                  topRight: Radius.circular(4.r),
-                  bottomLeft: Radius.circular(16.r),
-                  bottomRight: Radius.circular(16.r),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (message.replyToId != null)
+                      ReplyQuote(
+                        senderName: replySenderName ?? '?',
+                        content: message.replyToContent,
+                        type: message.replyToType,
+                        isDeleted: message.replyToIsDeleted ?? false,
+                        isMine: true,
+                        l10n: l10n,
+                        onTap: onScrollToMessage != null && message.replyToId != null
+                            ? () => onScrollToMessage!(message.replyToId!)
+                            : null,
+                      ),
+                    _buildContent(
+                      Colors.white,
+                      Colors.white.withValues(alpha: 0.7),
+                    ),
+                  ],
                 ),
               ),
-              child: _buildContent(
-                Colors.white,
-                Colors.white.withValues(alpha: 0.7),
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -148,12 +505,15 @@ class _MineBubble extends StatelessWidget {
         secondaryColor: secondaryColor,
       );
     }
-    return Text(
-      message.content,
+    return _ExpandableText(
+      text: message.content,
       style: TextStyle(fontSize: 14.sp, color: textColor, height: 1.4),
+      l10n: l10n,
     );
   }
 }
+
+// ─── Other Bubble ────────────────────────────────────────────
 
 class _OtherBubble extends StatelessWidget {
   const _OtherBubble({
@@ -165,6 +525,9 @@ class _OtherBubble extends StatelessWidget {
     required this.showAvatar,
     this.participantName,
     required this.l10n,
+    this.onLongPress,
+    this.onScrollToMessage,
+    this.replySenderName,
   });
 
   final ChatMessage message;
@@ -175,10 +538,15 @@ class _OtherBubble extends StatelessWidget {
   final bool showAvatar;
   final String? participantName;
   final AppLocalizations l10n;
+  final VoidCallback? onLongPress;
+  final ValueChanged<String>? onScrollToMessage;
+  final String? replySenderName;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return GestureDetector(
+      onLongPress: onLongPress,
+      child: Padding(
       padding: EdgeInsets.only(left: 16.w, right: 48.w, top: 2.h, bottom: 2.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -219,9 +587,27 @@ class _OtherBubble extends StatelessWidget {
                   width: 0.5,
                 ),
               ),
-              child: _buildContent(
-                theme.colorScheme.onSurface,
-                theme.colorScheme.onSurfaceVariant,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (message.replyToId != null)
+                    ReplyQuote(
+                      senderName: replySenderName ?? '?',
+                      content: message.replyToContent,
+                      type: message.replyToType,
+                      isDeleted: message.replyToIsDeleted ?? false,
+                      isMine: false,
+                      l10n: l10n,
+                      onTap: onScrollToMessage != null && message.replyToId != null
+                          ? () => onScrollToMessage!(message.replyToId!)
+                          : null,
+                    ),
+                  _buildContent(
+                    theme.colorScheme.onSurface,
+                    theme.colorScheme.onSurfaceVariant,
+                  ),
+                ],
               ),
             ),
           ),
@@ -238,6 +624,7 @@ class _OtherBubble extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -249,12 +636,15 @@ class _OtherBubble extends StatelessWidget {
         secondaryColor: secondaryColor,
       );
     }
-    return Text(
-      message.content,
+    return _ExpandableText(
+      text: message.content,
       style: TextStyle(fontSize: 14.sp, color: textColor, height: 1.4),
+      l10n: l10n,
     );
   }
 }
+
+// ─── Image Content ───────────────────────────────────────────
 
 class _ImageContent extends StatelessWidget {
   const _ImageContent({
@@ -359,6 +749,11 @@ class _SignedImageWidgetState extends State<_SignedImageWidget>
     if (oldWidget.storagePath != widget.storagePath) {
       _signedUrl = null;
       _hasError = false;
+      if (LocalImageCache.get(widget.storagePath) != null) {
+        _fadeController.value = 1.0;
+      } else {
+        _fadeController.value = 0;
+      }
       _loadSignedUrl();
     }
   }
@@ -408,6 +803,7 @@ class _SignedImageWidgetState extends State<_SignedImageWidget>
               child: Image.memory(
                 cachedBytes,
                 fit: BoxFit.cover,
+                cacheWidth: 400,
               ),
             ),
           ),
@@ -452,6 +848,7 @@ class _SignedImageWidgetState extends State<_SignedImageWidget>
             child: Image.network(
               _signedUrl!,
               fit: BoxFit.cover,
+              cacheWidth: 400,
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                 if (wasSynchronouslyLoaded) return child;
                 if (frame != null) {
@@ -481,6 +878,107 @@ class _SignedImageWidgetState extends State<_SignedImageWidget>
           ),
         ),
       ),
+    );
+  }
+}
+
+// ─── Expandable Text (long message collapse/expand) ─────────
+
+class _ExpandableText extends StatefulWidget {
+  const _ExpandableText({
+    required this.text,
+    required this.style,
+    required this.l10n,
+  });
+
+  final String text;
+  final TextStyle style;
+  final AppLocalizations l10n;
+  static const _maxLines = 8;
+
+  @override
+  State<_ExpandableText> createState() => _ExpandableTextState();
+}
+
+class _ExpandableTextState extends State<_ExpandableText>
+    with AutomaticKeepAliveClientMixin {
+  bool _expanded = false;
+  bool? _exceeds;
+  double _lastMaxWidth = 0;
+
+  @override
+  bool get wantKeepAlive => _expanded;
+
+  void _measureIfNeeded(double maxWidth) {
+    if (_exceeds != null &&
+        _lastMaxWidth == maxWidth &&
+        widget.text == widget.text) {
+      return;
+    }
+    _lastMaxWidth = maxWidth;
+    final textPainter = TextPainter(
+      text: TextSpan(text: widget.text, style: widget.style),
+      maxLines: _ExpandableText._maxLines,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: maxWidth);
+    _exceeds = textPainter.didExceedMaxLines;
+  }
+
+  @override
+  void didUpdateWidget(_ExpandableText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text || oldWidget.style != widget.style) {
+      _exceeds = null; // invalidate cache
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context); // required by AutomaticKeepAliveClientMixin
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _measureIfNeeded(constraints.maxWidth);
+
+        if (_exceeds != true) {
+          return Text(widget.text, style: widget.style);
+        }
+
+        return AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          alignment: Alignment.topCenter,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.text,
+                style: widget.style,
+                maxLines: _expanded ? null : _ExpandableText._maxLines,
+                overflow: _expanded ? null : TextOverflow.ellipsis,
+              ),
+              GestureDetector(
+                onTap: () => setState(() {
+                  _expanded = !_expanded;
+                  updateKeepAlive();
+                }),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 4.h),
+                  child: Text(
+                    _expanded
+                        ? widget.l10n.chatShowLess
+                        : widget.l10n.chatShowMore,
+                    style: widget.style.copyWith(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
