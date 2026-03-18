@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/utils/label_formatters.dart';
 import '../models/marketplace_profile.dart';
 
 class ProfileDetailInfoSection extends StatelessWidget {
@@ -47,7 +48,7 @@ class ProfileDetailInfoSection extends StatelessWidget {
         _InfoItem(
           icon: Icons.account_balance_wallet_outlined,
           label: l10n.profileIncome,
-          value: _incomeLabel(profile.annualIncomeRange!, l10n),
+          value: incomeLabel(profile.annualIncomeRange!, l10n),
         ),
       if (profile.drinking != null)
         _InfoItem(
@@ -205,17 +206,6 @@ class ProfileDetailInfoSection extends StatelessWidget {
     };
   }
 
-  String _incomeLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'under_30m' => l10n.regIncome1,
-      '30m_50m' => l10n.regIncome2,
-      '50m_70m' => l10n.regIncome3,
-      '70m_100m' => l10n.regIncome4,
-      '100m_150m' => l10n.regIncome5,
-      'over_150m' => l10n.regIncome6,
-      _ => val,
-    };
-  }
 
   String _assetLabel(String val, AppLocalizations l10n) {
     return switch (val) {

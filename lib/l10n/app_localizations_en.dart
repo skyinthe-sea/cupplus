@@ -1683,6 +1683,120 @@ class AppLocalizationsEn extends AppLocalizations {
   String get crmScheduleEmpty => 'No upcoming schedules';
 
   @override
+  String get crmTagsTitle => 'Tags';
+
+  @override
+  String get crmTagsEmpty => 'Add tags to categorize this client';
+
+  @override
+  String get crmTagsAdd => 'Add Tag';
+
+  @override
+  String get crmTagsAddButton => 'Add';
+
+  @override
+  String get crmTagsCustomHint => 'Enter custom tag';
+
+  @override
+  String get crmDashboardTitle => 'Client Analytics';
+
+  @override
+  String get crmThisMonth => 'This Month';
+
+  @override
+  String get crmNewRegistrations => 'New Clients';
+
+  @override
+  String get crmNewMatches => 'Match Requests';
+
+  @override
+  String get crmTotalNotes => 'Notes';
+
+  @override
+  String get crmClientOverview => 'Client Overview';
+
+  @override
+  String get crmTotalClients => 'clients';
+
+  @override
+  String get crmAvgAge => 'Avg Age';
+
+  @override
+  String get crmMatchPerformance => 'Match Performance';
+
+  @override
+  String get crmSuccessRate => 'Success Rate';
+
+  @override
+  String get crmDeclineRate => 'Decline Rate';
+
+  @override
+  String get crmPendingMatches => 'Pending';
+
+  @override
+  String get crmWaitingResponse => 'Awaiting response';
+
+  @override
+  String get crmTotalMatchesLabel => 'Total Matches';
+
+  @override
+  String get crmAllTime => 'All time';
+
+  @override
+  String get supportHeaderTitle => 'Need help?';
+
+  @override
+  String get supportHeaderSubtitle =>
+      'Feel free to reach out\nwith any questions or issues.';
+
+  @override
+  String get supportEmailTitle => 'Email Support';
+
+  @override
+  String get supportEmailDesc =>
+      'We respond within 24 hours on business days.\nPlease include your manager name and contact info.';
+
+  @override
+  String get supportEmailButton => 'Send Email';
+
+  @override
+  String get supportHoursTitle => 'Business Hours';
+
+  @override
+  String get supportHoursValue => 'Mon-Fri 10:00 AM - 6:00 PM (KST)';
+
+  @override
+  String get supportFaqTitle => 'FAQ';
+
+  @override
+  String get supportFaq1Q => 'How do I change or cancel my subscription?';
+
+  @override
+  String get supportFaq1A =>
+      'Go to My > Subscription to change your plan. Cancellation is managed through the App Store or Google Play Store.';
+
+  @override
+  String get supportFaq2Q => 'How long does manager verification take?';
+
+  @override
+  String get supportFaq2A =>
+      'Verification is typically completed within 1-2 business days after submission. You\'ll be notified via push notification.';
+
+  @override
+  String get supportFaq3Q => 'When does the daily match limit reset?';
+
+  @override
+  String get supportFaq3A =>
+      'Daily limits reset automatically at midnight (00:00 KST).';
+
+  @override
+  String get supportFaq4Q => 'How do I delete a registered client?';
+
+  @override
+  String get supportFaq4A =>
+      'Go to My > My Clients, select the client, and use the delete option. Pending matches will be cancelled.';
+
+  @override
   String homeTodaySchedules(int count) {
     return '$count upcoming schedules';
   }

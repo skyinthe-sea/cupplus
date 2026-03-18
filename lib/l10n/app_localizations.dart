@@ -3212,6 +3212,222 @@ abstract class AppLocalizations {
   /// **'예정된 일정이 없습니다'**
   String get crmScheduleEmpty;
 
+  /// No description provided for @crmTagsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그'**
+  String get crmTagsTitle;
+
+  /// No description provided for @crmTagsEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그를 추가하여 회원을 분류하세요'**
+  String get crmTagsEmpty;
+
+  /// No description provided for @crmTagsAdd.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그 추가'**
+  String get crmTagsAdd;
+
+  /// No description provided for @crmTagsAddButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'추가'**
+  String get crmTagsAddButton;
+
+  /// No description provided for @crmTagsCustomHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'커스텀 태그 입력'**
+  String get crmTagsCustomHint;
+
+  /// No description provided for @crmDashboardTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 분석'**
+  String get crmDashboardTitle;
+
+  /// No description provided for @crmThisMonth.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 달 활동'**
+  String get crmThisMonth;
+
+  /// No description provided for @crmNewRegistrations.
+  ///
+  /// In ko, this message translates to:
+  /// **'신규 등록'**
+  String get crmNewRegistrations;
+
+  /// No description provided for @crmNewMatches.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 요청'**
+  String get crmNewMatches;
+
+  /// No description provided for @crmTotalNotes.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모'**
+  String get crmTotalNotes;
+
+  /// No description provided for @crmClientOverview.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 현황'**
+  String get crmClientOverview;
+
+  /// No description provided for @crmTotalClients.
+  ///
+  /// In ko, this message translates to:
+  /// **'명'**
+  String get crmTotalClients;
+
+  /// No description provided for @crmAvgAge.
+  ///
+  /// In ko, this message translates to:
+  /// **'평균 연령'**
+  String get crmAvgAge;
+
+  /// No description provided for @crmMatchPerformance.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 성과'**
+  String get crmMatchPerformance;
+
+  /// No description provided for @crmSuccessRate.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 성공률'**
+  String get crmSuccessRate;
+
+  /// No description provided for @crmDeclineRate.
+  ///
+  /// In ko, this message translates to:
+  /// **'거절률'**
+  String get crmDeclineRate;
+
+  /// No description provided for @crmPendingMatches.
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 중'**
+  String get crmPendingMatches;
+
+  /// No description provided for @crmWaitingResponse.
+  ///
+  /// In ko, this message translates to:
+  /// **'응답 대기'**
+  String get crmWaitingResponse;
+
+  /// No description provided for @crmTotalMatchesLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체 매칭'**
+  String get crmTotalMatchesLabel;
+
+  /// No description provided for @crmAllTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'누적'**
+  String get crmAllTime;
+
+  /// No description provided for @supportHeaderTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'도움이 필요하신가요?'**
+  String get supportHeaderTitle;
+
+  /// No description provided for @supportHeaderSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'궁금한 점이나 문제가 있으시면\n언제든지 문의해주세요.'**
+  String get supportHeaderSubtitle;
+
+  /// No description provided for @supportEmailTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일 문의'**
+  String get supportEmailTitle;
+
+  /// No description provided for @supportEmailDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'영업일 기준 24시간 내 답변드립니다.\n문의 시 매니저명과 연락처를 함께 적어주세요.'**
+  String get supportEmailDesc;
+
+  /// No description provided for @supportEmailButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일 보내기'**
+  String get supportEmailButton;
+
+  /// No description provided for @supportHoursTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'운영 시간'**
+  String get supportHoursTitle;
+
+  /// No description provided for @supportHoursValue.
+  ///
+  /// In ko, this message translates to:
+  /// **'평일 10:00 - 18:00 (주말/공휴일 제외)'**
+  String get supportHoursValue;
+
+  /// No description provided for @supportFaqTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'자주 묻는 질문'**
+  String get supportFaqTitle;
+
+  /// No description provided for @supportFaq1Q.
+  ///
+  /// In ko, this message translates to:
+  /// **'구독을 변경하거나 취소하려면?'**
+  String get supportFaq1Q;
+
+  /// No description provided for @supportFaq1A.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이 > 구독 관리에서 플랜을 변경할 수 있습니다. 구독 취소는 앱스토어/플레이스토어에서 직접 관리됩니다.'**
+  String get supportFaq1A;
+
+  /// No description provided for @supportFaq2Q.
+  ///
+  /// In ko, this message translates to:
+  /// **'매니저 인증은 얼마나 걸리나요?'**
+  String get supportFaq2Q;
+
+  /// No description provided for @supportFaq2A.
+  ///
+  /// In ko, this message translates to:
+  /// **'서류 제출 후 영업일 기준 1-2일 내 검토가 완료됩니다. 결과는 푸시 알림으로 안내드립니다.'**
+  String get supportFaq2A;
+
+  /// No description provided for @supportFaq3Q.
+  ///
+  /// In ko, this message translates to:
+  /// **'일일 매칭 횟수는 언제 초기화되나요?'**
+  String get supportFaq3Q;
+
+  /// No description provided for @supportFaq3A.
+  ///
+  /// In ko, this message translates to:
+  /// **'매일 자정(00:00)에 자동 초기화됩니다.'**
+  String get supportFaq3A;
+
+  /// No description provided for @supportFaq4Q.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록한 회원 정보를 삭제하려면?'**
+  String get supportFaq4Q;
+
+  /// No description provided for @supportFaq4A.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이 > 내 회원 관리에서 해당 회원의 상세 페이지로 들어가 삭제할 수 있습니다. 삭제 시 관련 대기 매칭이 취소됩니다.'**
+  String get supportFaq4A;
+
   /// No description provided for @homeTodaySchedules.
   ///
   /// In ko, this message translates to:
