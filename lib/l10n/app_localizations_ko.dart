@@ -250,10 +250,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get subscriptionFree => '무료';
 
   @override
-  String get subscriptionStandard => '스탠다드';
+  String get subscriptionSilver => '실버';
 
   @override
-  String get subscriptionPremium => '프리미엄';
+  String get subscriptionGold => '골드';
 
   @override
   String subscriptionDailyLimit(int count) {
@@ -781,6 +781,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get matchRequestDailyLimit => '오늘의 매칭 횟수를 초과했습니다';
 
   @override
+  String clientRegistrationLimitExceeded(int current, int limit) {
+    return '회원 등록 한도 초과 (현재 $current/$limit명). 구독을 업그레이드하세요.';
+  }
+
+  @override
+  String get subscriptionDevModeTitle => 'Dev: 구독 티어 변경';
+
+  @override
   String chatMatchContext(String clientA, String clientB) {
     return '$clientA ↔ $clientB 매칭';
   }
@@ -1284,11 +1292,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String subscriptionDailyUnlimited(int used) {
-    return '오늘 $used건 사용 · 무제한';
-  }
-
-  @override
   String get subscriptionChangePlan => '플랜 변경';
 
   @override
@@ -1300,16 +1303,27 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get subscriptionFeatureUnlimited => '무제한';
+  String get subscriptionClientLimit => '회원 등록';
+
+  @override
+  String subscriptionClientLimitValue(int count) {
+    return '최대 $count명';
+  }
 
   @override
   String get subscriptionFreePlanDesc => '무료 플랜';
 
   @override
-  String get subscriptionStandardPlanDesc => '스탠다드 플랜';
+  String get subscriptionSilverPlanDesc => '실버 플랜';
 
   @override
-  String get subscriptionPremiumPlanDesc => '프리미엄 플랜';
+  String get subscriptionGoldPlanDesc => '골드 플랜';
+
+  @override
+  String get subscriptionLaunchPrice => '론칭 특가';
+
+  @override
+  String get subscriptionOriginalPrice => '정가';
 
   @override
   String get subscriptionRestoreTitle => '구매 복원';

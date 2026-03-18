@@ -252,10 +252,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionFree => 'Free';
 
   @override
-  String get subscriptionStandard => 'Standard';
+  String get subscriptionSilver => 'Silver';
 
   @override
-  String get subscriptionPremium => 'Premium';
+  String get subscriptionGold => 'Gold';
 
   @override
   String subscriptionDailyLimit(int count) {
@@ -785,6 +785,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchRequestDailyLimit => 'You have exceeded today\'s match limit';
 
   @override
+  String clientRegistrationLimitExceeded(int current, int limit) {
+    return 'Client limit reached ($current/$limit). Please upgrade your plan.';
+  }
+
+  @override
+  String get subscriptionDevModeTitle => 'Dev: Change Subscription Tier';
+
+  @override
   String chatMatchContext(String clientA, String clientB) {
     return '$clientA ↔ $clientB Match';
   }
@@ -1293,11 +1301,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String subscriptionDailyUnlimited(int used) {
-    return '$used matches today · Unlimited';
-  }
-
-  @override
   String get subscriptionChangePlan => 'Change Plan';
 
   @override
@@ -1309,16 +1312,27 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get subscriptionFeatureUnlimited => 'Unlimited';
+  String get subscriptionClientLimit => 'Client Limit';
+
+  @override
+  String subscriptionClientLimitValue(int count) {
+    return 'Up to $count';
+  }
 
   @override
   String get subscriptionFreePlanDesc => 'Free Plan';
 
   @override
-  String get subscriptionStandardPlanDesc => 'Standard Plan';
+  String get subscriptionSilverPlanDesc => 'Silver Plan';
 
   @override
-  String get subscriptionPremiumPlanDesc => 'Premium Plan';
+  String get subscriptionGoldPlanDesc => 'Gold Plan';
+
+  @override
+  String get subscriptionLaunchPrice => 'Launch Special';
+
+  @override
+  String get subscriptionOriginalPrice => 'Regular';
 
   @override
   String get subscriptionRestoreTitle => 'Restore Purchases';

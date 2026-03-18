@@ -12,6 +12,7 @@ import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/manager_profile_provider.dart';
 import '../../contract/services/contract_service.dart';
+import '../../subscription/providers/subscription_provider.dart';
 import '../providers/home_providers.dart';
 import '../widgets/registration_steps/step_basic_info.dart';
 import '../widgets/registration_steps/step_career_education.dart';
@@ -311,6 +312,27 @@ class _ClientRegistrationScreenState
 
   Future<void> _onComplete() async {
     if (!_isStepValid(5)) return;
+
+    // Check client registration limit (parallel fetch)
+    final results = await Future.wait([
+      ref.read(canRegisterClientProvider.future),
+      ref.read(myActiveClientCountProvider.future),
+      ref.read(clientLimitProvider.future),
+    ]);
+    if (!mounted) return;
+    final canRegister = results[0] as bool;
+    if (!canRegister) {
+      final l10n = AppLocalizations.of(context)!;
+      final count = results[1] as int;
+      final limit = results[2] as int;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.clientRegistrationLimitExceeded(count, limit)),
+        ),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
@@ -446,6 +468,8 @@ class _ClientRegistrationScreenState
       ref.invalidate(activityFeedProvider);
       ref.invalidate(homeRecommendedClientsProvider);
       ref.invalidate(homeTodayStatsProvider);
+      ref.invalidate(myActiveClientCountProvider);
+      ref.invalidate(canRegisterClientProvider);
 
       // Delete draft
       await _deleteDraft();

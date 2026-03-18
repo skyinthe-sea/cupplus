@@ -560,17 +560,17 @@ abstract class AppLocalizations {
   /// **'무료'**
   String get subscriptionFree;
 
-  /// No description provided for @subscriptionStandard.
+  /// No description provided for @subscriptionSilver.
   ///
   /// In ko, this message translates to:
-  /// **'스탠다드'**
-  String get subscriptionStandard;
+  /// **'실버'**
+  String get subscriptionSilver;
 
-  /// No description provided for @subscriptionPremium.
+  /// No description provided for @subscriptionGold.
   ///
   /// In ko, this message translates to:
-  /// **'프리미엄'**
-  String get subscriptionPremium;
+  /// **'골드'**
+  String get subscriptionGold;
 
   /// No description provided for @subscriptionDailyLimit.
   ///
@@ -1513,6 +1513,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'오늘의 매칭 횟수를 초과했습니다'**
   String get matchRequestDailyLimit;
+
+  /// No description provided for @clientRegistrationLimitExceeded.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원 등록 한도 초과 (현재 {current}/{limit}명). 구독을 업그레이드하세요.'**
+  String clientRegistrationLimitExceeded(int current, int limit);
+
+  /// No description provided for @subscriptionDevModeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Dev: 구독 티어 변경'**
+  String get subscriptionDevModeTitle;
 
   /// No description provided for @chatMatchContext.
   ///
@@ -2474,12 +2486,6 @@ abstract class AppLocalizations {
   /// **'오늘 {used}/{limit}건 사용'**
   String subscriptionDailyUsage(int used, int limit);
 
-  /// No description provided for @subscriptionDailyUnlimited.
-  ///
-  /// In ko, this message translates to:
-  /// **'오늘 {used}건 사용 · 무제한'**
-  String subscriptionDailyUnlimited(int used);
-
   /// No description provided for @subscriptionChangePlan.
   ///
   /// In ko, this message translates to:
@@ -2498,11 +2504,17 @@ abstract class AppLocalizations {
   /// **'{count}건/일'**
   String subscriptionFeatureMatchesValue(int count);
 
-  /// No description provided for @subscriptionFeatureUnlimited.
+  /// No description provided for @subscriptionClientLimit.
   ///
   /// In ko, this message translates to:
-  /// **'무제한'**
-  String get subscriptionFeatureUnlimited;
+  /// **'회원 등록'**
+  String get subscriptionClientLimit;
+
+  /// No description provided for @subscriptionClientLimitValue.
+  ///
+  /// In ko, this message translates to:
+  /// **'최대 {count}명'**
+  String subscriptionClientLimitValue(int count);
 
   /// No description provided for @subscriptionFreePlanDesc.
   ///
@@ -2510,17 +2522,29 @@ abstract class AppLocalizations {
   /// **'무료 플랜'**
   String get subscriptionFreePlanDesc;
 
-  /// No description provided for @subscriptionStandardPlanDesc.
+  /// No description provided for @subscriptionSilverPlanDesc.
   ///
   /// In ko, this message translates to:
-  /// **'스탠다드 플랜'**
-  String get subscriptionStandardPlanDesc;
+  /// **'실버 플랜'**
+  String get subscriptionSilverPlanDesc;
 
-  /// No description provided for @subscriptionPremiumPlanDesc.
+  /// No description provided for @subscriptionGoldPlanDesc.
   ///
   /// In ko, this message translates to:
-  /// **'프리미엄 플랜'**
-  String get subscriptionPremiumPlanDesc;
+  /// **'골드 플랜'**
+  String get subscriptionGoldPlanDesc;
+
+  /// No description provided for @subscriptionLaunchPrice.
+  ///
+  /// In ko, this message translates to:
+  /// **'론칭 특가'**
+  String get subscriptionLaunchPrice;
+
+  /// No description provided for @subscriptionOriginalPrice.
+  ///
+  /// In ko, this message translates to:
+  /// **'정가'**
+  String get subscriptionOriginalPrice;
 
   /// No description provided for @subscriptionRestoreTitle.
   ///
