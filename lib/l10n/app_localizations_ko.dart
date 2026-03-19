@@ -1750,6 +1750,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get supportHoursValue => '평일 10:00 - 18:00 (주말/공휴일 제외)';
 
   @override
+  String supportEmailFallback(String email) {
+    return '이메일 앱을 찾을 수 없습니다. 직접 연락해 주세요: $email';
+  }
+
+  @override
   String get supportFaqTitle => '자주 묻는 질문';
 
   @override

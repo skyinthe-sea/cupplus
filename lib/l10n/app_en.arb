@@ -732,6 +732,8 @@
   "supportEmailButton": "Send Email",
   "supportHoursTitle": "Business Hours",
   "supportHoursValue": "Mon-Fri 10:00 AM - 6:00 PM (KST)",
+  "supportEmailFallback": "No email app found. Please contact us directly: {email}",
+  "@supportEmailFallback": { "placeholders": { "email": { "type": "String" } } },
   "supportFaqTitle": "FAQ",
   "supportFaq1Q": "How do I change or cancel my subscription?",
   "supportFaq1A": "Go to My > Subscription to change your plan. Cancellation is managed through the App Store or Google Play Store.",

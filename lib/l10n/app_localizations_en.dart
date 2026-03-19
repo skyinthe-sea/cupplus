@@ -1766,6 +1766,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get supportHoursValue => 'Mon-Fri 10:00 AM - 6:00 PM (KST)';
 
   @override
+  String supportEmailFallback(String email) {
+    return 'No email app found. Please contact us directly: $email';
+  }
+
+  @override
   String get supportFaqTitle => 'FAQ';
 
   @override

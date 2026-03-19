@@ -3374,6 +3374,12 @@ abstract class AppLocalizations {
   /// **'평일 10:00 - 18:00 (주말/공휴일 제외)'**
   String get supportHoursValue;
 
+  /// No description provided for @supportEmailFallback.
+  ///
+  /// In ko, this message translates to:
+  /// **'이메일 앱을 찾을 수 없습니다. 직접 연락해 주세요: {email}'**
+  String supportEmailFallback(String email);
+
   /// No description provided for @supportFaqTitle.
   ///
   /// In ko, this message translates to:

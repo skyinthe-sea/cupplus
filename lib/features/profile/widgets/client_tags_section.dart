@@ -101,12 +101,12 @@ class ClientTagsSection extends ConsumerWidget {
     );
   }
 
-  void _showAddTagSheet(BuildContext context, WidgetRef ref) {
+  Future<void> _showAddTagSheet(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final customController = TextEditingController();
 
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (ctx) => Padding(
@@ -224,6 +224,7 @@ class ClientTagsSection extends ConsumerWidget {
         ),
       ),
     );
+    customController.dispose();
   }
 
   Color _parseColor(String? hex) {

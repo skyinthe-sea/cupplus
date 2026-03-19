@@ -303,6 +303,8 @@ class _StatusBar extends StatelessWidget {
     final total = stats.totalClients;
     if (total == 0) return const SizedBox.shrink();
 
+    final other = total - stats.activeClients - stats.pausedClients - stats.matchedClients;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(4.r),
       child: SizedBox(
@@ -323,6 +325,11 @@ class _StatusBar extends StatelessWidget {
               Expanded(
                 flex: stats.matchedClients,
                 child: Container(color: theme.colorScheme.primary),
+              ),
+            if (other > 0)
+              Expanded(
+                flex: other,
+                child: Container(color: Colors.grey.shade400),
               ),
           ],
         ),

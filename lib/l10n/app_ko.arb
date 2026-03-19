@@ -738,6 +738,8 @@
   "supportEmailButton": "이메일 보내기",
   "supportHoursTitle": "운영 시간",
   "supportHoursValue": "평일 10:00 - 18:00 (주말/공휴일 제외)",
+  "supportEmailFallback": "이메일 앱을 찾을 수 없습니다. 직접 연락해 주세요: {email}",
+  "@supportEmailFallback": { "placeholders": { "email": { "type": "String" } } },
   "supportFaqTitle": "자주 묻는 질문",
   "supportFaq1Q": "구독을 변경하거나 취소하려면?",
   "supportFaq1A": "마이 > 구독 관리에서 플랜을 변경할 수 있습니다. 구독 취소는 앱스토어/플레이스토어에서 직접 관리됩니다.",
