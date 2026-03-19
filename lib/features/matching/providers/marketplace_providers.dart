@@ -601,8 +601,7 @@ Future<String?> createMatch(
   // Get daily limit from subscription tier
   int dailyLimit;
   try {
-    final limitOrNull = await ref.read(dailyMatchLimitProvider.future);
-    dailyLimit = limitOrNull ?? 999999; // null = unlimited (premium)
+    dailyLimit = await ref.read(dailyMatchLimitProvider.future);
   } catch (_) {
     dailyLimit = AppConstants.freeMatchDailyLimit;
   }

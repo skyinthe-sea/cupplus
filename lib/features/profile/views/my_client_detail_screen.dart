@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../config/routes.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/utils/label_formatters.dart';
 import '../providers/my_clients_provider.dart';
+import '../widgets/client_tags_section.dart';
 import '../widgets/client_timeline.dart';
 
 class MyClientDetailScreen extends ConsumerWidget {
@@ -103,6 +105,11 @@ class MyClientDetailScreen extends ConsumerWidget {
                   SliverToBoxAdapter(
                     child: _BioSection(bio: detail.bio!, l10n: l10n),
                   ),
+
+                // CRM Tags
+                SliverToBoxAdapter(
+                  child: ClientTagsSection(clientId: clientId),
+                ),
 
                 // CRM Notes & Timeline
                 SliverToBoxAdapter(
@@ -467,7 +474,7 @@ class _InfoSection extends StatelessWidget {
       if (detail.company != null)
         _InfoItem(l10n.profileCompany, detail.company!),
       if (detail.annualIncomeRange != null)
-        _InfoItem(l10n.profileIncome, _incomeLabel(detail.annualIncomeRange!, l10n)),
+        _InfoItem(l10n.profileIncome, incomeLabel(detail.annualIncomeRange!, l10n)),
       if (detail.religion != null)
         _InfoItem(l10n.profileReligion, _religionLabel(detail.religion!, l10n)),
       if (detail.maritalHistory != null)
@@ -623,17 +630,6 @@ class _InfoSection extends StatelessWidget {
     };
   }
 
-  String _incomeLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'under_30m' => l10n.regIncome1,
-      '30m_50m' => l10n.regIncome2,
-      '50m_70m' => l10n.regIncome3,
-      '70m_100m' => l10n.regIncome4,
-      '100m_150m' => l10n.regIncome5,
-      'over_150m' => l10n.regIncome6,
-      _ => val,
-    };
-  }
 
   String _assetLabel(String val, AppLocalizations l10n) {
     return switch (val) {
@@ -906,7 +902,7 @@ class _IdealPartnerSection extends StatelessWidget {
       if (detail.idealEducationLevel != null)
         _InfoItem(l10n.profileIdealEducation, detail.idealEducationLevel!),
       if (detail.idealIncomeRange != null)
-        _InfoItem(l10n.profileIdealIncome, detail.idealIncomeRange!),
+        _InfoItem(l10n.profileIdealIncome, incomeLabel(detail.idealIncomeRange!, l10n)),
       if (detail.idealReligion != null)
         _InfoItem(l10n.profileIdealReligion, detail.idealReligion!),
       if (detail.idealNotes != null)

@@ -408,16 +408,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mySettingsLanguageEn => 'English';
 
   @override
-  String get mySettingsTheme => '테마';
-
-  @override
-  String get themeSystem => '시스템';
-
-  @override
-  String get themeLight => '라이트';
-
-  @override
-  String get themeDark => '다크';
+  String get mySettingsDarkMode => '다크 모드';
 
   @override
   String get myGeneralTitle => '일반';
@@ -788,6 +779,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get matchRequestDailyLimit => '오늘의 매칭 횟수를 초과했습니다';
+
+  @override
+  String clientRegistrationLimitExceeded(int current, int limit) {
+    return '회원 등록 한도 초과 (현재 $current/$limit명). 구독을 업그레이드하세요.';
+  }
+
+  @override
+  String get subscriptionDevModeTitle => 'Dev: 구독 티어 변경';
 
   @override
   String chatMatchContext(String clientA, String clientB) {
@@ -1293,11 +1292,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String subscriptionDailyUnlimited(int used) {
-    return '오늘 $used건 사용 · 무제한';
-  }
-
-  @override
   String get subscriptionChangePlan => '플랜 변경';
 
   @override
@@ -1309,7 +1303,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get subscriptionFeatureUnlimited => '무제한';
+  String get subscriptionClientLimit => '회원 등록';
+
+  @override
+  String subscriptionClientLimitValue(int count) {
+    return '최대 $count명';
+  }
 
   @override
   String get subscriptionFreePlanDesc => '무료 플랜';
@@ -1321,29 +1320,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get subscriptionGoldPlanDesc => '골드 플랜';
 
   @override
-  String subscriptionClientLimit(int count) {
-    return '회원 등록 한도: $count명';
-  }
-
-  @override
-  String subscriptionClientUsage(int used, int limit) {
-    return '$used/$limit명 등록';
-  }
-
-  @override
-  String get subscriptionClientLimitReached => '회원 등록 한도에 도달했습니다';
-
-  @override
-  String get subscriptionUpgradePrompt => '플랜을 업그레이드해주세요';
-
-  @override
   String get subscriptionLaunchPrice => '론칭 특가';
 
   @override
-  String get subscriptionSilverPrice => '₩7,700/월';
-
-  @override
-  String get subscriptionGoldPrice => '₩14,900/월';
+  String get subscriptionOriginalPrice => '정가';
 
   @override
   String get subscriptionRestoreTitle => '구매 복원';
@@ -1688,6 +1668,126 @@ class AppLocalizationsKo extends AppLocalizations {
   String get crmScheduleEmpty => '예정된 일정이 없습니다';
 
   @override
+  String get crmTagsTitle => '태그';
+
+  @override
+  String get crmTagsEmpty => '태그를 추가하여 회원을 분류하세요';
+
+  @override
+  String get crmTagsAdd => '태그 추가';
+
+  @override
+  String get crmTagsAddButton => '추가';
+
+  @override
+  String get crmTagsCustomHint => '커스텀 태그 입력';
+
+  @override
+  String get crmDashboardTitle => '회원 분석';
+
+  @override
+  String get crmThisMonth => '이번 달 활동';
+
+  @override
+  String get crmNewRegistrations => '신규 등록';
+
+  @override
+  String get crmNewMatches => '매칭 요청';
+
+  @override
+  String get crmTotalNotes => '메모';
+
+  @override
+  String get crmClientOverview => '회원 현황';
+
+  @override
+  String get crmTotalClients => '명';
+
+  @override
+  String get crmAvgAge => '평균 연령';
+
+  @override
+  String get crmMatchPerformance => '매칭 성과';
+
+  @override
+  String get crmSuccessRate => '매칭 성공률';
+
+  @override
+  String get crmDeclineRate => '거절률';
+
+  @override
+  String get crmPendingMatches => '대기 중';
+
+  @override
+  String get crmWaitingResponse => '응답 대기';
+
+  @override
+  String get crmTotalMatchesLabel => '전체 매칭';
+
+  @override
+  String get crmAllTime => '누적';
+
+  @override
+  String get crmOtherStatus => '기타';
+
+  @override
+  String get supportHeaderTitle => '도움이 필요하신가요?';
+
+  @override
+  String get supportHeaderSubtitle => '궁금한 점이나 문제가 있으시면\n언제든지 문의해주세요.';
+
+  @override
+  String get supportEmailTitle => '이메일 문의';
+
+  @override
+  String get supportEmailDesc =>
+      '영업일 기준 24시간 내 답변드립니다.\n문의 시 매니저명과 연락처를 함께 적어주세요.';
+
+  @override
+  String get supportEmailButton => '이메일 보내기';
+
+  @override
+  String get supportHoursTitle => '운영 시간';
+
+  @override
+  String get supportHoursValue => '평일 10:00 - 18:00 (주말/공휴일 제외)';
+
+  @override
+  String supportEmailFallback(String email) {
+    return '이메일 앱을 찾을 수 없습니다. 직접 연락해 주세요: $email';
+  }
+
+  @override
+  String get supportFaqTitle => '자주 묻는 질문';
+
+  @override
+  String get supportFaq1Q => '구독을 변경하거나 취소하려면?';
+
+  @override
+  String get supportFaq1A =>
+      '마이 > 구독 관리에서 플랜을 변경할 수 있습니다. 구독 취소는 앱스토어/플레이스토어에서 직접 관리됩니다.';
+
+  @override
+  String get supportFaq2Q => '매니저 인증은 얼마나 걸리나요?';
+
+  @override
+  String get supportFaq2A =>
+      '서류 제출 후 영업일 기준 1-2일 내 검토가 완료됩니다. 결과는 푸시 알림으로 안내드립니다.';
+
+  @override
+  String get supportFaq3Q => '일일 매칭 횟수는 언제 초기화되나요?';
+
+  @override
+  String get supportFaq3A => '매일 자정(00:00)에 자동 초기화됩니다.';
+
+  @override
+  String get supportFaq4Q => '등록한 회원 정보를 삭제하려면?';
+
+  @override
+  String get supportFaq4A =>
+      '마이 > 내 회원 관리에서 해당 회원의 상세 페이지로 들어가 삭제할 수 있습니다. 삭제 시 관련 대기 매칭이 취소됩니다.';
+
+  @override
   String homeTodaySchedules(int count) {
     return '예정 일정 $count건';
   }
@@ -1741,34 +1841,4 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get matchSheetGoVerify => '인증하러 가기';
-
-  @override
-  String get chatMessageDeleted => '삭제된 메시지입니다';
-
-  @override
-  String get chatDeleteTitle => '메시지 삭제';
-
-  @override
-  String get chatDeleteConfirm => '이 메시지를 삭제하시겠습니까?\n상대방에게도 보이지 않습니다.';
-
-  @override
-  String get chatDeleteFailed => '메시지 삭제에 실패했습니다';
-
-  @override
-  String get chatReplyToMe => '나';
-
-  @override
-  String get chatReply => '답장';
-
-  @override
-  String get chatShowMore => '더보기';
-
-  @override
-  String get chatShowLess => '접기';
-
-  @override
-  String get matchConflictCancelledTitle => '매칭 자동 취소';
-
-  @override
-  String get matchConflictCancelledBody => '다른 회원과 매칭이 먼저 완료되었습니다';
 }

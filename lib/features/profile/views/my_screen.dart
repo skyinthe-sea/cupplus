@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
@@ -265,6 +264,17 @@ class MyScreen extends ConsumerWidget {
               child: SettingsSection(
                 children: [
                   SettingsTile(
+                    icon: Icons.analytics_rounded,
+                    iconColor: const Color(0xFF1E88E5),
+                    label: l10n.crmDashboardTitle,
+                    trailing: Icon(
+                      Icons.chevron_right_rounded,
+                      color: theme.colorScheme.onSurfaceVariant
+                          .withValues(alpha: 0.5),
+                    ),
+                    onTap: () => context.push(AppRoutes.myCrmDashboard),
+                  ),
+                  SettingsTile(
                     icon: Icons.history_rounded,
                     label: l10n.myMatchHistory,
                     trailing: Icon(
@@ -303,10 +313,7 @@ class MyScreen extends ConsumerWidget {
                       color: theme.colorScheme.onSurfaceVariant
                           .withValues(alpha: 0.5),
                     ),
-                    onTap: () async {
-                      final url = Uri.parse(l10n.customerSupportUrl);
-                      await launchUrl(url, mode: LaunchMode.externalApplication);
-                    },
+                    onTap: () => context.push(AppRoutes.mySupport),
                   ),
                 ],
               ),

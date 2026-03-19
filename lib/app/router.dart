@@ -24,6 +24,8 @@ import '../features/profile/views/my_client_edit_screen.dart';
 import '../features/profile/views/my_clients_screen.dart';
 import '../features/notification/views/notification_settings_screen.dart';
 import '../features/profile/views/my_screen.dart';
+import '../features/profile/views/customer_support_screen.dart';
+import '../features/profile/views/crm_dashboard_screen.dart';
 import '../features/subscription/views/subscription_screen.dart';
 import '../features/verification/views/verification_screen.dart';
 import '../shared/utils/auth_guard.dart';
@@ -120,6 +122,16 @@ GoRouter router(Ref ref) {
         path: '/my/match-history',
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const MatchHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/my/support',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const CustomerSupportScreen(),
+      ),
+      GoRoute(
+        path: '/my/crm-dashboard',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const CrmDashboardScreen(),
       ),
       GoRoute(
         path: '/my/clients/:clientId/contracts',

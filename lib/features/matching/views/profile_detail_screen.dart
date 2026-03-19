@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/utils/label_formatters.dart';
 import '../models/marketplace_profile.dart';
 import '../providers/marketplace_providers.dart';
 import '../widgets/marketplace_shimmer_card.dart';
@@ -396,7 +397,7 @@ class _IdealPartnerSection extends StatelessWidget {
         _DetailRow(
           icon: Icons.account_balance_wallet_outlined,
           label: l10n.profileIdealIncome,
-          value: profile.idealIncomeRange!,
+          value: incomeLabel(profile.idealIncomeRange!, l10n),
         ),
       if (profile.idealReligion != null)
         _DetailRow(

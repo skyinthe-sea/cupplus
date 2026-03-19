@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/manager_profile_provider.dart';
+import '../../subscription/providers/subscription_provider.dart';
 import '../providers/home_providers.dart';
 
 class ClientRegistrationSheet extends ConsumerStatefulWidget {
@@ -33,6 +34,27 @@ class _ClientRegistrationSheetState
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+
+    // Check client registration limit (parallel fetch)
+    final results = await Future.wait([
+      ref.read(canRegisterClientProvider.future),
+      ref.read(myActiveClientCountProvider.future),
+      ref.read(clientLimitProvider.future),
+    ]);
+    if (!mounted) return;
+    final canRegister = results[0] as bool;
+    if (!canRegister) {
+      final l10n = AppLocalizations.of(context)!;
+      final count = results[1] as int;
+      final limit = results[2] as int;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.clientRegistrationLimitExceeded(count, limit)),
+        ),
+      );
+      return;
+    }
+
     setState(() => _isSubmitting = true);
 
     try {
@@ -58,6 +80,8 @@ class _ClientRegistrationSheetState
       // Invalidate providers to refresh data
       ref.invalidate(activityFeedProvider);
       ref.invalidate(homeRecommendedClientsProvider);
+      ref.invalidate(myActiveClientCountProvider);
+      ref.invalidate(canRegisterClientProvider);
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;

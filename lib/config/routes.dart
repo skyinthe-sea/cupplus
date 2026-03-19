@@ -24,6 +24,8 @@ abstract final class AppRoutes {
   static const mySubscription = '/my/subscription';
   static const myNotificationSettings = '/my/notification-settings';
   static const myMatchHistory = '/my/match-history';
+  static const mySupport = '/my/support';
+  static const myCrmDashboard = '/my/crm-dashboard';
 
   // Full-screen overlays (pushed outside shell)
   static const clientRegistration = '/register-client';

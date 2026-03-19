@@ -7,7 +7,6 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../../config/constants.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/subscription_provider.dart';
-import '../services/dev_subscription_service.dart';
 
 class SubscriptionScreen extends ConsumerWidget {
   const SubscriptionScreen({super.key});
@@ -18,8 +17,7 @@ class SubscriptionScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final tierAsync = ref.watch(currentSubscriptionTierProvider);
     final usageAsync = ref.watch(todayMatchUsageProvider);
-    final clientCountAsync = ref.watch(activeClientCountProvider);
-    final maxClientAsync = ref.watch(maxClientCountProvider);
+    final clientCountAsync = ref.watch(myActiveClientCountProvider);
     final packagesAsync = ref.watch(availablePackagesProvider);
 
     return Scaffold(
@@ -33,7 +31,6 @@ class SubscriptionScreen extends ConsumerWidget {
               tier: tier,
               usageAsync: usageAsync,
               clientCountAsync: clientCountAsync,
-              maxClientAsync: maxClientAsync,
               l10n: l10n,
               theme: theme,
             ),
@@ -57,10 +54,11 @@ class SubscriptionScreen extends ConsumerWidget {
             title: l10n.subscriptionFree,
             desc: l10n.subscriptionFreePlanDesc,
             matchLimit: '${AppConstants.freeMatchDailyLimit}${l10n.profileDetailMatchRequestUnit}/일',
-            clientLimit: l10n.subscriptionClientUsage(0, AppConstants.freeClientLimit),
+            clientLimit: AppConstants.freeClientLimit,
             color: theme.colorScheme.outline,
             currentTier: tierAsync.valueOrNull ?? SubscriptionTier.free,
             theme: theme,
+            l10n: l10n,
           ),
           SizedBox(height: 8.h),
           _PlanCard(
@@ -68,11 +66,13 @@ class SubscriptionScreen extends ConsumerWidget {
             title: l10n.subscriptionSilver,
             desc: l10n.subscriptionSilverPlanDesc,
             matchLimit: '${AppConstants.silverMatchDailyLimit}${l10n.profileDetailMatchRequestUnit}/일',
-            clientLimit: l10n.subscriptionClientLimit(AppConstants.silverClientLimit),
-            price: l10n.subscriptionSilverPrice,
+            clientLimit: AppConstants.silverClientLimit,
+            price: '7,700',
+            originalPrice: '23,100',
             color: const Color(0xFF7B5EA7),
             currentTier: tierAsync.valueOrNull ?? SubscriptionTier.free,
             theme: theme,
+            l10n: l10n,
             onUpgrade: () => _handleUpgrade(context, ref, packagesAsync, 'silver'),
           ),
           SizedBox(height: 8.h),
@@ -80,12 +80,14 @@ class SubscriptionScreen extends ConsumerWidget {
             tier: SubscriptionTier.gold,
             title: l10n.subscriptionGold,
             desc: l10n.subscriptionGoldPlanDesc,
-            matchLimit: l10n.subscriptionFeatureUnlimited,
-            clientLimit: l10n.subscriptionClientLimit(AppConstants.goldClientLimit),
-            price: l10n.subscriptionGoldPrice,
+            matchLimit: '${AppConstants.goldMatchDailyLimit}${l10n.profileDetailMatchRequestUnit}/일',
+            clientLimit: AppConstants.goldClientLimit,
+            price: '14,900',
+            originalPrice: '44,700',
             color: const Color(0xFFD4A017),
             currentTier: tierAsync.valueOrNull ?? SubscriptionTier.free,
             theme: theme,
+            l10n: l10n,
             onUpgrade: () => _handleUpgrade(context, ref, packagesAsync, 'gold'),
           ),
 
@@ -99,21 +101,10 @@ class SubscriptionScreen extends ConsumerWidget {
             ),
           ),
 
-          // Dev Subscription Switcher (debug mode only)
+          // Dev mode tier switcher (debug only)
           if (kDebugMode) ...[
             SizedBox(height: 24.h),
-            _DevSubscriptionSwitcher(
-              currentTier: tierAsync.valueOrNull ?? SubscriptionTier.free,
-              onTierChanged: (tier) async {
-                await DevSubscriptionService.setTier(tier);
-                ref.invalidate(currentSubscriptionTierProvider);
-                ref.invalidate(dailyMatchLimitProvider);
-                ref.invalidate(maxClientCountProvider);
-                ref.invalidate(canCreateMatchProvider);
-                ref.invalidate(canRegisterClientProvider);
-              },
-              theme: theme,
-            ),
+            _DevModeTierSwitcher(l10n: l10n, theme: theme),
           ],
 
           SizedBox(height: 40.h),
@@ -132,13 +123,14 @@ class SubscriptionScreen extends ConsumerWidget {
     final packages = packagesAsync.valueOrNull ?? [];
 
     if (packages.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.subscriptionNotConfigured)),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.subscriptionNotConfigured)),
+        );
+      }
       return;
     }
 
-    // Find package matching the target entitlement
     final pkg = packages.firstWhere(
       (p) => p.identifier.toLowerCase().contains(targetEntitlement),
       orElse: () => packages.first,
@@ -174,12 +166,13 @@ class SubscriptionScreen extends ConsumerWidget {
   }
 }
 
+// ─── Current Plan Card ──────────────────────────────────────────────────
+
 class _CurrentPlanCard extends StatelessWidget {
   const _CurrentPlanCard({
     required this.tier,
     required this.usageAsync,
     required this.clientCountAsync,
-    required this.maxClientAsync,
     required this.l10n,
     required this.theme,
   });
@@ -187,33 +180,34 @@ class _CurrentPlanCard extends StatelessWidget {
   final SubscriptionTier tier;
   final AsyncValue<int> usageAsync;
   final AsyncValue<int> clientCountAsync;
-  final AsyncValue<int> maxClientAsync;
   final AppLocalizations l10n;
   final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    final (planName, planColor, matchLimit) = switch (tier) {
+    final (planName, planColor, matchLimit, clientLimit) = switch (tier) {
       SubscriptionTier.free => (
           l10n.subscriptionFree,
           theme.colorScheme.outline,
           AppConstants.freeMatchDailyLimit,
+          AppConstants.freeClientLimit,
         ),
       SubscriptionTier.silver => (
           l10n.subscriptionSilver,
           const Color(0xFF7B5EA7),
           AppConstants.silverMatchDailyLimit,
+          AppConstants.silverClientLimit,
         ),
       SubscriptionTier.gold => (
           l10n.subscriptionGold,
           const Color(0xFFD4A017),
-          -1, // unlimited
+          AppConstants.goldMatchDailyLimit,
+          AppConstants.goldClientLimit,
         ),
     };
 
     final used = usageAsync.valueOrNull ?? 0;
-    final activeClients = clientCountAsync.valueOrNull ?? 0;
-    final maxClients = maxClientAsync.valueOrNull ?? AppConstants.freeClientLimit;
+    final clientCount = clientCountAsync.valueOrNull ?? 0;
 
     return Container(
       padding: EdgeInsets.all(20.r),
@@ -258,82 +252,33 @@ class _CurrentPlanCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: 16.h),
-
           // Match usage bar
-          if (matchLimit > 0) ...[
-            _UsageBar(
-              label: l10n.subscriptionFeatureMatches,
-              used: used,
-              limit: matchLimit,
-              color: planColor,
-              displayText: l10n.subscriptionDailyUsage(used, matchLimit),
-              theme: theme,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4.r),
+            child: LinearProgressIndicator(
+              value: matchLimit > 0 ? (used / matchLimit).clamp(0.0, 1.0) : 0.0,
+              backgroundColor: planColor.withValues(alpha: 0.15),
+              valueColor: AlwaysStoppedAnimation(planColor),
+              minHeight: 6.h,
             ),
-          ] else ...[
-            Text(
-              '${l10n.subscriptionFeatureMatches}: ${l10n.subscriptionDailyUnlimited(used)}',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            l10n.subscriptionDailyUsage(used, matchLimit),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
-          ],
-
-          SizedBox(height: 12.h),
-
-          // Client registration usage bar
-          _UsageBar(
-            label: l10n.subscriptionClientLimit(maxClients),
-            used: activeClients,
-            limit: maxClients,
-            color: planColor,
-            displayText: l10n.subscriptionClientUsage(activeClients, maxClients),
-            theme: theme,
+          ),
+          SizedBox(height: 6.h),
+          // Client count
+          Text(
+            '${l10n.subscriptionClientLimit}: $clientCount/$clientLimit${l10n.profileDetailMatchRequestUnit}',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _UsageBar extends StatelessWidget {
-  const _UsageBar({
-    required this.label,
-    required this.used,
-    required this.limit,
-    required this.color,
-    required this.displayText,
-    required this.theme,
-  });
-
-  final String label;
-  final int used;
-  final int limit;
-  final Color color;
-  final String displayText;
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4.r),
-          child: LinearProgressIndicator(
-            value: (used / limit).clamp(0.0, 1.0),
-            backgroundColor: color.withValues(alpha: 0.15),
-            valueColor: AlwaysStoppedAnimation(color),
-            minHeight: 6.h,
-          ),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          displayText,
-          style: theme.textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -370,6 +315,8 @@ class _FallbackPlanCard extends StatelessWidget {
   }
 }
 
+// ─── Plan Card ──────────────────────────────────────────────────────────
+
 class _PlanCard extends StatelessWidget {
   const _PlanCard({
     required this.tier,
@@ -380,7 +327,9 @@ class _PlanCard extends StatelessWidget {
     required this.color,
     required this.currentTier,
     required this.theme,
+    required this.l10n,
     this.price,
+    this.originalPrice,
     this.onUpgrade,
   });
 
@@ -388,17 +337,18 @@ class _PlanCard extends StatelessWidget {
   final String title;
   final String desc;
   final String matchLimit;
-  final String clientLimit;
+  final int clientLimit;
   final Color color;
   final SubscriptionTier currentTier;
   final ThemeData theme;
+  final AppLocalizations l10n;
   final String? price;
+  final String? originalPrice;
   final VoidCallback? onUpgrade;
 
   @override
   Widget build(BuildContext context) {
     final isCurrent = tier == currentTier;
-    final l10n = AppLocalizations.of(context)!;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
@@ -414,126 +364,160 @@ class _PlanCard extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.all(16.r),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 40.r,
-              height: 40.r,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Icon(
-                tier == SubscriptionTier.gold
-                    ? Icons.diamond_rounded
-                    : tier == SubscriptionTier.silver
-                        ? Icons.star_rounded
-                        : Icons.person_rounded,
-                color: color,
-                size: 22.r,
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            Row(
+              children: [
+                Container(
+                  width: 40.r,
+                  height: 40.r,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Icon(
+                    tier == SubscriptionTier.gold
+                        ? Icons.diamond_rounded
+                        : tier == SubscriptionTier.silver
+                            ? Icons.star_rounded
+                            : Icons.person_rounded,
+                    color: color,
+                    size: 22.r,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        children: [
+                          Text(
+                            title,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: isCurrent ? color : null,
+                            ),
+                          ),
+                          if (isCurrent) ...[
+                            SizedBox(width: 6.w),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6.w,
+                                vertical: 2.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(4.r),
+                              ),
+                              child: Text(
+                                l10n.subscriptionCurrentPlan,
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: color,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      SizedBox(height: 2.h),
                       Text(
-                        title,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: isCurrent ? color : null,
+                        '${l10n.subscriptionFeatureMatches}: $matchLimit · ${l10n.subscriptionClientLimit}: ${l10n.subscriptionClientLimitValue(clientLimit)}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
-                      if (isCurrent) ...[
-                        SizedBox(width: 6.w),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6.w,
-                            vertical: 2.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Text(
-                            l10n.subscriptionCurrentPlan,
-                            style: TextStyle(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w600,
-                              color: color,
-                            ),
-                          ),
-                        ),
-                      ],
-                      if (price != null && tier != SubscriptionTier.free) ...[
-                        SizedBox(width: 6.w),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6.w,
-                            vertical: 2.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.error.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Text(
-                            l10n.subscriptionLaunchPrice,
-                            style: TextStyle(
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.w700,
-                              color: theme.colorScheme.error,
-                            ),
-                          ),
-                        ),
-                      ],
                     ],
                   ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    '${l10n.subscriptionFeatureMatches}: $matchLimit',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+            // Price row for paid tiers
+            if (price != null) ...[
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  SizedBox(width: 52.w), // align with text above
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
-                  ),
-                  Text(
-                    clientLimit,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  if (price != null) ...[
-                    SizedBox(height: 2.h),
-                    Text(
-                      price!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w700,
+                    child: Text(
+                      l10n.subscriptionLaunchPrice,
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w600,
                         color: color,
                       ),
                     ),
-                  ],
+                  ),
+                  SizedBox(width: 6.w),
+                  Text(
+                    '${price!}원/월',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: color,
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  if (originalPrice != null)
+                    Text(
+                      '${originalPrice!}원',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                        color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  const Spacer(),
+                  if (!isCurrent && onUpgrade != null)
+                    FilledButton(
+                      onPressed: onUpgrade,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: color,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                        minimumSize: Size.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                      child: Text(
+                        l10n.subscriptionChangePlan,
+                        style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                      ),
+                    ),
                 ],
               ),
-            ),
-            if (!isCurrent && onUpgrade != null)
-              FilledButton(
-                onPressed: onUpgrade,
-                style: FilledButton.styleFrom(
-                  backgroundColor: color,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-                  minimumSize: Size.zero,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+            ] else ...[
+              // Free tier — show upgrade button inline
+              if (!isCurrent && onUpgrade != null) ...[
+                SizedBox(height: 8.h),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FilledButton(
+                    onPressed: onUpgrade,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: color,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                      minimumSize: Size.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
+                    child: Text(
+                      l10n.subscriptionChangePlan,
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
-                child: Text(
-                  l10n.subscriptionChangePlan,
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
-                ),
-              ),
+              ],
+            ],
           ],
         ),
       ),
@@ -541,19 +525,17 @@ class _PlanCard extends StatelessWidget {
   }
 }
 
-class _DevSubscriptionSwitcher extends StatelessWidget {
-  const _DevSubscriptionSwitcher({
-    required this.currentTier,
-    required this.onTierChanged,
-    required this.theme,
-  });
+// ─── Dev Mode Tier Switcher ─────────────────────────────────────────────
 
-  final SubscriptionTier currentTier;
-  final ValueChanged<SubscriptionTier> onTierChanged;
+class _DevModeTierSwitcher extends ConsumerWidget {
+  const _DevModeTierSwitcher({required this.l10n, required this.theme});
+  final AppLocalizations l10n;
   final ThemeData theme;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentOverride = ref.watch(devSubscriptionTierOverrideProvider);
+
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
@@ -566,10 +548,10 @@ class _DevSubscriptionSwitcher extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.developer_mode, color: Colors.orange, size: 18.r),
+              Icon(Icons.developer_mode, color: Colors.orange, size: 20.r),
               SizedBox(width: 8.w),
               Text(
-                'Dev Subscription Switcher',
+                l10n.subscriptionDevModeTitle,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: Colors.orange,
@@ -578,27 +560,68 @@ class _DevSubscriptionSwitcher extends StatelessWidget {
             ],
           ),
           SizedBox(height: 12.h),
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<SubscriptionTier>(
-              segments: const [
-                ButtonSegment(value: SubscriptionTier.free, label: Text('Free')),
-                ButtonSegment(value: SubscriptionTier.silver, label: Text('Silver')),
-                ButtonSegment(value: SubscriptionTier.gold, label: Text('Gold')),
-              ],
-              selected: {currentTier},
-              onSelectionChanged: (selected) {
-                onTierChanged(selected.first);
-              },
-              style: ButtonStyle(
-                textStyle: WidgetStatePropertyAll(
-                  TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
-                ),
+          Wrap(
+            spacing: 8.w,
+            children: [
+              _DevTierChip(
+                label: l10n.subscriptionFree,
+                isSelected: currentOverride == SubscriptionTier.free,
+                onTap: () {
+                  ref.read(devSubscriptionTierOverrideProvider.notifier).state =
+                      SubscriptionTier.free;
+                },
               ),
-            ),
+              _DevTierChip(
+                label: l10n.subscriptionSilver,
+                isSelected: currentOverride == SubscriptionTier.silver,
+                onTap: () {
+                  ref.read(devSubscriptionTierOverrideProvider.notifier).state =
+                      SubscriptionTier.silver;
+                },
+              ),
+              _DevTierChip(
+                label: l10n.subscriptionGold,
+                isSelected: currentOverride == SubscriptionTier.gold,
+                onTap: () {
+                  ref.read(devSubscriptionTierOverrideProvider.notifier).state =
+                      SubscriptionTier.gold;
+                },
+              ),
+              _DevTierChip(
+                label: 'Off',
+                isSelected: currentOverride == null,
+                onTap: () {
+                  ref.read(devSubscriptionTierOverrideProvider.notifier).state =
+                      null;
+                },
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DevTierChip extends StatelessWidget {
+  const _DevTierChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) => onTap(),
+      selectedColor: Colors.orange.withValues(alpha: 0.2),
+      checkmarkColor: Colors.orange,
     );
   }
 }
