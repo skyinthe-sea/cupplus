@@ -1728,6 +1728,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get crmAllTime => '누적';
 
   @override
+  String get crmOtherStatus => '기타';
+
+  @override
   String get supportHeaderTitle => '도움이 필요하신가요?';
 
   @override

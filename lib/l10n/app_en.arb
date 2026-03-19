@@ -724,6 +724,7 @@
   "crmWaitingResponse": "Awaiting response",
   "crmTotalMatchesLabel": "Total Matches",
   "crmAllTime": "All time",
+  "crmOtherStatus": "Other",
 
   "supportHeaderTitle": "Need help?",
   "supportHeaderSubtitle": "Feel free to reach out\nwith any questions or issues.",

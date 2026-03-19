@@ -55,10 +55,12 @@ class ClientTagsSection extends ConsumerWidget {
                 spacing: 6.w,
                 runSpacing: 4.h,
                 children: tags.map((t) {
+                  final tagName = t['tag'] as String? ?? '';
+                  final tagId = t['id'] as String?;
                   final color = _parseColor(t['color'] as String?);
                   return Chip(
                     label: Text(
-                      t['tag'] as String,
+                      tagName,
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
@@ -68,11 +70,11 @@ class ClientTagsSection extends ConsumerWidget {
                     backgroundColor: color.withValues(alpha: 0.1),
                     side: BorderSide(color: color.withValues(alpha: 0.3)),
                     deleteIcon: Icon(Icons.close, size: 16.r, color: color),
-                    onDeleted: () async {
+                    onDeleted: tagId == null ? null : () async {
                       try {
                         await ref.read(
                           removeClientTagProvider(
-                            tagId: t['id'] as String,
+                            tagId: tagId,
                             clientId: clientId,
                           ).future,
                         );

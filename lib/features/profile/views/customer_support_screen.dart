@@ -228,9 +228,15 @@ class CustomerSupportScreen extends StatelessWidget {
         'subject': '[cup+] ',
       },
     );
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else if (context.mounted) {
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+        return;
+      }
+    } catch (_) {
+      // launchUrl can throw PlatformException on some Android devices
+    }
+    if (context.mounted) {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

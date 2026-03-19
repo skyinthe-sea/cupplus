@@ -116,8 +116,10 @@ class CrmDashboardScreen extends ConsumerWidget {
                       ],
 
                       // Status legend
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      Wrap(
+                        alignment: WrapAlignment.spaceAround,
+                        spacing: 12.w,
+                        runSpacing: 6.h,
                         children: [
                           _LegendItem(
                             color: Colors.green,
@@ -137,6 +139,13 @@ class CrmDashboardScreen extends ConsumerWidget {
                             count: stats.matchedClients,
                             theme: theme,
                           ),
+                          if (stats.totalClients - stats.activeClients - stats.pausedClients - stats.matchedClients > 0)
+                            _LegendItem(
+                              color: Colors.grey.shade400,
+                              label: l10n.crmOtherStatus,
+                              count: stats.totalClients - stats.activeClients - stats.pausedClients - stats.matchedClients,
+                              theme: theme,
+                            ),
                         ],
                       ),
 

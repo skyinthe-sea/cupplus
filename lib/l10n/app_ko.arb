@@ -730,6 +730,7 @@
   "crmWaitingResponse": "응답 대기",
   "crmTotalMatchesLabel": "전체 매칭",
   "crmAllTime": "누적",
+  "crmOtherStatus": "기타",
 
   "supportHeaderTitle": "도움이 필요하신가요?",
   "supportHeaderSubtitle": "궁금한 점이나 문제가 있으시면\n언제든지 문의해주세요.",

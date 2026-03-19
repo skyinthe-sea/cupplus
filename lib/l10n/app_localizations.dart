@@ -3332,6 +3332,12 @@ abstract class AppLocalizations {
   /// **'누적'**
   String get crmAllTime;
 
+  /// No description provided for @crmOtherStatus.
+  ///
+  /// In ko, this message translates to:
+  /// **'기타'**
+  String get crmOtherStatus;
+
   /// No description provided for @supportHeaderTitle.
   ///
   /// In ko, this message translates to:

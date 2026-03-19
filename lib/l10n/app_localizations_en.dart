@@ -1743,6 +1743,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get crmAllTime => 'All time';
 
   @override
+  String get crmOtherStatus => 'Other';
+
+  @override
   String get supportHeaderTitle => 'Need help?';
 
   @override
