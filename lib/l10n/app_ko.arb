@@ -774,5 +774,16 @@
 
   "matchSheetVerificationRequired": "매니저 인증이 필요합니다",
   "matchSheetVerificationBody": "매칭을 수락/거절하려면 매니저 인증을 먼저 완료해주세요.",
-  "matchSheetGoVerify": "인증하러 가기"
+  "matchSheetGoVerify": "인증하러 가기",
+
+  "mySettingsTheme": "테마",
+  "themeSystem": "시스템",
+  "chatMessageDeleted": "삭제된 메시지입니다",
+  "chatDeleteTitle": "메시지 삭제",
+  "chatDeleteConfirm": "이 메시지를 삭제하시겠습니까?\n상대방에게도 보이지 않습니다.",
+  "chatDeleteFailed": "메시지 삭제에 실패했습니다",
+  "chatReplyToMe": "나",
+  "chatReply": "답장",
+  "chatShowMore": "더보기",
+  "chatShowLess": "접기"
 }

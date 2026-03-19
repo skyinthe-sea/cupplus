@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/utils/label_formatters.dart';
 import '../models/marketplace_filter.dart';
 import '../providers/marketplace_providers.dart';
 
@@ -472,7 +473,7 @@ class _MarketplaceFilterSheetState
                     children: _drinkingOptions.map((option) {
                       final selected = _selectedDrinking == option;
                       return ChoiceChip(
-                        label: Text(_drinkingLabel(option, l10n)),
+                        label: Text(drinkingLabel(option, l10n)),
                         selected: selected,
                         onSelected: (value) {
                           setState(() {
@@ -507,7 +508,7 @@ class _MarketplaceFilterSheetState
                     children: _smokingOptions.map((option) {
                       final selected = _selectedSmoking == option;
                       return ChoiceChip(
-                        label: Text(_smokingLabel(option, l10n)),
+                        label: Text(smokingLabel(option, l10n)),
                         selected: selected,
                         onSelected: (value) {
                           setState(() {
@@ -542,7 +543,7 @@ class _MarketplaceFilterSheetState
                     children: _maritalOptions.map((option) {
                       final selected = _selectedMaritalHistory == option;
                       return ChoiceChip(
-                        label: Text(_maritalLabel(option, l10n)),
+                        label: Text(maritalLabel(option, l10n)),
                         selected: selected,
                         onSelected: (value) {
                           setState(() {
@@ -632,30 +633,4 @@ class _MarketplaceFilterSheetState
     );
   }
 
-  String _drinkingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regDrinkingNone,
-      'social' => l10n.regDrinkingSocial,
-      'regular' => l10n.regDrinkingRegular,
-      _ => val,
-    };
-  }
-
-  String _smokingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regSmokingNone,
-      'sometimes' => l10n.regSmokingSometimes,
-      'regular' => l10n.regSmokingRegular,
-      _ => val,
-    };
-  }
-
-  String _maritalLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'first_marriage' => l10n.regMaritalFirst,
-      'remarriage' => l10n.regMaritalRemarriage,
-      'divorced' => l10n.regMaritalDivorced,
-      _ => val,
-    };
-  }
 }

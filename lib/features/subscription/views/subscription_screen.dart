@@ -438,60 +438,72 @@ class _PlanCard extends StatelessWidget {
             // Price row for paid tiers
             if (price != null) ...[
               SizedBox(height: 10.h),
-              Row(
-                children: [
-                  SizedBox(width: 52.w), // align with text above
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4.r),
-                    ),
-                    child: Text(
-                      l10n.subscriptionLaunchPrice,
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w600,
-                        color: color,
+              Padding(
+                padding: EdgeInsets.only(left: 52.w),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: color.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            child: Text(
+                              l10n.subscriptionLaunchPrice,
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w600,
+                                color: color,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 6.w),
+                          Flexible(
+                            child: Text(
+                              '${price!}원/월',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: color,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          if (originalPrice != null)
+                            Text(
+                              '${originalPrice!}원',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                decoration: TextDecoration.lineThrough,
+                                color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                  ),
-                  SizedBox(width: 6.w),
-                  Text(
-                    '${price!}원/월',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: color,
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  if (originalPrice != null)
-                    Text(
-                      '${originalPrice!}원',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        decoration: TextDecoration.lineThrough,
-                        color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  const Spacer(),
-                  if (!isCurrent && onUpgrade != null)
-                    FilledButton(
-                      onPressed: onUpgrade,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: color,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-                        minimumSize: Size.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
+                    if (!isCurrent && onUpgrade != null) ...[
+                      SizedBox(width: 8.w),
+                      FilledButton(
+                        onPressed: onUpgrade,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: color,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+                          minimumSize: Size.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ),
+                        child: Text(
+                          l10n.subscriptionChangePlan,
+                          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      child: Text(
-                        l10n.subscriptionChangePlan,
-                        style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                ],
+                    ],
+                  ],
+                ),
               ),
             ] else ...[
               // Free tier — show upgrade button inline

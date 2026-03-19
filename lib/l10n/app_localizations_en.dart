@@ -1863,4 +1863,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matchSheetGoVerify => 'Go to Verification';
+
+  @override
+  String get mySettingsTheme => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get chatMessageDeleted => 'This message was deleted';
+
+  @override
+  String get chatDeleteTitle => 'Delete message';
+
+  @override
+  String get chatDeleteConfirm =>
+      'Delete this message?\nIt will be hidden for everyone.';
+
+  @override
+  String get chatDeleteFailed => 'Failed to delete message';
+
+  @override
+  String get chatReplyToMe => 'You';
+
+  @override
+  String get chatReply => 'Reply';
+
+  @override
+  String get chatShowMore => 'Show more';
+
+  @override
+  String get chatShowLess => 'Show less';
 }

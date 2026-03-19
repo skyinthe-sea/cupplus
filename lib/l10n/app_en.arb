@@ -768,5 +768,16 @@
 
   "matchSheetVerificationRequired": "Verification Required",
   "matchSheetVerificationBody": "Please complete manager verification before accepting or declining matches.",
-  "matchSheetGoVerify": "Go to Verification"
+  "matchSheetGoVerify": "Go to Verification",
+
+  "mySettingsTheme": "Theme",
+  "themeSystem": "System",
+  "chatMessageDeleted": "This message was deleted",
+  "chatDeleteTitle": "Delete message",
+  "chatDeleteConfirm": "Delete this message?\nIt will be hidden for everyone.",
+  "chatDeleteFailed": "Failed to delete message",
+  "chatReplyToMe": "You",
+  "chatReply": "Reply",
+  "chatShowMore": "Show more",
+  "chatShowLess": "Show less"
 }

@@ -1841,4 +1841,34 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get matchSheetGoVerify => '인증하러 가기';
+
+  @override
+  String get mySettingsTheme => '테마';
+
+  @override
+  String get themeSystem => '시스템';
+
+  @override
+  String get chatMessageDeleted => '삭제된 메시지입니다';
+
+  @override
+  String get chatDeleteTitle => '메시지 삭제';
+
+  @override
+  String get chatDeleteConfirm => '이 메시지를 삭제하시겠습니까?\n상대방에게도 보이지 않습니다.';
+
+  @override
+  String get chatDeleteFailed => '메시지 삭제에 실패했습니다';
+
+  @override
+  String get chatReplyToMe => '나';
+
+  @override
+  String get chatReply => '답장';
+
+  @override
+  String get chatShowMore => '더보기';
+
+  @override
+  String get chatShowLess => '접기';
 }

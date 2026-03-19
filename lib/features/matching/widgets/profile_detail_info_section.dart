@@ -42,7 +42,7 @@ class ProfileDetailInfoSection extends StatelessWidget {
         _InfoItem(
           icon: Icons.brightness_7_outlined,
           label: l10n.profileReligion,
-          value: _religionLabel(profile.religion!, l10n),
+          value: religionLabel(profile.religion!, l10n),
         ),
       if (profile.annualIncomeRange != null)
         _InfoItem(
@@ -54,19 +54,19 @@ class ProfileDetailInfoSection extends StatelessWidget {
         _InfoItem(
           icon: Icons.local_bar_outlined,
           label: l10n.profileDrinking,
-          value: _drinkingLabel(profile.drinking!, l10n),
+          value: drinkingLabel(profile.drinking!, l10n),
         ),
       if (profile.smoking != null)
         _InfoItem(
           icon: Icons.smoking_rooms_outlined,
           label: l10n.profileSmoking,
-          value: _smokingLabel(profile.smoking!, l10n),
+          value: smokingLabel(profile.smoking!, l10n),
         ),
       if (profile.maritalHistory != null)
         _InfoItem(
           icon: Icons.family_restroom_outlined,
           label: l10n.profileMaritalHistory,
-          value: _maritalLabel(profile.maritalHistory!, l10n),
+          value: maritalLabel(profile.maritalHistory!, l10n),
         ),
       if (profile.personalityType != null)
         _InfoItem(
@@ -84,7 +84,7 @@ class ProfileDetailInfoSection extends StatelessWidget {
         _InfoItem(
           icon: Icons.account_balance_outlined,
           label: l10n.profileAssetRange,
-          value: _assetLabel(profile.assetRange!, l10n),
+          value: assetLabel(profile.assetRange!, l10n),
         ),
     ];
 
@@ -168,55 +168,6 @@ class ProfileDetailInfoSection extends StatelessWidget {
     );
   }
 
-  String _drinkingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regDrinkingNone,
-      'social' => l10n.regDrinkingSocial,
-      'regular' => l10n.regDrinkingRegular,
-      _ => val,
-    };
-  }
-
-  String _smokingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regSmokingNone,
-      'sometimes' => l10n.regSmokingSometimes,
-      'regular' => l10n.regSmokingRegular,
-      _ => val,
-    };
-  }
-
-  String _maritalLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'first_marriage' => l10n.regMaritalFirst,
-      'remarriage' => l10n.regMaritalRemarriage,
-      'divorced' => l10n.regMaritalDivorced,
-      _ => val,
-    };
-  }
-
-  String _religionLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regReligionNone,
-      'christian' => l10n.regReligionChristian,
-      'catholic' => l10n.regReligionCatholic,
-      'buddhist' => l10n.regReligionBuddhist,
-      'other' => l10n.regReligionOther,
-      _ => val,
-    };
-  }
-
-
-  String _assetLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'under_100m' => l10n.regAssetRange1,
-      '100m_300m' => l10n.regAssetRange2,
-      '300m_500m' => l10n.regAssetRange3,
-      '500m_1b' => l10n.regAssetRange4,
-      'over_1b' => l10n.regAssetRange5,
-      _ => val,
-    };
-  }
 }
 
 class _InfoItem {

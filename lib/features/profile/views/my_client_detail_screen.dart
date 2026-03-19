@@ -461,12 +461,12 @@ class _InfoSection extends StatelessWidget {
       if (detail.heightCm != null)
         _InfoItem(l10n.profileHeight, '${detail.heightCm}cm'),
       if (detail.bodyType != null)
-        _InfoItem(l10n.myClientDetailBodyType, _bodyTypeLabel(detail.bodyType!)),
+        _InfoItem(l10n.myClientDetailBodyType, bodyTypeLabel(detail.bodyType!, l10n)),
       if (detail.education != null)
         _InfoItem(l10n.profileEducation, detail.education!),
       if (detail.educationLevel != null)
         _InfoItem(
-            l10n.myClientDetailEducationLevel, _eduLabel(detail.educationLevel!)),
+            l10n.myClientDetailEducationLevel, educationLabel(detail.educationLevel!, l10n)),
       if (detail.school != null)
         _InfoItem(l10n.myClientDetailSchool, detail.school!),
       if (detail.major != null)
@@ -476,23 +476,23 @@ class _InfoSection extends StatelessWidget {
       if (detail.annualIncomeRange != null)
         _InfoItem(l10n.profileIncome, incomeLabel(detail.annualIncomeRange!, l10n)),
       if (detail.religion != null)
-        _InfoItem(l10n.profileReligion, _religionLabel(detail.religion!, l10n)),
+        _InfoItem(l10n.profileReligion, religionLabel(detail.religion!, l10n)),
       if (detail.maritalHistory != null)
-        _InfoItem(l10n.profileMaritalHistory, _maritalLabel(detail.maritalHistory!, l10n)),
+        _InfoItem(l10n.profileMaritalHistory, maritalLabel(detail.maritalHistory!, l10n)),
       if (detail.hasChildren)
         _InfoItem(l10n.profileChildren, detail.childrenCount != null ? l10n.profileChildrenCount(detail.childrenCount!) : 'O'),
       if (detail.familyDetail != null)
         _InfoItem(l10n.profileFamilyDetail, detail.familyDetail!),
       if (detail.parentsStatus != null)
-        _InfoItem(l10n.profileParentsStatus, _parentsLabel(detail.parentsStatus!, l10n)),
+        _InfoItem(l10n.profileParentsStatus, parentsLabel(detail.parentsStatus!, l10n)),
       if (detail.drinking != null)
-        _InfoItem(l10n.profileDrinking, _drinkingLabel(detail.drinking!, l10n)),
+        _InfoItem(l10n.profileDrinking, drinkingLabel(detail.drinking!, l10n)),
       if (detail.smoking != null)
-        _InfoItem(l10n.profileSmoking, _smokingLabel(detail.smoking!, l10n)),
+        _InfoItem(l10n.profileSmoking, smokingLabel(detail.smoking!, l10n)),
       if (detail.personalityType != null)
         _InfoItem(l10n.profilePersonalityType, detail.personalityType!),
       if (detail.assetRange != null)
-        _InfoItem(l10n.profileAssetRange, _assetLabel(detail.assetRange!, l10n)),
+        _InfoItem(l10n.profileAssetRange, assetLabel(detail.assetRange!, l10n)),
       if (detail.residenceArea != null)
         _InfoItem(l10n.profileResidenceArea, detail.residenceArea!),
       if (detail.residenceType != null)
@@ -558,88 +558,6 @@ class _InfoSection extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _bodyTypeLabel(String type) {
-    return switch (type) {
-      'slim' => l10n.regBodySlim,
-      'slightly_slim' => l10n.regBodySlightlySlim,
-      'average' => l10n.regBodyAverage,
-      'slightly_chubby' => l10n.regBodySlightlyChubby,
-      'chubby' => l10n.regBodyChubby,
-      _ => type,
-    };
-  }
-
-  String _eduLabel(String level) {
-    return switch (level) {
-      'high_school' => l10n.regEduHighSchool,
-      'associate' => l10n.regEduAssociate,
-      'bachelor' => l10n.regEduBachelor,
-      'master' => l10n.regEduMaster,
-      'doctorate' => l10n.regEduDoctorate,
-      _ => level,
-    };
-  }
-
-  String _maritalLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'first_marriage' => l10n.regMaritalFirst,
-      'remarriage' => l10n.regMaritalRemarriage,
-      'divorced' => l10n.regMaritalDivorced,
-      _ => val,
-    };
-  }
-
-  String _drinkingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regDrinkingNone,
-      'social' => l10n.regDrinkingSocial,
-      'regular' => l10n.regDrinkingRegular,
-      _ => val,
-    };
-  }
-
-  String _smokingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regSmokingNone,
-      'sometimes' => l10n.regSmokingSometimes,
-      'regular' => l10n.regSmokingRegular,
-      _ => val,
-    };
-  }
-
-  String _parentsLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'both_alive' => l10n.regParentsBothAlive,
-      'father_only' => l10n.regParentsFatherOnly,
-      'mother_only' => l10n.regParentsMotherOnly,
-      'deceased' => l10n.regParentsDeceased,
-      _ => val,
-    };
-  }
-
-  String _religionLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regReligionNone,
-      'christian' => l10n.regReligionChristian,
-      'catholic' => l10n.regReligionCatholic,
-      'buddhist' => l10n.regReligionBuddhist,
-      'other' => l10n.regReligionOther,
-      _ => val,
-    };
-  }
-
-
-  String _assetLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'under_100m' => l10n.regAssetRange1,
-      '100m_300m' => l10n.regAssetRange2,
-      '300m_500m' => l10n.regAssetRange3,
-      '500m_1b' => l10n.regAssetRange4,
-      'over_1b' => l10n.regAssetRange5,
-      _ => val,
-    };
   }
 
   String _residenceLabel(String val, AppLocalizations l10n) {

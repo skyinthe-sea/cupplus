@@ -158,7 +158,7 @@ class _FamilyLifestyleSection extends StatelessWidget {
         _DetailRow(
           icon: Icons.family_restroom_outlined,
           label: l10n.profileMaritalHistory,
-          value: _maritalLabel(profile.maritalHistory!, l10n),
+          value: maritalLabel(profile.maritalHistory!, l10n),
         ),
       if (profile.familyDetail != null)
         _DetailRow(
@@ -170,7 +170,7 @@ class _FamilyLifestyleSection extends StatelessWidget {
         _DetailRow(
           icon: Icons.supervisor_account_outlined,
           label: l10n.profileParentsStatus,
-          value: _parentsLabel(profile.parentsStatus!, l10n),
+          value: parentsLabel(profile.parentsStatus!, l10n),
         ),
       if (profile.hasChildren)
         _DetailRow(
@@ -184,13 +184,13 @@ class _FamilyLifestyleSection extends StatelessWidget {
         _DetailRow(
           icon: Icons.local_bar_outlined,
           label: l10n.profileDrinking,
-          value: _drinkingLabel(profile.drinking!, l10n),
+          value: drinkingLabel(profile.drinking!, l10n),
         ),
       if (profile.smoking != null)
         _DetailRow(
           icon: Icons.smoking_rooms_outlined,
           label: l10n.profileSmoking,
-          value: _smokingLabel(profile.smoking!, l10n),
+          value: smokingLabel(profile.smoking!, l10n),
         ),
       if (profile.residenceArea != null)
         _DetailRow(
@@ -299,42 +299,6 @@ class _FamilyLifestyleSection extends StatelessWidget {
     );
   }
 
-  String _drinkingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regDrinkingNone,
-      'social' => l10n.regDrinkingSocial,
-      'regular' => l10n.regDrinkingRegular,
-      _ => val,
-    };
-  }
-
-  String _smokingLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'none' => l10n.regSmokingNone,
-      'sometimes' => l10n.regSmokingSometimes,
-      'regular' => l10n.regSmokingRegular,
-      _ => val,
-    };
-  }
-
-  String _maritalLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'first_marriage' => l10n.regMaritalFirst,
-      'remarriage' => l10n.regMaritalRemarriage,
-      'divorced' => l10n.regMaritalDivorced,
-      _ => val,
-    };
-  }
-
-  String _parentsLabel(String val, AppLocalizations l10n) {
-    return switch (val) {
-      'both_alive' => l10n.regParentsBothAlive,
-      'father_only' => l10n.regParentsFatherOnly,
-      'mother_only' => l10n.regParentsMotherOnly,
-      'deceased' => l10n.regParentsDeceased,
-      _ => val,
-    };
-  }
 }
 
 class _IdealPartnerSection extends StatelessWidget {

@@ -3541,6 +3541,66 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'인증하러 가기'**
   String get matchSheetGoVerify;
+
+  /// No description provided for @mySettingsTheme.
+  ///
+  /// In ko, this message translates to:
+  /// **'테마'**
+  String get mySettingsTheme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템'**
+  String get themeSystem;
+
+  /// No description provided for @chatMessageDeleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'삭제된 메시지입니다'**
+  String get chatMessageDeleted;
+
+  /// No description provided for @chatDeleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'메시지 삭제'**
+  String get chatDeleteTitle;
+
+  /// No description provided for @chatDeleteConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 메시지를 삭제하시겠습니까?\n상대방에게도 보이지 않습니다.'**
+  String get chatDeleteConfirm;
+
+  /// No description provided for @chatDeleteFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'메시지 삭제에 실패했습니다'**
+  String get chatDeleteFailed;
+
+  /// No description provided for @chatReplyToMe.
+  ///
+  /// In ko, this message translates to:
+  /// **'나'**
+  String get chatReplyToMe;
+
+  /// No description provided for @chatReply.
+  ///
+  /// In ko, this message translates to:
+  /// **'답장'**
+  String get chatReply;
+
+  /// No description provided for @chatShowMore.
+  ///
+  /// In ko, this message translates to:
+  /// **'더보기'**
+  String get chatShowMore;
+
+  /// No description provided for @chatShowLess.
+  ///
+  /// In ko, this message translates to:
+  /// **'접기'**
+  String get chatShowLess;
 }
 
 class _AppLocalizationsDelegate
