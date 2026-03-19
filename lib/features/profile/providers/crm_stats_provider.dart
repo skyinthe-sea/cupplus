@@ -79,9 +79,9 @@ Future<CrmStats> crmStats(Ref ref) async {
 
     final clients = listResults[0];
     final matches = listResults[1];
-    final noteCount = countResults[0].count;
-    final thisMonthRegs = countResults[1].count;
-    final thisMonthMatches = countResults[2].count;
+    final noteCount = countResults[0].count ?? 0;
+    final thisMonthRegs = countResults[1].count ?? 0;
+    final thisMonthMatches = countResults[2].count ?? 0;
 
     // Client stats
     int active = 0, paused = 0, matched = 0, male = 0, female = 0;

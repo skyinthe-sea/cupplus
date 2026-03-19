@@ -68,12 +68,22 @@ class ClientTagsSection extends ConsumerWidget {
                     backgroundColor: color.withValues(alpha: 0.1),
                     side: BorderSide(color: color.withValues(alpha: 0.3)),
                     deleteIcon: Icon(Icons.close, size: 16.r, color: color),
-                    onDeleted: () => ref.read(
-                      removeClientTagProvider(
-                        tagId: t['id'] as String,
-                        clientId: clientId,
-                      ).future,
-                    ),
+                    onDeleted: () async {
+                      try {
+                        await ref.read(
+                          removeClientTagProvider(
+                            tagId: t['id'] as String,
+                            clientId: clientId,
+                          ).future,
+                        );
+                      } catch (_) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(AppLocalizations.of(context)!.commonError)),
+                          );
+                        }
+                      }
+                    },
                     visualDensity: VisualDensity.compact,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   );
@@ -144,13 +154,21 @@ class ClientTagsSection extends ConsumerWidget {
                   ),
                   backgroundColor: color.withValues(alpha: 0.1),
                   side: BorderSide(color: color.withValues(alpha: 0.3)),
-                  onPressed: () {
-                    ref.read(addClientTagProvider(
-                      clientId: clientId,
-                      tag: e.key,
-                      color: e.value,
-                    ).future);
+                  onPressed: () async {
                     Navigator.pop(ctx);
+                    try {
+                      await ref.read(addClientTagProvider(
+                        clientId: clientId,
+                        tag: e.key,
+                        color: e.value,
+                      ).future);
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(AppLocalizations.of(context)!.commonError)),
+                        );
+                      }
+                    }
                   },
                 );
               }).toList(),
@@ -180,14 +198,22 @@ class ClientTagsSection extends ConsumerWidget {
                 ),
                 SizedBox(width: 8.w),
                 FilledButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final tag = customController.text.trim();
                     if (tag.isEmpty) return;
-                    ref.read(addClientTagProvider(
-                      clientId: clientId,
-                      tag: tag,
-                    ).future);
                     Navigator.pop(ctx);
+                    try {
+                      await ref.read(addClientTagProvider(
+                        clientId: clientId,
+                        tag: tag,
+                      ).future);
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.commonError)),
+                        );
+                      }
+                    }
                   },
                   child: Text(l10n.crmTagsAddButton),
                 ),
@@ -203,6 +229,9 @@ class ClientTagsSection extends ConsumerWidget {
   Color _parseColor(String? hex) {
     if (hex == null || hex.isEmpty) return const Color(0xFF2D5A8E);
     final clean = hex.replaceFirst('#', '');
+    if (clean.length != 6 || !RegExp(r'^[0-9A-Fa-f]{6}$').hasMatch(clean)) {
+      return const Color(0xFF2D5A8E);
+    }
     return Color(int.parse('FF$clean', radix: 16));
   }
 }
