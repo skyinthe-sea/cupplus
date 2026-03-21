@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show FileOptions;
 
 import '../../../config/supabase_config.dart';
+import '../../../shared/widgets/app_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/manager_profile_provider.dart';
 import '../../contract/services/contract_service.dart';
@@ -184,24 +185,11 @@ class _ClientRegistrationScreenState
     final l10n = AppLocalizations.of(context)!;
     final resume = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        content: Text(
-          l10n.regDraftFound,
-          style: TextStyle(fontSize: 15.sp, height: 1.5),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.regDraftNew),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.regDraftContinue),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.drafts_rounded,
+        title: l10n.regDraftFound,
+        cancelLabel: l10n.regDraftNew,
+        confirmLabel: l10n.regDraftContinue,
       ),
     );
 
@@ -549,28 +537,12 @@ class _ClientRegistrationScreenState
     final l10n = AppLocalizations.of(context)!;
     final shouldLeave = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        title: Text(
-          l10n.regExitTitle,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
-        ),
-        content: Text(
-          l10n.regExitMessage,
-          style: TextStyle(fontSize: 14.sp, height: 1.5),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.regExitLeave),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.exit_to_app_rounded,
+        title: l10n.regExitTitle,
+        content: l10n.regExitMessage,
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.regExitLeave,
       ),
     );
 

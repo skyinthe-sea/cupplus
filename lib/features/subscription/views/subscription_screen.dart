@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../../../config/constants.dart';
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/subscription_provider.dart';
 
@@ -21,7 +22,7 @@ class SubscriptionScreen extends ConsumerWidget {
     final packagesAsync = ref.watch(availablePackagesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.subscriptionTitle)),
+      appBar: AppBar(title: Text(l10n.subscriptionTitle, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700))),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
         children: [
@@ -44,6 +45,7 @@ class SubscriptionScreen extends ConsumerWidget {
           Text(
             l10n.subscriptionChangePlan,
             style: theme.textTheme.titleMedium?.copyWith(
+              fontFamily: serifFontFamily,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -358,7 +360,7 @@ class _PlanCard extends StatelessWidget {
             : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: isCurrent ? color : theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+          color: isCurrent ? color : Theme.of(context).extension<HomeColors>()!.borderColor,
           width: isCurrent ? 1.5 : 1,
         ),
       ),

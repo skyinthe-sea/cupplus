@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/widgets/illustration_placeholder.dart';
 import '../providers/verification_provider.dart';
 
 class VerificationScreen extends ConsumerStatefulWidget {
@@ -51,7 +53,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen>
     final docsAsync = ref.watch(myVerificationDocumentsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.verificationTitle)),
+      appBar: AppBar(title: Text(l10n.verificationTitle, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700))),
       body: FadeTransition(
         opacity: _fadeAnim,
         child: ListView(
@@ -84,18 +86,10 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen>
 
             // Hero icon
             Center(
-              child: Container(
+              child: IllustrationImage(
+                assetPath: 'assets/images/illustrations/hero_verification.png',
                 width: 72.r,
                 height: 72.r,
-                decoration: BoxDecoration(
-                  color: cs.primary.withValues(alpha: 0.08),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.verified_user_rounded,
-                  size: 36.r,
-                  color: cs.primary,
-                ),
               ),
             ),
             SizedBox(height: 20.h),
@@ -115,8 +109,9 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen>
             Container(
               padding: EdgeInsets.all(16.r),
               decoration: BoxDecoration(
-                color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
+                color: theme.extension<HomeColors>()!.cardColor,
                 borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: theme.extension<HomeColors>()!.borderColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,6 +297,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen>
 
   Widget _buildUploadArea(AppLocalizations l10n, ThemeData theme) {
     final cs = theme.colorScheme;
+    final homeColors = theme.extension<HomeColors>()!;
 
     if (_selectedImage != null) {
       return ClipRRect(
@@ -392,11 +388,11 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: cs.primary.withValues(alpha: 0.3),
+            color: homeColors.pointColor.withValues(alpha: 0.3),
             width: 1.5,
             style: BorderStyle.solid,
           ),
-          color: cs.primary.withValues(alpha: 0.03),
+          color: homeColors.pointColor.withValues(alpha: 0.03),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -405,13 +401,13 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen>
               width: 52.r,
               height: 52.r,
               decoration: BoxDecoration(
-                color: cs.primary.withValues(alpha: 0.1),
+                color: homeColors.pointColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.add_a_photo_rounded,
                 size: 26.r,
-                color: cs.primary,
+                color: homeColors.pointColor,
               ),
             ),
             SizedBox(height: 12.h),
@@ -420,7 +416,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen>
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: cs.primary,
+                color: homeColors.pointColor,
               ),
             ),
             SizedBox(height: 4.h),

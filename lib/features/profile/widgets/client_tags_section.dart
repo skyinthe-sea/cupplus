@@ -230,10 +230,10 @@ class ClientTagsSection extends ConsumerWidget {
   }
 
   Color _parseColor(String? hex) {
-    if (hex == null || hex.isEmpty) return const Color(0xFF2D5A8E);
+    if (hex == null || hex.isEmpty) return const Color(0xFFc8523a);
     final clean = hex.replaceFirst('#', '');
     if (clean.length != 6 || !RegExp(r'^[0-9A-Fa-f]{6}$').hasMatch(clean)) {
-      return const Color(0xFF2D5A8E);
+      return const Color(0xFFc8523a);
     }
     return Color(int.parse('FF$clean', radix: 16));
   }

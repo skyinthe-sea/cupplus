@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../config/routes.dart';
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/widgets/illustration_placeholder.dart';
 import '../../../shared/models/client_summary.dart';
 import '../providers/my_clients_provider.dart';
 
@@ -40,12 +42,11 @@ class _MyClientsScreenState extends ConsumerState<MyClientsScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
     final clientsAsync = ref.watch(myClientsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.myClientsTitle),
+        title: Text(l10n.myClientsTitle, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700)),
         actions: [
           TextButton.icon(
             onPressed: () => _navigateToRegister(context),
@@ -72,8 +73,7 @@ class _MyClientsScreenState extends ConsumerState<MyClientsScreen>
                           )
                         : null,
                     filled: true,
-                    fillColor: theme.colorScheme.surfaceContainerHighest
-                        .withValues(alpha: 0.5),
+                    fillColor: Theme.of(context).extension<HomeColors>()!.cardColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide.none,
@@ -185,20 +185,21 @@ class _MyClientsScreenState extends ConsumerState<MyClientsScreen>
 
   Widget _buildEmptyState(AppLocalizations l10n) {
     final theme = Theme.of(context);
+    final homeColors = theme.extension<HomeColors>()!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.people_outline_rounded,
-            size: 64.r,
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+          IllustrationImage(
+            assetPath: 'assets/images/illustrations/empty_clients.png',
+            width: 80.r,
+            height: 80.r,
           ),
           SizedBox(height: 16.h),
           Text(
             l10n.myClientsEmpty,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+              color: homeColors.textPrimary,
             ),
           ),
           SizedBox(height: 8.h),
@@ -271,6 +272,7 @@ class _ClientCardState extends State<_ClientCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final homeColors = theme.extension<HomeColors>()!;
     final c = widget.client;
 
     final statusColor = switch (c.matchStatus) {
@@ -297,7 +299,7 @@ class _ClientCardState extends State<_ClientCard>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.r),
             side: BorderSide(
-              color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+              color: homeColors.borderColor,
             ),
           ),
           child: InkWell(
@@ -311,7 +313,7 @@ class _ClientCardState extends State<_ClientCard>
                   CircleAvatar(
                     radius: 24.r,
                     backgroundColor:
-                        theme.colorScheme.primary.withValues(alpha: 0.1),
+                        homeColors.pointColor.withValues(alpha: 0.1),
                     backgroundImage: c.profilePhotoUrl != null
                         ? NetworkImage(c.profilePhotoUrl!)
                         : null,
@@ -321,7 +323,7 @@ class _ClientCardState extends State<_ClientCard>
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w600,
-                              color: theme.colorScheme.primary,
+                              color: homeColors.pointColor,
                             ),
                           )
                         : null,

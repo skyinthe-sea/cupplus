@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 
 import '../../../config/routes.dart';
 import '../../../config/supabase_config.dart';
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/app_dialog.dart';
 import '../../home/providers/home_providers.dart';
 import '../../verification/providers/verification_provider.dart';
 
@@ -23,7 +25,7 @@ class MatchDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.matchDetailTitle),
+        title: Text(l10n.matchDetailTitle, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700)),
       ),
       body: detailAsync.when(
         data: (data) {
@@ -314,31 +316,18 @@ class _MatchDetailBody extends ConsumerWidget {
 
     await showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        icon: Icon(
-          Icons.verified_user_outlined,
-          size: 40.r,
-          color: Theme.of(ctx).colorScheme.primary,
-        ),
-        title: Text(l10n.matchSheetVerificationRequired),
-        content: Text(
-          l10n.matchSheetVerificationBody,
-          textAlign: TextAlign.center,
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              context.push(AppRoutes.verification);
-            },
-            child: Text(l10n.matchSheetGoVerify),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.verified_user_outlined,
+        iconColor: Theme.of(context).colorScheme.primary,
+        title: l10n.matchSheetVerificationRequired,
+        content: l10n.matchSheetVerificationBody,
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.matchSheetGoVerify,
+        onCancel: () => Navigator.pop(context),
+        onConfirm: () {
+          Navigator.pop(context);
+          context.push(AppRoutes.verification);
+        },
       ),
     );
 
@@ -356,19 +345,12 @@ class _MatchDetailBody extends ConsumerWidget {
     if (!context.mounted) return;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.homeMatchAccept),
-        content: Text(l10n.matchDetailAcceptConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.homeMatchAccept),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.check_circle_rounded,
+        title: l10n.homeMatchAccept,
+        content: l10n.matchDetailAcceptConfirm,
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.homeMatchAccept,
       ),
     );
 
@@ -414,28 +396,19 @@ class _MatchDetailBody extends ConsumerWidget {
     try {
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.homeMatchDecline),
-          content: TextField(
+        builder: (_) => AppDialog(
+          icon: Icons.close_rounded,
+          title: l10n.homeMatchDecline,
+          contentWidget: TextField(
             controller: reasonController,
             decoration: InputDecoration(
               hintText: l10n.homeMatchDeclineReason,
             ),
             maxLines: 2,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFFC62828),
-              ),
-              child: Text(l10n.homeMatchDecline),
-            ),
-          ],
+          cancelLabel: l10n.commonCancel,
+          confirmLabel: l10n.homeMatchDecline,
+          isDestructive: true,
         ),
       );
 
@@ -482,22 +455,13 @@ class _MatchDetailBody extends ConsumerWidget {
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.homeMatchCancel),
-        content: Text(l10n.homeMatchCancelConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFFC62828),
-            ),
-            child: Text(l10n.homeMatchCancel),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.cancel_rounded,
+        title: l10n.homeMatchCancel,
+        content: l10n.homeMatchCancelConfirm,
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.homeMatchCancel,
+        isDestructive: true,
       ),
     );
 
@@ -623,8 +587,8 @@ class _ProfileCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: isPrimary
-                ? theme.colorScheme.primary.withValues(alpha: 0.5)
-                : theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                ? Theme.of(context).extension<HomeColors>()!.pointColor.withValues(alpha: 0.5)
+                : Theme.of(context).extension<HomeColors>()!.borderColor,
             width: isPrimary ? 1.5 : 1,
           ),
           boxShadow: [
@@ -738,14 +702,14 @@ class _InfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeColors = Theme.of(context).extension<HomeColors>()!;
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color:
-            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: homeColors.cardColor,
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+          color: homeColors.borderColor,
         ),
       ),
       child: Column(children: children),

@@ -63,6 +63,7 @@
   "chatNoMessages": "메시지가 없습니다",
   "chatImageSent": "이미지를 보냈습니다",
 
+  "chatListSectionLabel": "MESSAGES",
   "chatListHeadline": "대화함",
   "chatListUnreadCount": "읽지 않은 메시지 {count}건",
   "@chatListUnreadCount": {
@@ -129,6 +130,7 @@
   "navMatches": "매칭",
   "navChat": "채팅",
   "navMy": "마이",
+  "myPageSectionLabel": "MY PAGE",
 
   "homeTitle": "홈 화면입니다",
   "homeGreeting": "안녕하세요, {name}님!",
@@ -693,6 +695,22 @@
   "marketplaceFilterResidenceArea": "거주지",
   "marketplaceFilterResidenceHint": "지역명 입력",
 
+  "filterPresetTitle": "저장된 필터",
+  "filterPresetSave": "현재 필터 저장",
+  "filterPresetSaveTitle": "필터 저장",
+  "filterPresetNameHint": "필터 이름 (예: 30대 서울 전문직)",
+  "filterPresetEmpty": "저장된 필터가 없습니다",
+  "filterPresetSaved": "필터가 저장되었습니다",
+  "filterPresetDeleted": "필터가 삭제되었습니다",
+  "filterPresetApplied": "필터가 적용되었습니다",
+  "filterPresetDeleteConfirm": "이 필터를 삭제하시겠습니까?",
+  "filterPresetFilterCount": "{count}개 조건",
+  "@filterPresetFilterCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "crmNotesTitle": "메모 & 타임라인",
   "crmNoteAdd": "메모 추가",
   "crmNoteTypeGeneral": "일반",
@@ -785,5 +803,43 @@
   "chatReplyToMe": "나",
   "chatReply": "답장",
   "chatShowMore": "더보기",
-  "chatShowLess": "접기"
+  "chatShowLess": "접기",
+
+  "homeGreetingTimeMorning": "GOOD MORNING",
+  "homeGreetingTimeAfternoon": "GOOD AFTERNOON",
+  "homeGreetingTimeEvening": "GOOD EVENING",
+  "homeGreetingTimeNight": "GOOD NIGHT",
+  "homeGreetingSuffix": "매니저님",
+  "homeGreetingHello": "안녕하세요,",
+  "homePendingMatchBadge": "대기 매칭",
+  "homePendingMatchTitle": "지금 바로",
+  "homePendingMatchSubtitle": "확인이 필요해요",
+  "homePendingMatchDesc": "새로운 인연이 기다리고 있어요",
+  "homePendingMatchCta": "대기 매칭 {count}건 확인하러 가기",
+  "@homePendingMatchCta": { "placeholders": { "count": { "type": "int" } } },
+  "homeNoMatchTitle": "첫 매칭을 시도해보세요",
+  "homeNoMatchDesc": "회원을 탐색하고 매칭을 생성해보세요",
+  "homeNoMatchCta": "매칭 시작하기",
+  "homeQuickActionsTitle": "지금 할 수 있어요",
+  "homeQuickMatchTag": "바로 시작",
+  "homeQuickRegisterTag": "프로필 작성",
+  "homeQuickScheduleTitle": "일정 관리",
+  "homeQuickScheduleTag": "예정",
+  "homeActivityViewAll": "전체보기",
+  "homeStatsPendingMatches": "대기 매칭",
+  "homeStatsNewMessages": "새 메시지",
+  "homeStatsSchedules": "예정 일정",
+
+  "marketplaceHeaderLabel": "PROFILE MARKET",
+  "marketplaceHeaderSerif1": "프로필",
+  "marketplaceHeaderSerif2": "마켓",
+  "marketplaceNewBadge": "NEW",
+  "marketplaceMatchButton": "매칭하기",
+  "marketplaceCompatibility": "매칭 적합도",
+  "marketplaceCompatibilityPlaceholder": "추후 제공 예정",
+
+  "chatMatchProfileTitle": "매칭 프로필",
+  "chatViewProfile": "프로필 보기",
+  "chatMatchDate": "매칭일",
+  "chatMatchStatus": "매칭 상태"
 }

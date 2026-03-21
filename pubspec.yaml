@@ -53,3 +53,24 @@ flutter:
     - .env
     - .env.production
     - assets/splash/
+    - assets/images/illustrations/
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-300.otf
+          weight: 300
+        - asset: assets/fonts/Pretendard-400.otf
+          weight: 400
+        - asset: assets/fonts/Pretendard-500.otf
+          weight: 500
+        - asset: assets/fonts/Pretendard-600.otf
+          weight: 600
+        - asset: assets/fonts/Pretendard-700.otf
+          weight: 700
+    - family: NanumMyeongjo
+      fonts:
+        - asset: assets/fonts/NanumMyeongjo-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NanumMyeongjo-Bold.ttf
+          weight: 700

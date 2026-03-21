@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../home/widgets/illustration_placeholder.dart';
 import '../providers/contract_provider.dart';
 import '../services/contract_service.dart';
 
@@ -27,11 +28,10 @@ class ContractHistoryScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.description_outlined,
-                    size: 64.r,
-                    color: theme.colorScheme.onSurfaceVariant
-                        .withValues(alpha: 0.3),
+                  IllustrationImage(
+                    assetPath: 'assets/images/illustrations/empty_contract.png',
+                    width: 64.r,
+                    height: 64.r,
                   ),
                   SizedBox(height: 16.h),
                   Text(

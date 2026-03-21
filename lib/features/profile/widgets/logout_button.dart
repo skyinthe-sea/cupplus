@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
 import '../../../config/supabase_config.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/app_dialog.dart';
 import '../../notification/services/fcm_service.dart';
 
 class LogoutButton extends ConsumerWidget {
@@ -33,25 +34,18 @@ class LogoutButton extends ConsumerWidget {
 
   Future<void> _showLogoutDialog(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
+    final errorColor = Theme.of(context).colorScheme.error;
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.myLogoutConfirmTitle),
-        content: Text(l10n.myLogoutConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.commonCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              l10n.authLogout,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.logout_rounded,
+        iconColor: errorColor,
+        title: l10n.myLogoutConfirmTitle,
+        content: l10n.myLogoutConfirmMessage,
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.authLogout,
+        isDestructive: true,
       ),
     );
 

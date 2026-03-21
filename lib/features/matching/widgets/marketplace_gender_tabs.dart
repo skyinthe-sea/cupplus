@@ -1,8 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
 
 class MarketplaceGenderTabs extends StatelessWidget {
@@ -23,129 +22,98 @@ class MarketplaceGenderTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: isDark
-                  ? theme.colorScheme.surfaceContainer.withValues(alpha: 0.55)
-                  : theme.colorScheme.surface.withValues(alpha: 0.65),
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : Colors.white.withValues(alpha: 0.45),
-                width: 0.5,
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 8.h),
+      child: AnimatedBuilder(
+        animation: controller,
+        builder: (context, _) {
+          final activeIndex = controller.animation?.value.round() ?? controller.index;
+          return Row(
+            children: [
+              _PillTab(
+                label: '${l10n.commonAll} $allCount',
+                isActive: activeIndex == 0,
+                onTap: () => controller.animateTo(0),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
-                  spreadRadius: -4,
-                ),
-              ],
-            ),
-            child: TabBar(
-              controller: controller,
-              indicatorSize: TabBarIndicatorSize.label,
-              dividerColor: Colors.transparent,
-              labelStyle: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
+              SizedBox(width: 8.w),
+              _PillTab(
+                label: '${l10n.commonFemale} $femaleCount',
+                isActive: activeIndex == 1,
+                onTap: () => controller.animateTo(1),
               ),
-              unselectedLabelStyle: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
+              SizedBox(width: 8.w),
+              _PillTab(
+                label: '${l10n.commonMale} $maleCount',
+                isActive: activeIndex == 2,
+                onTap: () => controller.animateTo(2),
               ),
-              tabs: [
-                _buildTab(
-                  l10n.commonAll,
-                  allCount,
-                  theme.colorScheme.primary,
-                ),
-                _buildTab(
-                  l10n.commonFemale,
-                  femaleCount,
-                  const Color(0xFFB4637A),
-                ),
-                _buildTab(
-                  l10n.commonMale,
-                  maleCount,
-                  const Color(0xFF2D5A8E),
-                ),
-                _buildLikesTab(likesCount),
-              ],
-            ),
-          ),
-        ),
+              SizedBox(width: 8.w),
+              _PillTab(
+                icon: Icons.favorite_rounded,
+                isActive: activeIndex == 3,
+                onTap: () => controller.animateTo(3),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
+}
 
-  Widget _buildTab(String label, int count, Color badgeColor) {
-    return Tab(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label),
-          if (count > 0) ...[
-            SizedBox(width: 6.w),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
-              decoration: BoxDecoration(
-                color: badgeColor.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Text(
-                '$count',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w700,
-                  color: badgeColor,
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
+class _PillTab extends StatelessWidget {
+  const _PillTab({
+    this.label,
+    this.icon,
+    required this.isActive,
+    required this.onTap,
+  });
 
-  Widget _buildLikesTab(int count) {
+  final String? label;
+  final IconData? icon;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final homeColors = theme.extension<HomeColors>()!;
     const dustyRose = Color(0xFFB4637A);
-    return Tab(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.favorite_rounded, size: 14.r, color: dustyRose),
-          if (count > 0) ...[
-            SizedBox(width: 4.w),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
-              decoration: BoxDecoration(
-                color: dustyRose.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Text(
-                '$count',
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(
+          horizontal: icon != null ? 12.w : 14.w,
+          vertical: 8.h,
+        ),
+        decoration: BoxDecoration(
+          color: isActive ? homeColors.textPrimary : Colors.transparent,
+          borderRadius: BorderRadius.circular(20.r),
+          border: isActive
+              ? null
+              : Border.all(color: homeColors.borderColor, width: 1),
+        ),
+        child: icon != null
+            ? Icon(
+                icon,
+                size: 16.r,
+                color: isActive ? homeColors.cardColor : dustyRose,
+              )
+            : Text(
+                label!,
                 style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w700,
-                  color: dustyRose,
+                  fontFamily: 'Pretendard',
+                  fontSize: 13.sp,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  color: isActive
+                      ? homeColors.cardColor
+                      : homeColors.textPrimary,
                 ),
               ),
-            ),
-          ],
-        ],
       ),
     );
   }

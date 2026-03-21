@@ -273,7 +273,7 @@ Future<List<ConversationSummary>> _fetchConversations(
   // Batch parallel queries
   final managersFuture = client
       .from('managers')
-      .select('id, full_name')
+      .select('id, full_name, nickname')
       .inFilter('id', participantIds.toList());
 
   // Fetch last message per conversation (including deleted — shown as placeholder)
@@ -307,7 +307,10 @@ Future<List<ConversationSummary>> _fetchConversations(
 
   final managerMap = <String, String>{};
   for (final m in baseResults[0] as List<dynamic>) {
-    managerMap[m['id'] as String] = m['full_name'] as String;
+    final nickname = m['nickname'] as String?;
+    final fullName = m['full_name'] as String;
+    managerMap[m['id'] as String] =
+        (nickname != null && nickname.trim().isNotEmpty) ? nickname : fullName;
   }
 
   final lastMessageMap = <String, Map<String, dynamic>>{};
@@ -343,11 +346,17 @@ Future<List<ConversationSummary>> _fetchConversations(
   }
 
   final matchContextMap = <String, String>{};
+  final matchClientAMap = <String, String>{};
+  final matchClientBMap = <String, String>{};
   for (final m in matchRows) {
     final matchId = m['id'] as String;
-    final nameA = clientNameMap[m['client_a_id'] as String] ?? '?';
-    final nameB = clientNameMap[m['client_b_id'] as String] ?? '?';
+    final clientAId = m['client_a_id'] as String;
+    final clientBId = m['client_b_id'] as String;
+    final nameA = clientNameMap[clientAId] ?? '?';
+    final nameB = clientNameMap[clientBId] ?? '?';
     matchContextMap[matchId] = '$nameA ↔ $nameB';
+    matchClientAMap[matchId] = clientAId;
+    matchClientBMap[matchId] = clientBId;
   }
 
   return rows.map((row) {
@@ -371,6 +380,8 @@ Future<List<ConversationSummary>> _fetchConversations(
       isOnline: false,
       matchId: matchId,
       matchContext: matchId != null ? matchContextMap[matchId] : null,
+      clientAId: matchId != null ? matchClientAMap[matchId] : null,
+      clientBId: matchId != null ? matchClientBMap[matchId] : null,
       lastMessageIsDeleted: lastMsg?['deleted_at'] != null,
     );
   }).toList();

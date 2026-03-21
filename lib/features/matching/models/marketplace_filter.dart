@@ -73,6 +73,52 @@ class MarketplaceFilter {
     return count;
   }
 
+  Map<String, dynamic> toJson() => {
+        if (gender != null) 'gender': gender,
+        if (minAge != null) 'minAge': minAge,
+        if (maxAge != null) 'maxAge': maxAge,
+        if (minHeight != null) 'minHeight': minHeight,
+        if (maxHeight != null) 'maxHeight': maxHeight,
+        if (religion != null) 'religion': religion,
+        if (isVerifiedOnly) 'isVerifiedOnly': true,
+        if (educationLevel != null) 'educationLevel': educationLevel,
+        if (occupationCategories.isNotEmpty)
+          'occupationCategories': occupationCategories,
+        if (incomeRange != null) 'incomeRange': incomeRange,
+        if (sortOrder != SortOrder.newest) 'sortOrder': sortOrder.name,
+        if (drinking != null) 'drinking': drinking,
+        if (smoking != null) 'smoking': smoking,
+        if (maritalHistory != null) 'maritalHistory': maritalHistory,
+        if (residenceArea != null) 'residenceArea': residenceArea,
+      };
+
+  factory MarketplaceFilter.fromJson(Map<String, dynamic> json) {
+    return MarketplaceFilter(
+      gender: json['gender'] as String?,
+      minAge: json['minAge'] as int?,
+      maxAge: json['maxAge'] as int?,
+      minHeight: json['minHeight'] as int?,
+      maxHeight: json['maxHeight'] as int?,
+      religion: json['religion'] as String?,
+      isVerifiedOnly: json['isVerifiedOnly'] as bool? ?? false,
+      educationLevel: json['educationLevel'] as String?,
+      occupationCategories: (json['occupationCategories'] as List<dynamic>?)
+              ?.cast<String>() ??
+          const [],
+      incomeRange: json['incomeRange'] as String?,
+      sortOrder: json['sortOrder'] != null
+          ? SortOrder.values.firstWhere(
+              (e) => e.name == json['sortOrder'],
+              orElse: () => SortOrder.newest,
+            )
+          : SortOrder.newest,
+      drinking: json['drinking'] as String?,
+      smoking: json['smoking'] as String?,
+      maritalHistory: json['maritalHistory'] as String?,
+      residenceArea: json['residenceArea'] as String?,
+    );
+  }
+
   MarketplaceFilter copyWith({
     String? Function()? gender,
     int? Function()? minAge,

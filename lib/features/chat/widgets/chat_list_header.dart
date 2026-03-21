@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ChatListHeader extends StatelessWidget {
@@ -11,7 +12,10 @@ class ChatListHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final homeColors = theme.extension<HomeColors>()!;
     final l10n = AppLocalizations.of(context)!;
+
+    final headlineStyle = theme.textTheme.headlineMedium;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -23,10 +27,25 @@ class ChatListHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Line 1: "MESSAGES" uppercase label
+          Text(
+            l10n.chatListSectionLabel,
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 3.0,
+              color: homeColors.textPrimary.withValues(alpha: 0.35),
+            ),
+          ),
+          SizedBox(height: 6.h),
+          // Line 2: Serif title
           Text(
             l10n.chatListHeadline,
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w800,
+            style: headlineStyle?.copyWith(
+              fontFamily: serifFontFamily,
+              fontWeight: FontWeight.w400,
+              color: homeColors.textPrimary,
             ),
           ),
           if (unreadCount > 0) ...[
@@ -34,7 +53,7 @@ class ChatListHeader extends StatelessWidget {
             Text(
               l10n.chatListUnreadCount(unreadCount),
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+                color: homeColors.pointColor,
               ),
             ),
           ],

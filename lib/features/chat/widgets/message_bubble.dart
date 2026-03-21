@@ -446,7 +446,7 @@ class _MineBubble extends StatelessWidget {
                     message.isRead ? Icons.done_all : Icons.done,
                     size: 14.r,
                     color: message.isRead
-                        ? const Color(0xFF2D5A8E)
+                        ? theme.colorScheme.primary
                         : theme.colorScheme.onSurfaceVariant
                             .withValues(alpha: 0.4),
                   ),
@@ -459,7 +459,7 @@ class _MineBubble extends StatelessWidget {
                 padding:
                     EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2D5A8E),
+                  color: theme.colorScheme.primary,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16.r),
                     topRight: Radius.circular(4.r),

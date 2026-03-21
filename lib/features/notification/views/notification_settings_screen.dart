@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/notification_providers.dart';
 
@@ -53,9 +54,18 @@ class _NotificationSettingsScreenState
       systemNotifications: systemNotifications,
     );
 
-    await ref.read(
-      updateNotificationSettingsProvider(updated).future,
-    );
+    try {
+      await ref.read(
+        updateNotificationSettingsProvider(updated).future,
+      );
+    } catch (_) {
+      if (mounted) {
+        ref.invalidate(notificationSettingsProvider);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.commonError)),
+        );
+      }
+    }
   }
 
   @override
@@ -66,7 +76,7 @@ class _NotificationSettingsScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.notificationSettingsTitle),
+        title: Text(l10n.notificationSettingsTitle, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700)),
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -91,7 +101,7 @@ class _NotificationSettingsScreenState
         Container(
           padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer.withValues(alpha: 0.15),
+            color: theme.extension<HomeColors>()!.pointColor.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Row(
@@ -99,7 +109,7 @@ class _NotificationSettingsScreenState
               Icon(
                 Icons.info_outline_rounded,
                 size: 20.r,
-                color: theme.colorScheme.primary,
+                color: theme.extension<HomeColors>()!.pointColor,
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -248,11 +258,10 @@ class _SettingTileState extends State<_SettingTile>
         position: _slideAnimation,
         child: Container(
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest
-                .withValues(alpha: 0.3),
+            color: theme.extension<HomeColors>()!.cardColor,
             borderRadius: BorderRadius.circular(14.r),
             border: Border.all(
-              color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+              color: theme.extension<HomeColors>()!.borderColor,
             ),
           ),
           child: Padding(
@@ -318,13 +327,14 @@ class _FcmStatusBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeColors = theme.extension<HomeColors>()!;
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
+        color: homeColors.cardColor,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+          color: homeColors.borderColor,
         ),
       ),
       child: Row(

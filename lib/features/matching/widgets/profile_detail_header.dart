@@ -6,9 +6,14 @@ import '../../../l10n/app_localizations.dart';
 import '../models/marketplace_profile.dart';
 
 class ProfileDetailHeader extends StatelessWidget {
-  const ProfileDetailHeader({super.key, required this.profile});
+  const ProfileDetailHeader({
+    super.key,
+    required this.profile,
+    this.heroTagPrefix = 'all',
+  });
 
   final MarketplaceProfile profile;
+  final String heroTagPrefix;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,7 @@ class ProfileDetailHeader extends StatelessWidget {
       child: Column(
         children: [
           Hero(
-            tag: 'marketplace_avatar_${profile.id}',
+            tag: 'marketplace_avatar_${heroTagPrefix}_${profile.id}',
             child: CircleAvatar(
               radius: 40.r,
               backgroundColor:

@@ -15,6 +15,7 @@ class MarketplaceListView extends ConsumerStatefulWidget {
     this.hasMore = false,
     this.onLoadMore,
     this.onRefresh,
+    this.heroTagPrefix = 'all',
   });
 
   final List<MarketplaceProfile> profiles;
@@ -22,6 +23,7 @@ class MarketplaceListView extends ConsumerStatefulWidget {
   final bool hasMore;
   final Future<void> Function()? onLoadMore;
   final Future<void> Function()? onRefresh;
+  final String heroTagPrefix;
 
   @override
   ConsumerState<MarketplaceListView> createState() =>
@@ -169,8 +171,12 @@ class _MarketplaceListViewState extends ConsumerState<MarketplaceListView>
           final card = MarketplaceProfileCard(
             profile: profile,
             isDimmed: isDimmed,
+            heroTagPrefix: widget.heroTagPrefix,
             onTap: () {
-              context.push(AppRoutes.profileDetail(profile.id));
+              context.push(
+                AppRoutes.profileDetail(profile.id),
+                extra: {'heroPrefix': widget.heroTagPrefix},
+              );
             },
           );
 

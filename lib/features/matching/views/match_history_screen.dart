@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 
 import '../../../config/routes.dart';
 import '../../../config/supabase_config.dart';
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/widgets/illustration_placeholder.dart';
 import '../../home/providers/home_providers.dart';
 
 class MatchHistoryScreen extends ConsumerStatefulWidget {
@@ -39,7 +41,7 @@ class _MatchHistoryScreenState extends ConsumerState<MatchHistoryScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.myMatchHistory),
+        title: Text(l10n.myMatchHistory, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700)),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -79,11 +81,10 @@ class _MatchHistoryTab extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.history_rounded,
-                  size: 48.r,
-                  color: theme.colorScheme.onSurfaceVariant
-                      .withValues(alpha: 0.3),
+                IllustrationImage(
+                  assetPath: 'assets/images/illustrations/empty_match_history.png',
+                  width: 56.r,
+                  height: 56.r,
                 ),
                 SizedBox(height: 12.h),
                 Text(
@@ -175,7 +176,7 @@ class _MatchHistoryCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
         side: BorderSide(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+          color: theme.extension<HomeColors>()!.borderColor,
         ),
       ),
       child: InkWell(

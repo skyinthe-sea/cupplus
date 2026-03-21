@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../config/supabase_config.dart';
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../shared/widgets/section_header.dart';
 import '../../auth/providers/manager_profile_provider.dart';
 import '../providers/home_providers.dart';
 import '../widgets/activity_feed.dart';
@@ -15,8 +15,9 @@ import '../widgets/home_app_bar.dart';
 import '../widgets/landing_home.dart';
 import '../widgets/match_creation_sheet.dart';
 import '../widgets/match_management_sheet.dart';
+import '../widgets/pending_match_card.dart';
 import '../widgets/quick_actions.dart';
-import '../widgets/today_tasks.dart';
+import '../widgets/stats_row.dart';
 
 String? _nonEmpty(String? s) => (s != null && s.trim().isNotEmpty) ? s : null;
 
@@ -27,6 +28,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final homeColors = theme.extension<HomeColors>()!;
     final user = ref.watch(currentUserProvider);
 
     // Show landing page when not logged in
@@ -34,6 +36,8 @@ class HomeScreen extends ConsumerWidget {
 
     final managerProfile = ref.watch(managerProfileProvider);
     final statsAsync = ref.watch(homeTodayStatsProvider);
+    final scheduleCount =
+        ref.watch(upcomingScheduleCountProvider).valueOrNull ?? 0;
     final feedAsync = ref.watch(activityFeedProvider);
 
     final nickname = managerProfile.valueOrNull?['nickname'] as String?;
@@ -45,6 +49,7 @@ class HomeScreen extends ConsumerWidget {
         'User';
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
@@ -54,17 +59,59 @@ class HomeScreen extends ConsumerWidget {
           },
           child: CustomScrollView(
             slivers: [
-              // 1-1. AppBar
-              const SliverToBoxAdapter(
-                child: HomeAppBar(),
+              // 1. AppBar
+              SliverToBoxAdapter(
+                child: HomeAppBar(userName: userName),
               ),
 
-              // 1-2. Greeting Header (time-based)
+              // 2. Greeting Header
               SliverToBoxAdapter(
                 child: GreetingHeader(userName: userName),
               ),
 
-              // 1-3. Quick Actions
+              // 3. Pending Match Hero Card
+              SliverToBoxAdapter(
+                child: statsAsync.when(
+                  data: (stats) => PendingMatchCard(
+                    pendingCount: stats.pendingMatches,
+                    onTap: stats.pendingMatches > 0
+                        ? () => _showMatchManagement(context)
+                        : () => context.go(AppRoutes.matches),
+                  ),
+                  loading: () => PendingMatchCard(
+                    pendingCount: 0,
+                    onTap: () => context.go(AppRoutes.matches),
+                  ),
+                  error: (_, __) => PendingMatchCard(
+                    pendingCount: 0,
+                    onTap: () => context.go(AppRoutes.matches),
+                  ),
+                ),
+              ),
+
+              // 4. Stats Row
+              SliverToBoxAdapter(
+                child: statsAsync.when(
+                  data: (stats) {
+                    return StatsRow(
+                      pendingMatches: stats.pendingMatches,
+                      newMessages: stats.newMessages,
+                      schedules: scheduleCount,
+                      onPendingTap: () => _showMatchManagement(context),
+                      onMessagesTap: () => context.go(AppRoutes.chat),
+                      onSchedulesTap: () => context.push(AppRoutes.myClients),
+                    );
+                  },
+                  loading: () => const StatsRow(
+                    pendingMatches: 0,
+                    newMessages: 0,
+                    schedules: 0,
+                  ),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+              ),
+
+              // 5. Quick Actions
               SliverToBoxAdapter(
                 child: QuickActions(
                   onRegisterClient: () => _showClientRegistration(context),
@@ -72,41 +119,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
 
-              // 1-4. Today's Tasks
-              SliverToBoxAdapter(
-                child: statsAsync.when(
-                  data: (stats) {
-                    final scheduleCount = ref.watch(upcomingScheduleCountProvider).valueOrNull ?? 0;
-                    return TodayTasks(
-                      pendingMatches: stats.pendingMatches,
-                      newMessages: stats.newMessages,
-                      onPendingMatchesTap: () =>
-                          _showMatchManagement(context),
-                      onNewMessagesTap: () => context.go(AppRoutes.chat),
-                      upcomingSchedules: scheduleCount,
-                      onSchedulesTap: () => context.go(AppRoutes.myClients),
-                    );
-                  },
-                  loading: () => Padding(
-                    padding: EdgeInsets.all(24.r),
-                    child: const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    ),
-                  ),
-                  error: (_, __) => const SizedBox.shrink(),
-                ),
-              ),
-
-              // 1-5. Activity Feed Header
-              SliverToBoxAdapter(
-                child: SectionHeader(title: l10n.homeRecentActivity),
-              ),
-
-              // 1-5. Activity Feed Content
+              // 6. Activity Feed
               SliverToBoxAdapter(
                 child: feedAsync.when(
                   data: (items) => ActivityFeed(
@@ -136,7 +149,7 @@ class HomeScreen extends ConsumerWidget {
                       child: Text(
                         l10n.commonError,
                         style: TextStyle(
-                          color: theme.colorScheme.onSurfaceVariant,
+                          color: homeColors.textPrimary.withValues(alpha: 0.5),
                         ),
                       ),
                     ),
@@ -144,7 +157,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
 
-              // Bottom padding for floating nav bar
+              // 7. Bottom padding
               SliverToBoxAdapter(
                 child: SizedBox(height: 120.h),
               ),

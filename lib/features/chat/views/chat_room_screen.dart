@@ -14,6 +14,8 @@ import '../providers/chat_providers.dart';
 import '../widgets/chat_input_area.dart';
 import '../widgets/date_separator.dart';
 import '../widgets/message_bubble.dart';
+import '../../../shared/widgets/app_dialog.dart';
+import '../widgets/match_profile_sheet.dart';
 import '../widgets/typing_indicator.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
@@ -270,27 +272,20 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   void _confirmDelete(ChatMessage message) {
     final l10n = AppLocalizations.of(context)!;
-    showDialog(
+    showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.chatDeleteTitle),
-        content: Text(l10n.chatDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.commonCancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              _deleteMessage(message);
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: Text(l10n.commonDelete),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.delete_outline_rounded,
+        iconColor: Theme.of(context).colorScheme.error,
+        title: l10n.chatDeleteTitle,
+        content: l10n.chatDeleteConfirm,
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.commonDelete,
+        isDestructive: true,
+        onConfirm: () {
+          Navigator.pop(context, true);
+          _deleteMessage(message);
+        },
       ),
     );
   }
@@ -670,6 +665,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     final participantName = conversation?.participantName ?? '';
     final matchContext = conversation?.matchContext;
+    final matchId = conversation?.matchId;
     final currentUserId = _supabaseClient.auth.currentUser?.id ?? '';
 
     return Scaffold(
@@ -704,15 +700,31 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  if (matchContext != null)
-                    Text(
-                      matchContext,
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: theme.colorScheme.primary,
+                  if (matchContext != null && matchId != null)
+                    GestureDetector(
+                      onTap: () => MatchProfileSheet.show(context, matchId),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              matchContext,
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: theme.colorScheme.primary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: 2.w),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            size: 14.r,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ],
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     )
                   else
                     Text(

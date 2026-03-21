@@ -88,6 +88,21 @@ class _MyClientEditScreenState extends ConsumerState<MyClientEditScreen> {
     super.dispose();
   }
 
+  /// Returns [value] only if it is in [allowed], otherwise null.
+  String? _validOrNull(String? value, List<String> allowed) =>
+      value != null && allowed.contains(value) ? value : null;
+
+  static const _educationLevels = ['high_school', 'associate', 'bachelor', 'master', 'doctorate'];
+  static const _bodyTypes = ['slim', 'slightly_slim', 'average', 'slightly_chubby', 'chubby'];
+  static const _religions = ['무교', '기독교', '천주교', '불교', '기타'];
+  static const _incomeRanges = ['under_30m', '30m_50m', '50m_70m', '70m_100m', '100m_150m', 'over_150m'];
+  static const _maritalHistories = ['first_marriage', 'remarriage', 'divorced'];
+  static const _parentsStatuses = ['both_alive', 'father_only', 'mother_only', 'deceased'];
+  static const _drinkingVals = ['none', 'social', 'regular'];
+  static const _smokingVals = ['none', 'sometimes', 'regular'];
+  static const _assetRanges = ['under_100m', '100m_300m', '300m_500m', '500m_1b', 'over_1b'];
+  static const _residenceTypes = ['own', 'rent_deposit', 'rent_monthly', 'with_parents'];
+
   void _initFromDetail(ClientDetail detail) {
     if (_initialized) return;
     _initialized = true;
@@ -101,21 +116,21 @@ class _MyClientEditScreenState extends ConsumerState<MyClientEditScreen> {
     _bioCtrl.text = detail.bio ?? '';
     _gender = detail.gender;
     _birthDate = detail.birthDate;
-    _educationLevel = detail.educationLevel;
+    _educationLevel = _validOrNull(detail.educationLevel, _educationLevels);
     _heightCm = detail.heightCm;
-    _bodyType = detail.bodyType;
-    _religion = detail.religion;
-    _annualIncomeRange = detail.annualIncomeRange;
-    _maritalHistory = detail.maritalHistory;
+    _bodyType = _validOrNull(detail.bodyType, _bodyTypes);
+    _religion = _validOrNull(detail.religion, _religions);
+    _annualIncomeRange = _validOrNull(detail.annualIncomeRange, _incomeRanges);
+    _maritalHistory = _validOrNull(detail.maritalHistory, _maritalHistories);
     _hasChildren = detail.hasChildren;
     _childrenCount = detail.childrenCount ?? 0;
     _familyDetailCtrl.text = detail.familyDetail ?? '';
-    _parentsStatus = detail.parentsStatus;
-    _drinking = detail.drinking;
-    _smoking = detail.smoking;
-    _assetRange = detail.assetRange;
+    _parentsStatus = _validOrNull(detail.parentsStatus, _parentsStatuses);
+    _drinking = _validOrNull(detail.drinking, _drinkingVals);
+    _smoking = _validOrNull(detail.smoking, _smokingVals);
+    _assetRange = _validOrNull(detail.assetRange, _assetRanges);
     _residenceAreaCtrl.text = detail.residenceArea ?? '';
-    _residenceType = detail.residenceType;
+    _residenceType = _validOrNull(detail.residenceType, _residenceTypes);
     _healthNotesCtrl.text = detail.healthNotes ?? '';
     _personalityTypeCtrl.text = detail.personalityType ?? '';
     _idealNotesCtrl.text = detail.idealNotes ?? '';

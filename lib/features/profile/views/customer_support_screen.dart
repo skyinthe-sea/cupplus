@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../home/widgets/illustration_placeholder.dart';
 
 class CustomerSupportScreen extends StatelessWidget {
   const CustomerSupportScreen({super.key});
@@ -13,9 +15,10 @@ class CustomerSupportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final homeColors = theme.extension<HomeColors>()!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.myCustomerSupport)),
+      appBar: AppBar(title: Text(l10n.myCustomerSupport, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700))),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
         children: [
@@ -27,23 +30,24 @@ class CustomerSupportScreen extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  theme.colorScheme.primary.withValues(alpha: 0.12),
-                  theme.colorScheme.primary.withValues(alpha: 0.04),
+                  homeColors.pendingCardBg,
+                  homeColors.pendingCardBgEnd,
                 ],
               ),
               borderRadius: BorderRadius.circular(16.r),
             ),
             child: Column(
               children: [
-                Icon(
-                  Icons.support_agent_rounded,
-                  size: 48.r,
-                  color: theme.colorScheme.primary,
+                IllustrationImage(
+                  assetPath: 'assets/images/illustrations/hero_support.png',
+                  width: 56.r,
+                  height: 56.r,
                 ),
                 SizedBox(height: 12.h),
                 Text(
                   l10n.supportHeaderTitle,
                   style: theme.textTheme.titleLarge?.copyWith(
+                    fontFamily: serifFontFamily,
                     fontWeight: FontWeight.w700,
                   ),
                   textAlign: TextAlign.center,
@@ -68,7 +72,7 @@ class CustomerSupportScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14.r),
               side: BorderSide(
-                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                color: homeColors.borderColor,
               ),
             ),
             child: Padding(
@@ -82,7 +86,7 @@ class CustomerSupportScreen extends StatelessWidget {
                         width: 44.r,
                         height: 44.r,
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                          color: homeColors.pointColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Icon(
@@ -144,7 +148,7 @@ class CustomerSupportScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14.r),
               side: BorderSide(
-                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                color: homeColors.borderColor,
               ),
             ),
             child: Padding(
@@ -188,6 +192,7 @@ class CustomerSupportScreen extends StatelessWidget {
           Text(
             l10n.supportFaqTitle,
             style: theme.textTheme.titleMedium?.copyWith(
+              fontFamily: serifFontFamily,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -274,7 +279,7 @@ class _FaqItemState extends State<_FaqItem> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
         side: BorderSide(
-          color: widget.theme.colorScheme.outlineVariant.withValues(alpha: 0.4),
+          color: Theme.of(context).extension<HomeColors>()!.borderColor,
         ),
       ),
       child: InkWell(

@@ -428,6 +428,12 @@ abstract class AppLocalizations {
   /// **'이미지를 보냈습니다'**
   String get chatImageSent;
 
+  /// No description provided for @chatListSectionLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'MESSAGES'**
+  String get chatListSectionLabel;
+
   /// No description provided for @chatListHeadline.
   ///
   /// In ko, this message translates to:
@@ -613,6 +619,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'마이'**
   String get navMy;
+
+  /// No description provided for @myPageSectionLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'MY PAGE'**
+  String get myPageSectionLabel;
 
   /// No description provided for @homeTitle.
   ///
@@ -3122,6 +3134,66 @@ abstract class AppLocalizations {
   /// **'지역명 입력'**
   String get marketplaceFilterResidenceHint;
 
+  /// No description provided for @filterPresetTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장된 필터'**
+  String get filterPresetTitle;
+
+  /// No description provided for @filterPresetSave.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 필터 저장'**
+  String get filterPresetSave;
+
+  /// No description provided for @filterPresetSaveTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'필터 저장'**
+  String get filterPresetSaveTitle;
+
+  /// No description provided for @filterPresetNameHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'필터 이름 (예: 30대 서울 전문직)'**
+  String get filterPresetNameHint;
+
+  /// No description provided for @filterPresetEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장된 필터가 없습니다'**
+  String get filterPresetEmpty;
+
+  /// No description provided for @filterPresetSaved.
+  ///
+  /// In ko, this message translates to:
+  /// **'필터가 저장되었습니다'**
+  String get filterPresetSaved;
+
+  /// No description provided for @filterPresetDeleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'필터가 삭제되었습니다'**
+  String get filterPresetDeleted;
+
+  /// No description provided for @filterPresetApplied.
+  ///
+  /// In ko, this message translates to:
+  /// **'필터가 적용되었습니다'**
+  String get filterPresetApplied;
+
+  /// No description provided for @filterPresetDeleteConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 필터를 삭제하시겠습니까?'**
+  String get filterPresetDeleteConfirm;
+
+  /// No description provided for @filterPresetFilterCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개 조건'**
+  String filterPresetFilterCount(int count);
+
   /// No description provided for @crmNotesTitle.
   ///
   /// In ko, this message translates to:
@@ -3601,6 +3673,210 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'접기'**
   String get chatShowLess;
+
+  /// No description provided for @homeGreetingTimeMorning.
+  ///
+  /// In ko, this message translates to:
+  /// **'GOOD MORNING'**
+  String get homeGreetingTimeMorning;
+
+  /// No description provided for @homeGreetingTimeAfternoon.
+  ///
+  /// In ko, this message translates to:
+  /// **'GOOD AFTERNOON'**
+  String get homeGreetingTimeAfternoon;
+
+  /// No description provided for @homeGreetingTimeEvening.
+  ///
+  /// In ko, this message translates to:
+  /// **'GOOD EVENING'**
+  String get homeGreetingTimeEvening;
+
+  /// No description provided for @homeGreetingTimeNight.
+  ///
+  /// In ko, this message translates to:
+  /// **'GOOD NIGHT'**
+  String get homeGreetingTimeNight;
+
+  /// No description provided for @homeGreetingSuffix.
+  ///
+  /// In ko, this message translates to:
+  /// **'매니저님'**
+  String get homeGreetingSuffix;
+
+  /// No description provided for @homeGreetingHello.
+  ///
+  /// In ko, this message translates to:
+  /// **'안녕하세요,'**
+  String get homeGreetingHello;
+
+  /// No description provided for @homePendingMatchBadge.
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 매칭'**
+  String get homePendingMatchBadge;
+
+  /// No description provided for @homePendingMatchTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금 바로'**
+  String get homePendingMatchTitle;
+
+  /// No description provided for @homePendingMatchSubtitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인이 필요해요'**
+  String get homePendingMatchSubtitle;
+
+  /// No description provided for @homePendingMatchDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로운 인연이 기다리고 있어요'**
+  String get homePendingMatchDesc;
+
+  /// No description provided for @homePendingMatchCta.
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 매칭 {count}건 확인하러 가기'**
+  String homePendingMatchCta(int count);
+
+  /// No description provided for @homeNoMatchTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'첫 매칭을 시도해보세요'**
+  String get homeNoMatchTitle;
+
+  /// No description provided for @homeNoMatchDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'회원을 탐색하고 매칭을 생성해보세요'**
+  String get homeNoMatchDesc;
+
+  /// No description provided for @homeNoMatchCta.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 시작하기'**
+  String get homeNoMatchCta;
+
+  /// No description provided for @homeQuickActionsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금 할 수 있어요'**
+  String get homeQuickActionsTitle;
+
+  /// No description provided for @homeQuickMatchTag.
+  ///
+  /// In ko, this message translates to:
+  /// **'바로 시작'**
+  String get homeQuickMatchTag;
+
+  /// No description provided for @homeQuickRegisterTag.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 작성'**
+  String get homeQuickRegisterTag;
+
+  /// No description provided for @homeQuickScheduleTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'일정 관리'**
+  String get homeQuickScheduleTitle;
+
+  /// No description provided for @homeQuickScheduleTag.
+  ///
+  /// In ko, this message translates to:
+  /// **'예정'**
+  String get homeQuickScheduleTag;
+
+  /// No description provided for @homeActivityViewAll.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체보기'**
+  String get homeActivityViewAll;
+
+  /// No description provided for @homeStatsPendingMatches.
+  ///
+  /// In ko, this message translates to:
+  /// **'대기 매칭'**
+  String get homeStatsPendingMatches;
+
+  /// No description provided for @homeStatsNewMessages.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 메시지'**
+  String get homeStatsNewMessages;
+
+  /// No description provided for @homeStatsSchedules.
+  ///
+  /// In ko, this message translates to:
+  /// **'예정 일정'**
+  String get homeStatsSchedules;
+
+  /// No description provided for @marketplaceHeaderLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'PROFILE MARKET'**
+  String get marketplaceHeaderLabel;
+
+  /// No description provided for @marketplaceHeaderSerif1.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필'**
+  String get marketplaceHeaderSerif1;
+
+  /// No description provided for @marketplaceHeaderSerif2.
+  ///
+  /// In ko, this message translates to:
+  /// **'마켓'**
+  String get marketplaceHeaderSerif2;
+
+  /// No description provided for @marketplaceNewBadge.
+  ///
+  /// In ko, this message translates to:
+  /// **'NEW'**
+  String get marketplaceNewBadge;
+
+  /// No description provided for @marketplaceMatchButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭하기'**
+  String get marketplaceMatchButton;
+
+  /// No description provided for @marketplaceCompatibility.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 적합도'**
+  String get marketplaceCompatibility;
+
+  /// No description provided for @marketplaceCompatibilityPlaceholder.
+  ///
+  /// In ko, this message translates to:
+  /// **'추후 제공 예정'**
+  String get marketplaceCompatibilityPlaceholder;
+
+  /// No description provided for @chatMatchProfileTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 프로필'**
+  String get chatMatchProfileTitle;
+
+  /// No description provided for @chatViewProfile.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 보기'**
+  String get chatViewProfile;
+
+  /// No description provided for @chatMatchDate.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭일'**
+  String get chatMatchDate;
+
+  /// No description provided for @chatMatchStatus.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 상태'**
+  String get chatMatchStatus;
 }
 
 class _AppLocalizationsDelegate

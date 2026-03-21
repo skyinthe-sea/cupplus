@@ -175,6 +175,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatImageSent => 'Sent an image';
 
   @override
+  String get chatListSectionLabel => 'MESSAGES';
+
+  @override
   String get chatListHeadline => 'Messages';
 
   @override
@@ -279,6 +282,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navMy => 'My';
+
+  @override
+  String get myPageSectionLabel => 'MY PAGE';
 
   @override
   String get homeTitle => 'Home Screen';
@@ -1638,6 +1644,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get marketplaceFilterResidenceHint => 'Enter area name';
 
   @override
+  String get filterPresetTitle => 'Saved Filters';
+
+  @override
+  String get filterPresetSave => 'Save Current Filter';
+
+  @override
+  String get filterPresetSaveTitle => 'Save Filter';
+
+  @override
+  String get filterPresetNameHint =>
+      'Filter name (e.g. 30s Seoul Professional)';
+
+  @override
+  String get filterPresetEmpty => 'No saved filters';
+
+  @override
+  String get filterPresetSaved => 'Filter saved';
+
+  @override
+  String get filterPresetDeleted => 'Filter deleted';
+
+  @override
+  String get filterPresetApplied => 'Filter applied';
+
+  @override
+  String get filterPresetDeleteConfirm => 'Delete this filter?';
+
+  @override
+  String filterPresetFilterCount(int count) {
+    return '$count conditions';
+  }
+
+  @override
   String get crmNotesTitle => 'Notes & Timeline';
 
   @override
@@ -1894,4 +1933,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatShowLess => 'Show less';
+
+  @override
+  String get homeGreetingTimeMorning => 'GOOD MORNING';
+
+  @override
+  String get homeGreetingTimeAfternoon => 'GOOD AFTERNOON';
+
+  @override
+  String get homeGreetingTimeEvening => 'GOOD EVENING';
+
+  @override
+  String get homeGreetingTimeNight => 'GOOD NIGHT';
+
+  @override
+  String get homeGreetingSuffix => 'Manager';
+
+  @override
+  String get homeGreetingHello => 'Hello,';
+
+  @override
+  String get homePendingMatchBadge => 'Pending Matches';
+
+  @override
+  String get homePendingMatchTitle => 'Right now';
+
+  @override
+  String get homePendingMatchSubtitle => 'needs your attention';
+
+  @override
+  String get homePendingMatchDesc => 'New connections are waiting for you';
+
+  @override
+  String homePendingMatchCta(int count) {
+    return 'Check $count pending matches';
+  }
+
+  @override
+  String get homeNoMatchTitle => 'Try your first match';
+
+  @override
+  String get homeNoMatchDesc => 'Browse members and create a match';
+
+  @override
+  String get homeNoMatchCta => 'Start Matching';
+
+  @override
+  String get homeQuickActionsTitle => 'Things you can do now';
+
+  @override
+  String get homeQuickMatchTag => 'Start Now';
+
+  @override
+  String get homeQuickRegisterTag => 'New Profile';
+
+  @override
+  String get homeQuickScheduleTitle => 'Schedule';
+
+  @override
+  String get homeQuickScheduleTag => 'Upcoming';
+
+  @override
+  String get homeActivityViewAll => 'View All';
+
+  @override
+  String get homeStatsPendingMatches => 'Pending';
+
+  @override
+  String get homeStatsNewMessages => 'Messages';
+
+  @override
+  String get homeStatsSchedules => 'Schedules';
+
+  @override
+  String get marketplaceHeaderLabel => 'PROFILE MARKET';
+
+  @override
+  String get marketplaceHeaderSerif1 => 'Profile';
+
+  @override
+  String get marketplaceHeaderSerif2 => 'Market';
+
+  @override
+  String get marketplaceNewBadge => 'NEW';
+
+  @override
+  String get marketplaceMatchButton => 'Match';
+
+  @override
+  String get marketplaceCompatibility => 'Compatibility';
+
+  @override
+  String get marketplaceCompatibilityPlaceholder => 'Coming soon';
+
+  @override
+  String get chatMatchProfileTitle => 'Match Profiles';
+
+  @override
+  String get chatViewProfile => 'View Profile';
+
+  @override
+  String get chatMatchDate => 'Match Date';
+
+  @override
+  String get chatMatchStatus => 'Match Status';
 }

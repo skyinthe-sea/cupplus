@@ -71,9 +71,9 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildProfileTab(l10n, null),
-                  _buildProfileTab(l10n, 'F'),
-                  _buildProfileTab(l10n, 'M'),
+                  _buildProfileTab(l10n, null, 'all'),
+                  _buildProfileTab(l10n, 'F', 'female'),
+                  _buildProfileTab(l10n, 'M', 'male'),
                   _buildLikesTab(l10n),
                 ],
               ),
@@ -84,7 +84,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
     );
   }
 
-  Widget _buildProfileTab(AppLocalizations l10n, String? genderFilter) {
+  Widget _buildProfileTab(AppLocalizations l10n, String? genderFilter, String heroPrefix) {
     final profilesAsync = ref.watch(
       marketplaceProfileListProvider(genderOverride: genderFilter),
     );
@@ -96,13 +96,13 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
       data: (profiles) {
         if (profiles.isEmpty) {
           return MatchEmptyState(
-            icon: Icons.person_search_rounded,
             title: l10n.marketplaceEmptyTitle,
             subtitle: l10n.marketplaceEmptySubtitle,
           );
         }
         return MarketplaceListView(
           profiles: profiles,
+          heroTagPrefix: heroPrefix,
           hasMore: notifier.hasMore,
           onLoadMore: notifier.loadMore,
           onRefresh: () async {
@@ -143,13 +143,13 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen>
       data: (profiles) {
         if (profiles.isEmpty) {
           return MatchEmptyState(
-            icon: Icons.favorite_border_rounded,
             title: l10n.marketplaceEmptyTitle,
             subtitle: l10n.marketplaceEmptySubtitle,
           );
         }
         return MarketplaceListView(
           profiles: profiles,
+          heroTagPrefix: 'liked',
           showDimForMatched: true,
           onRefresh: () async {
             ref.invalidate(likedProfilesProvider);

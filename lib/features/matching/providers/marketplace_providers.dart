@@ -82,6 +82,11 @@ class MarketplaceFilterNotifier extends _$MarketplaceFilterNotifier {
     state = state.copyWith(residenceArea: () => value);
   }
 
+  void applyFilter(MarketplaceFilter filter) {
+    // Preserve current search query when applying a preset
+    state = filter.copyWith(searchQuery: () => state.searchQuery);
+  }
+
   void clearFilters() {
     state = MarketplaceFilter(searchQuery: state.searchQuery);
   }

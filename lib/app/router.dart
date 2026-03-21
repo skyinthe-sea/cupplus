@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_localizations.dart';
@@ -8,6 +6,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../config/routes.dart';
 import '../config/supabase_config.dart';
+import '../config/theme.dart';
+import '../features/home/widgets/illustration_placeholder.dart';
 import '../features/auth/views/login_screen.dart';
 import '../features/chat/providers/chat_providers.dart';
 import '../features/chat/views/chat_list_screen.dart';
@@ -150,10 +150,23 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/marketplace/:profileId',
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => ProfileDetailScreen(
-          profileId: state.pathParameters['profileId']!,
-          hideMatchButton: state.extra == true,
-        ),
+        pageBuilder: (context, state) {
+          final extra = state.extra;
+          final extraMap = extra is Map<String, dynamic> ? extra : null;
+          return CustomTransitionPage(
+            child: ProfileDetailScreen(
+              profileId: state.pathParameters['profileId']!,
+              hideMatchButton: extra == true || extraMap?['hideMatchButton'] == true,
+              heroTagPrefix: extraMap?['heroPrefix'] as String? ?? 'all',
+            ),
+            transitionDuration: const Duration(milliseconds: 200),
+            reverseTransitionDuration: const Duration(milliseconds: 350),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              // 열릴 때: 빠른 fade-in, 닫힐 때: Hero 애니메이션 + fade-out
+              return FadeTransition(opacity: animation, child: child);
+            },
+          );
+        },
       ),
       GoRoute(
         path: '/register-client',
@@ -200,7 +213,6 @@ class MainShellScreen extends ConsumerWidget {
     final chatUnread = ref.watch(totalUnreadCountProvider);
 
     return Scaffold(
-      extendBody: true,
       body: navigationShell,
       bottomNavigationBar: user == null ? null : _FloatingGlassNavBar(
         currentIndex: navigationShell.currentIndex,
@@ -214,27 +226,10 @@ class MainShellScreen extends ConsumerWidget {
           );
         },
         items: [
-          _NavItem(
-            icon: Icons.home_outlined,
-            selectedIcon: Icons.home_rounded,
-            label: l10n.navHome,
-          ),
-          _NavItem(
-            icon: Icons.favorite_outline_rounded,
-            selectedIcon: Icons.favorite_rounded,
-            label: l10n.navMatches,
-          ),
-          _NavItem(
-            icon: Icons.chat_bubble_outline_rounded,
-            selectedIcon: Icons.chat_bubble_rounded,
-            label: l10n.navChat,
-            badgeCount: chatUnread,
-          ),
-          _NavItem(
-            icon: Icons.person_outline_rounded,
-            selectedIcon: Icons.person_rounded,
-            label: l10n.navMy,
-          ),
+          _NavItem(label: l10n.navHome, assetPath: 'assets/images/illustrations/nav_home.png'),
+          _NavItem(label: l10n.navMatches, assetPath: 'assets/images/illustrations/nav_matches.png'),
+          _NavItem(label: l10n.navChat, badgeCount: chatUnread, assetPath: 'assets/images/illustrations/nav_chat.png'),
+          _NavItem(label: l10n.navMy, assetPath: 'assets/images/illustrations/nav_my.png'),
         ],
       ),
     );
@@ -243,16 +238,16 @@ class MainShellScreen extends ConsumerWidget {
 
 class _NavItem {
   const _NavItem({
-    required this.icon,
-    required this.selectedIcon,
     required this.label,
     this.badgeCount = 0,
+    this.assetPath,
   });
 
-  final IconData icon;
-  final IconData selectedIcon;
   final String label;
   final int badgeCount;
+  /// Path to illustration PNG (e.g. 'assets/images/illustrations/nav_home.png').
+  /// Falls back to [IllustrationPlaceholder] when null.
+  final String? assetPath;
 }
 
 class _FloatingGlassNavBar extends StatelessWidget {
@@ -268,63 +263,50 @@ class _FloatingGlassNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final homeColors = Theme.of(context).extension<HomeColors>()!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    final isDark = theme.brightness == Brightness.dark;
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        bottom: bottomPadding + 12,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
-          child: Container(
-            height: 68,
+    return Container(
+      // Fill behind safe area with card color
+      color: homeColors.cardColor,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Rounded island bar ──
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: isDark
-                  ? theme.colorScheme.surfaceContainer
-                      .withValues(alpha: 0.72)
-                  : theme.colorScheme.surface.withValues(alpha: 0.78),
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.white.withValues(alpha: 0.5),
-                width: 0.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
-                  spreadRadius: -4,
-                ),
-              ],
+                  ? homeColors.textPrimary.withValues(alpha: 0.06)
+                  : homeColors.textPrimary.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: Row(
-              children: List.generate(items.length, (i) {
-                return Expanded(
-                  child: _GlassNavItem(
-                    item: items[i],
-                    isSelected: i == currentIndex,
-                    onTap: () => onTap(i),
-                  ),
-                );
-              }),
+            child: SizedBox(
+              height: 56,
+              child: Row(
+                children: List.generate(items.length, (i) {
+                  return Expanded(
+                    child: _NavTabItem(
+                      item: items[i],
+                      isSelected: i == currentIndex,
+                      onTap: () => onTap(i),
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
-        ),
+          // Safe area bottom spacing
+          SizedBox(height: bottomPadding > 0 ? bottomPadding - 4 : 8),
+        ],
       ),
     );
   }
 }
 
-class _GlassNavItem extends StatelessWidget {
-  const _GlassNavItem({
+class _NavTabItem extends StatelessWidget {
+  const _NavTabItem({
     required this.item,
     required this.isSelected,
     required this.onTap,
@@ -336,58 +318,87 @@ class _GlassNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primaryColor = theme.colorScheme.primary;
-    final mutedColor =
-        theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.55);
+    final homeColors = Theme.of(context).extension<HomeColors>()!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final activeColor = homeColors.pointColor;
+    final mutedColor = homeColors.textPrimary.withValues(alpha: 0.3);
+
+    // Build icon
+    Widget iconWidget;
+    if (item.assetPath != null) {
+      iconWidget = Image.asset(
+        item.assetPath!,
+        width: 22,
+        height: 22,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => IllustrationPlaceholder(
+          width: 22,
+          height: 22,
+          color: isSelected ? activeColor : null,
+        ),
+      );
+
+      if (!isSelected) {
+        iconWidget = ColorFiltered(
+          colorFilter: const ColorFilter.matrix(<double>[
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0,      0,      0,      1, 0,
+          ]),
+          child: Opacity(opacity: isDark ? 0.45 : 0.35, child: iconWidget),
+        );
+      }
+    } else {
+      iconWidget = IllustrationPlaceholder(
+        width: 22,
+        height: 22,
+        color: isSelected ? activeColor : null,
+      );
+    }
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeOutCubic,
-            padding: EdgeInsets.symmetric(
-              horizontal: isSelected ? 18 : 12,
-              vertical: 5,
-            ),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? primaryColor.withValues(alpha: 0.12)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              child: Badge(
-                isLabelVisible: item.badgeCount > 0,
-                label: Text(
-                  item.badgeCount > 99 ? '99+' : '${item.badgeCount}',
-                  style: const TextStyle(fontSize: 10),
-                ),
-                child: Icon(
-                  isSelected ? item.selectedIcon : item.icon,
-                  key: ValueKey(isSelected),
-                  color: isSelected ? primaryColor : mutedColor,
-                  size: 28,
+      child: SizedBox(
+        height: 64,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 2),
+            // Icon with lift + badge
+            AnimatedSlide(
+              offset: Offset(0, isSelected ? -0.08 : 0),
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeOutCubic,
+              child: AnimatedScale(
+                scale: isSelected ? 1.12 : 1.0,
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeOutBack,
+                child: Badge(
+                  isLabelVisible: item.badgeCount > 0,
+                  label: Text(
+                    item.badgeCount > 99 ? '99+' : '${item.badgeCount}',
+                    style: const TextStyle(fontSize: 9),
+                  ),
+                  child: iconWidget,
                 ),
               ),
             ),
-          ),
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 280),
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              color: isSelected ? primaryColor : mutedColor,
-              height: 1.2,
+            const SizedBox(height: 3),
+            // Label
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+                color: isSelected ? activeColor : mutedColor,
+                height: 1.2,
+              ),
+              child: Text(item.label),
             ),
-            child: Text(item.label),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

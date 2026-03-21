@@ -174,6 +174,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chatImageSent => '이미지를 보냈습니다';
 
   @override
+  String get chatListSectionLabel => 'MESSAGES';
+
+  @override
   String get chatListHeadline => '대화함';
 
   @override
@@ -277,6 +280,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get navMy => '마이';
+
+  @override
+  String get myPageSectionLabel => 'MY PAGE';
 
   @override
   String get homeTitle => '홈 화면입니다';
@@ -1623,6 +1629,38 @@ class AppLocalizationsKo extends AppLocalizations {
   String get marketplaceFilterResidenceHint => '지역명 입력';
 
   @override
+  String get filterPresetTitle => '저장된 필터';
+
+  @override
+  String get filterPresetSave => '현재 필터 저장';
+
+  @override
+  String get filterPresetSaveTitle => '필터 저장';
+
+  @override
+  String get filterPresetNameHint => '필터 이름 (예: 30대 서울 전문직)';
+
+  @override
+  String get filterPresetEmpty => '저장된 필터가 없습니다';
+
+  @override
+  String get filterPresetSaved => '필터가 저장되었습니다';
+
+  @override
+  String get filterPresetDeleted => '필터가 삭제되었습니다';
+
+  @override
+  String get filterPresetApplied => '필터가 적용되었습니다';
+
+  @override
+  String get filterPresetDeleteConfirm => '이 필터를 삭제하시겠습니까?';
+
+  @override
+  String filterPresetFilterCount(int count) {
+    return '$count개 조건';
+  }
+
+  @override
   String get crmNotesTitle => '메모 & 타임라인';
 
   @override
@@ -1871,4 +1909,108 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chatShowLess => '접기';
+
+  @override
+  String get homeGreetingTimeMorning => 'GOOD MORNING';
+
+  @override
+  String get homeGreetingTimeAfternoon => 'GOOD AFTERNOON';
+
+  @override
+  String get homeGreetingTimeEvening => 'GOOD EVENING';
+
+  @override
+  String get homeGreetingTimeNight => 'GOOD NIGHT';
+
+  @override
+  String get homeGreetingSuffix => '매니저님';
+
+  @override
+  String get homeGreetingHello => '안녕하세요,';
+
+  @override
+  String get homePendingMatchBadge => '대기 매칭';
+
+  @override
+  String get homePendingMatchTitle => '지금 바로';
+
+  @override
+  String get homePendingMatchSubtitle => '확인이 필요해요';
+
+  @override
+  String get homePendingMatchDesc => '새로운 인연이 기다리고 있어요';
+
+  @override
+  String homePendingMatchCta(int count) {
+    return '대기 매칭 $count건 확인하러 가기';
+  }
+
+  @override
+  String get homeNoMatchTitle => '첫 매칭을 시도해보세요';
+
+  @override
+  String get homeNoMatchDesc => '회원을 탐색하고 매칭을 생성해보세요';
+
+  @override
+  String get homeNoMatchCta => '매칭 시작하기';
+
+  @override
+  String get homeQuickActionsTitle => '지금 할 수 있어요';
+
+  @override
+  String get homeQuickMatchTag => '바로 시작';
+
+  @override
+  String get homeQuickRegisterTag => '프로필 작성';
+
+  @override
+  String get homeQuickScheduleTitle => '일정 관리';
+
+  @override
+  String get homeQuickScheduleTag => '예정';
+
+  @override
+  String get homeActivityViewAll => '전체보기';
+
+  @override
+  String get homeStatsPendingMatches => '대기 매칭';
+
+  @override
+  String get homeStatsNewMessages => '새 메시지';
+
+  @override
+  String get homeStatsSchedules => '예정 일정';
+
+  @override
+  String get marketplaceHeaderLabel => 'PROFILE MARKET';
+
+  @override
+  String get marketplaceHeaderSerif1 => '프로필';
+
+  @override
+  String get marketplaceHeaderSerif2 => '마켓';
+
+  @override
+  String get marketplaceNewBadge => 'NEW';
+
+  @override
+  String get marketplaceMatchButton => '매칭하기';
+
+  @override
+  String get marketplaceCompatibility => '매칭 적합도';
+
+  @override
+  String get marketplaceCompatibilityPlaceholder => '추후 제공 예정';
+
+  @override
+  String get chatMatchProfileTitle => '매칭 프로필';
+
+  @override
+  String get chatViewProfile => '프로필 보기';
+
+  @override
+  String get chatMatchDate => '매칭일';
+
+  @override
+  String get chatMatchStatus => '매칭 상태';
 }

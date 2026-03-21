@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../config/routes.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/app_dialog.dart';
 import '../../../shared/utils/label_formatters.dart';
 import '../providers/my_clients_provider.dart';
 import '../widgets/client_tags_section.dart';
@@ -187,21 +188,12 @@ class MyClientDetailScreen extends ConsumerWidget {
     final statusLabel = _statusLabel(newStatus, l10n);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.myClientStatusChange),
-        content: Text(
-          l10n.myClientStatusChangeConfirm(detail.fullName, statusLabel),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.commonConfirm),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.swap_horiz_rounded,
+        title: l10n.myClientStatusChange,
+        content: l10n.myClientStatusChangeConfirm(detail.fullName, statusLabel),
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.commonConfirm,
       ),
     );
 
@@ -233,39 +225,32 @@ class MyClientDetailScreen extends ConsumerWidget {
   ) {
     showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.myClientDeleteTitle),
-        content: Text(l10n.myClientDeleteMessage(detail.fullName)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            onPressed: () async {
-              Navigator.pop(ctx);
-              try {
-                await ref.read(deleteClientProvider(clientId).future);
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.myClientDeleteSuccess)),
-                  );
-                  context.pop();
-                }
-              } catch (_) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.myClientDeleteFailed)),
-                  );
-                }
-              }
-            },
-            child: Text(l10n.commonDelete),
-          ),
-        ],
+      builder: (_) => AppDialog(
+        icon: Icons.delete_forever_rounded,
+        iconColor: Theme.of(context).colorScheme.error,
+        title: l10n.myClientDeleteTitle,
+        content: l10n.myClientDeleteMessage(detail.fullName),
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.commonDelete,
+        isDestructive: true,
+        onConfirm: () async {
+          Navigator.pop(context);
+          try {
+            await ref.read(deleteClientProvider(clientId).future);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.myClientDeleteSuccess)),
+              );
+              context.pop();
+            }
+          } catch (_) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.myClientDeleteFailed)),
+              );
+            }
+          }
+        },
       ),
     );
   }

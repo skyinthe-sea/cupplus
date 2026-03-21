@@ -1,14 +1,15 @@
 flutter_native_splash:
-  color: "#FFFFFF"
-  image: assets/splash/real_splash.png
+  color: "#FAF8F5"
+  # Minimal native splash — just warm background, Flutter splash handles the rest
+  image: assets/splash/splashh.png
 
-  color_dark: "#FFFFFF"
-  image_dark: assets/splash/real_splash.png
+  color_dark: "#1C1814"
+  image_dark: assets/splash/splashh.png
 
   android_12:
-    color: "#FFFFFF"
-    image: assets/splash/real_splash.png
-    color_dark: "#FFFFFF"
-    image_dark: assets/splash/real_splash.png
+    color: "#FAF8F5"
+    image: assets/splash/splashh.png
+    color_dark: "#1C1814"
+    image_dark: assets/splash/splashh.png
 
   web: false

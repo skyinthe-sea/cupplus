@@ -14,6 +14,8 @@ class ConversationSummary {
     required this.isOnline,
     this.matchId,
     this.matchContext,
+    this.clientAId,
+    this.clientBId,
     this.lastMessageIsDeleted = false,
   });
 
@@ -28,6 +30,8 @@ class ConversationSummary {
   final bool isOnline;
   final String? matchId;
   final String? matchContext; // "회원A ↔ 회원B"
+  final String? clientAId;
+  final String? clientBId;
   final bool lastMessageIsDeleted;
 
   ConversationSummary copyWith({
@@ -50,6 +54,8 @@ class ConversationSummary {
       isOnline: isOnline ?? this.isOnline,
       matchId: matchId,
       matchContext: matchContext,
+      clientAId: clientAId,
+      clientBId: clientBId,
       lastMessageIsDeleted: lastMessageIsDeleted ?? this.lastMessageIsDeleted,
     );
   }
@@ -59,6 +65,8 @@ class ConversationSummary {
     required String currentUserId,
     required String participantName,
     String? matchContext,
+    String? clientAId,
+    String? clientBId,
     int unreadCount = 0,
   }) {
     final isParticipantA = map['participant_a'] == currentUserId;
@@ -81,6 +89,8 @@ class ConversationSummary {
       isOnline: false,
       matchId: map['match_id'] as String?,
       matchContext: matchContext,
+      clientAId: clientAId,
+      clientBId: clientBId,
     );
   }
 }

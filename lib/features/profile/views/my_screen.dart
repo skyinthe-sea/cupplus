@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../config/supabase_config.dart';
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/providers/locale_provider.dart';
 import '../../../shared/providers/theme_mode_provider.dart';
@@ -33,6 +34,7 @@ class MyScreen extends ConsumerWidget {
     final themeMode = ref.watch(themeModeNotifierProvider);
     final isDark = theme.brightness == Brightness.dark;
     final verificationStatus = ref.watch(managerVerificationStatusProvider);
+    final homeColors = Theme.of(context).extension<HomeColors>()!;
 
     final nickname = managerProfile.valueOrNull?['nickname'] as String?;
     final managerName = managerProfile.valueOrNull?['full_name'] as String?;
@@ -54,11 +56,28 @@ class MyScreen extends ConsumerWidget {
                   top: 16.h,
                   bottom: 20.h,
                 ),
-                child: Text(
-                  l10n.navMy,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.myPageSectionLabel,
+                      style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 3.0,
+                        color: homeColors.textPrimary.withValues(alpha: 0.35),
+                      ),
+                    ),
+                    Text(
+                      l10n.navMy,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontFamily: serifFontFamily,
+                        fontWeight: FontWeight.w400,
+                        color: homeColors.textPrimary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -97,8 +116,7 @@ class MyScreen extends ConsumerWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                     side: BorderSide(
-                      color: theme.colorScheme.outlineVariant
-                          .withValues(alpha: 0.5),
+                      color: homeColors.borderColor,
                     ),
                   ),
                   child: InkWell(
@@ -115,14 +133,14 @@ class MyScreen extends ConsumerWidget {
                             width: 36.r,
                             height: 36.r,
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.primary
+                              color: homeColors.pointColor
                                   .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10.r),
                             ),
                             child: Icon(
                               Icons.people_rounded,
                               size: 20.r,
-                              color: theme.colorScheme.primary,
+                              color: homeColors.pointColor,
                             ),
                           ),
                           SizedBox(width: 12.w),

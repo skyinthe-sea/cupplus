@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../config/theme.dart';
+
 class SettingsTile extends StatelessWidget {
   const SettingsTile({
     super.key,
@@ -22,9 +24,10 @@ class SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final homeColors = Theme.of(context).extension<HomeColors>()!;
     final effectiveIconColor = destructive
         ? theme.colorScheme.error
-        : iconColor ?? theme.colorScheme.primary;
+        : iconColor ?? homeColors.pointColor;
     final labelColor = destructive
         ? theme.colorScheme.error
         : theme.colorScheme.onSurface;

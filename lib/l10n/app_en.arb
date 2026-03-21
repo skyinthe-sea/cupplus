@@ -62,6 +62,7 @@
   "chatNoMessages": "No messages",
   "chatImageSent": "Sent an image",
 
+  "chatListSectionLabel": "MESSAGES",
   "chatListHeadline": "Messages",
   "chatListUnreadCount": "{count} unread messages",
   "@chatListUnreadCount": {
@@ -123,6 +124,7 @@
   "navMatches": "Matches",
   "navChat": "Chat",
   "navMy": "My",
+  "myPageSectionLabel": "MY PAGE",
 
   "homeTitle": "Home Screen",
   "homeGreeting": "Hello, {name}!",
@@ -687,6 +689,22 @@
   "marketplaceFilterResidenceArea": "Residence Area",
   "marketplaceFilterResidenceHint": "Enter area name",
 
+  "filterPresetTitle": "Saved Filters",
+  "filterPresetSave": "Save Current Filter",
+  "filterPresetSaveTitle": "Save Filter",
+  "filterPresetNameHint": "Filter name (e.g. 30s Seoul Professional)",
+  "filterPresetEmpty": "No saved filters",
+  "filterPresetSaved": "Filter saved",
+  "filterPresetDeleted": "Filter deleted",
+  "filterPresetApplied": "Filter applied",
+  "filterPresetDeleteConfirm": "Delete this filter?",
+  "filterPresetFilterCount": "{count} conditions",
+  "@filterPresetFilterCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
   "crmNotesTitle": "Notes & Timeline",
   "crmNoteAdd": "Add Note",
   "crmNoteTypeGeneral": "General",
@@ -779,5 +797,43 @@
   "chatReplyToMe": "You",
   "chatReply": "Reply",
   "chatShowMore": "Show more",
-  "chatShowLess": "Show less"
+  "chatShowLess": "Show less",
+
+  "homeGreetingTimeMorning": "GOOD MORNING",
+  "homeGreetingTimeAfternoon": "GOOD AFTERNOON",
+  "homeGreetingTimeEvening": "GOOD EVENING",
+  "homeGreetingTimeNight": "GOOD NIGHT",
+  "homeGreetingSuffix": "Manager",
+  "homeGreetingHello": "Hello,",
+  "homePendingMatchBadge": "Pending Matches",
+  "homePendingMatchTitle": "Right now",
+  "homePendingMatchSubtitle": "needs your attention",
+  "homePendingMatchDesc": "New connections are waiting for you",
+  "homePendingMatchCta": "Check {count} pending matches",
+  "@homePendingMatchCta": { "placeholders": { "count": { "type": "int" } } },
+  "homeNoMatchTitle": "Try your first match",
+  "homeNoMatchDesc": "Browse members and create a match",
+  "homeNoMatchCta": "Start Matching",
+  "homeQuickActionsTitle": "Things you can do now",
+  "homeQuickMatchTag": "Start Now",
+  "homeQuickRegisterTag": "New Profile",
+  "homeQuickScheduleTitle": "Schedule",
+  "homeQuickScheduleTag": "Upcoming",
+  "homeActivityViewAll": "View All",
+  "homeStatsPendingMatches": "Pending",
+  "homeStatsNewMessages": "Messages",
+  "homeStatsSchedules": "Schedules",
+
+  "marketplaceHeaderLabel": "PROFILE MARKET",
+  "marketplaceHeaderSerif1": "Profile",
+  "marketplaceHeaderSerif2": "Market",
+  "marketplaceNewBadge": "NEW",
+  "marketplaceMatchButton": "Match",
+  "marketplaceCompatibility": "Compatibility",
+  "marketplaceCompatibilityPlaceholder": "Coming soon",
+
+  "chatMatchProfileTitle": "Match Profiles",
+  "chatViewProfile": "View Profile",
+  "chatMatchDate": "Match Date",
+  "chatMatchStatus": "Match Status"
 }

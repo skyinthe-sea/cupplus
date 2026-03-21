@@ -23,10 +23,12 @@ class ProfileDetailScreen extends ConsumerWidget {
     super.key,
     required this.profileId,
     this.hideMatchButton = false,
+    this.heroTagPrefix = 'all',
   });
 
   final String profileId;
   final bool hideMatchButton;
+  final String heroTagPrefix;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,7 +58,10 @@ class ProfileDetailScreen extends ConsumerWidget {
                     SizedBox(height: MediaQuery.of(context).padding.top + 56.h),
               ),
               SliverToBoxAdapter(
-                child: ProfileDetailHeader(profile: profile),
+                child: ProfileDetailHeader(
+                  profile: profile,
+                  heroTagPrefix: heroTagPrefix,
+                ),
               ),
               SliverToBoxAdapter(
                 child: ProfileDetailInfoSection(profile: profile),

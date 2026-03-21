@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/app_dialog.dart';
 import '../providers/auth_notifier.dart';
 import '../providers/last_login_provider.dart';
 import '../widgets/social_login_button.dart';
@@ -91,19 +92,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           lastUsed == 'google' ? 'Google' : lastUsed == 'kakao' ? 'Kakao' : lastUsed;
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.authDifferentProviderTitle),
-          content: Text(l10n.authDifferentProviderMessage(providerName)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l10n.commonConfirm),
-            ),
-          ],
+        builder: (_) => AppDialog(
+          icon: Icons.warning_amber_rounded,
+          title: l10n.authDifferentProviderTitle,
+          content: l10n.authDifferentProviderMessage(providerName),
+          cancelLabel: l10n.commonCancel,
+          confirmLabel: l10n.commonConfirm,
         ),
       );
       if (confirmed != true) return;

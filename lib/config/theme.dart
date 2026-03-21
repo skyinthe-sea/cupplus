@@ -18,14 +18,14 @@ class StatusColors extends ThemeExtension<StatusColors> {
     pending: Color(0xFFF9A825),
     accepted: Color(0xFF2E7D32),
     declined: Color(0xFFC62828),
-    verified: Color(0xFF2D5A8E),
+    verified: Color(0xFFc8523a),
   );
 
   static const dark = StatusColors(
     pending: Color(0xFFFFD54F),
     accepted: Color(0xFF66BB6A),
     declined: Color(0xFFEF5350),
-    verified: Color(0xFF5B8FC2),
+    verified: Color(0xFFe06848),
   );
 
   @override
@@ -55,7 +55,83 @@ class StatusColors extends ThemeExtension<StatusColors> {
   }
 }
 
-const _seedColor = Color(0xFF2D5A8E);
+@immutable
+class HomeColors extends ThemeExtension<HomeColors> {
+  const HomeColors({
+    required this.pendingCardBg,
+    required this.pendingCardBgEnd,
+    required this.ctaBar,
+    required this.cardColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.pointColor,
+  });
+
+  final Color pendingCardBg;
+  final Color pendingCardBgEnd;
+  final Color ctaBar;
+  final Color cardColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color pointColor;
+
+  static const light = HomeColors(
+    pendingCardBg: Color(0xFFFADCCF),
+    pendingCardBgEnd: Color(0xFFF5CEBB),
+    ctaBar: Color(0xFF2C2C2C),
+    cardColor: Color(0xFFFFFFFF),
+    borderColor: Color(0x12000000), // rgba(0,0,0,0.07)
+    textPrimary: Color(0xFF1A1A1A),
+    pointColor: Color(0xFFc8523a),
+  );
+
+  static const dark = HomeColors(
+    pendingCardBg: Color(0xFF3A2820),
+    pendingCardBgEnd: Color(0xFF2E2018),
+    ctaBar: Color(0xFF1A1614),
+    cardColor: Color(0xFF242018),
+    borderColor: Color(0x12FFD2AA), // rgba(255,210,170,0.07)
+    textPrimary: Color(0xFFF0ECE6),
+    pointColor: Color(0xFFe06848),
+  );
+
+  @override
+  HomeColors copyWith({
+    Color? pendingCardBg,
+    Color? pendingCardBgEnd,
+    Color? ctaBar,
+    Color? cardColor,
+    Color? borderColor,
+    Color? textPrimary,
+    Color? pointColor,
+  }) {
+    return HomeColors(
+      pendingCardBg: pendingCardBg ?? this.pendingCardBg,
+      pendingCardBgEnd: pendingCardBgEnd ?? this.pendingCardBgEnd,
+      ctaBar: ctaBar ?? this.ctaBar,
+      cardColor: cardColor ?? this.cardColor,
+      borderColor: borderColor ?? this.borderColor,
+      textPrimary: textPrimary ?? this.textPrimary,
+      pointColor: pointColor ?? this.pointColor,
+    );
+  }
+
+  @override
+  HomeColors lerp(HomeColors? other, double t) {
+    if (other is! HomeColors) return this;
+    return HomeColors(
+      pendingCardBg: Color.lerp(pendingCardBg, other.pendingCardBg, t)!,
+      pendingCardBgEnd: Color.lerp(pendingCardBgEnd, other.pendingCardBgEnd, t)!,
+      ctaBar: Color.lerp(ctaBar, other.ctaBar, t)!,
+      cardColor: Color.lerp(cardColor, other.cardColor, t)!,
+      borderColor: Color.lerp(borderColor, other.borderColor, t)!,
+      textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
+      pointColor: Color.lerp(pointColor, other.pointColor, t)!,
+    );
+  }
+}
+
+const _seedColor = Color(0xFFc8523a);
 const _secondaryColor = Color(0xFF7B5EA7);
 const _tertiaryColor = Color(0xFFB4637A);
 
@@ -72,21 +148,28 @@ ColorScheme _buildColorScheme(Brightness brightness) {
         ? _tertiaryColor
         : _tertiaryColor.withValues(alpha: 0.8),
     surface: brightness == Brightness.light
-        ? const Color(0xFFF8F9FD)
-        : const Color(0xFF121316),
+        ? const Color(0xFFFAF8F5)
+        : const Color(0xFF1C1814),
   );
 }
+
+const _fontFamily = 'Pretendard';
+const serifFontFamily = 'NanumMyeongjo';
 
 ThemeData buildTheme(Brightness brightness, [ColorScheme? dynamicScheme]) {
   final colorScheme = dynamicScheme ?? _buildColorScheme(brightness);
   final statusColors = brightness == Brightness.light
       ? StatusColors.light
       : StatusColors.dark;
+  final homeColors = brightness == Brightness.light
+      ? HomeColors.light
+      : HomeColors.dark;
 
   return ThemeData(
     useMaterial3: true,
+    fontFamily: _fontFamily,
     colorScheme: colorScheme,
-    extensions: [statusColors],
+    extensions: [statusColors, homeColors],
     appBarTheme: AppBarTheme(
       centerTitle: true,
       elevation: 0,

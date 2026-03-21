@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/crm_stats_provider.dart';
 
@@ -15,7 +16,7 @@ class CrmDashboardScreen extends ConsumerWidget {
     final statsAsync = ref.watch(crmStatsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.crmDashboardTitle)),
+      appBar: AppBar(title: Text(l10n.crmDashboardTitle, style: TextStyle(fontFamily: serifFontFamily, fontWeight: FontWeight.w700))),
       body: statsAsync.when(
         data: (stats) => RefreshIndicator(
           onRefresh: () async => ref.invalidate(crmStatsProvider),
@@ -26,6 +27,7 @@ class CrmDashboardScreen extends ConsumerWidget {
               Text(
                 l10n.crmThisMonth,
                 style: theme.textTheme.titleMedium?.copyWith(
+                  fontFamily: serifFontFamily,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -70,6 +72,7 @@ class CrmDashboardScreen extends ConsumerWidget {
               Text(
                 l10n.crmClientOverview,
                 style: theme.textTheme.titleMedium?.copyWith(
+                  fontFamily: serifFontFamily,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -80,7 +83,7 @@ class CrmDashboardScreen extends ConsumerWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14.r),
                   side: BorderSide(
-                    color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    color: theme.extension<HomeColors>()!.borderColor,
                   ),
                 ),
                 child: Padding(
@@ -188,6 +191,7 @@ class CrmDashboardScreen extends ConsumerWidget {
               Text(
                 l10n.crmMatchPerformance,
                 style: theme.textTheme.titleMedium?.copyWith(
+                  fontFamily: serifFontFamily,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -445,7 +449,7 @@ class _PerformanceCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
         side: BorderSide(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+          color: Theme.of(context).extension<HomeColors>()!.borderColor,
         ),
       ),
       child: Padding(

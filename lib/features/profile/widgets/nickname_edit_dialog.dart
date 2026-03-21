@@ -17,6 +17,7 @@ class NicknameEditDialog extends ConsumerStatefulWidget {
     return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
@@ -75,6 +76,18 @@ class _NicknameEditDialogState extends ConsumerState<NicknameEditDialog> {
   }
 
   Future<void> _checkAvailability(String nickname) async {
+    // If same as current nickname (case-insensitive), it's available
+    if (widget.currentNickname != null &&
+        nickname.toLowerCase() == widget.currentNickname!.toLowerCase()) {
+      if (mounted) {
+        setState(() {
+          _isAvailable = true;
+          _isChecking = false;
+        });
+      }
+      return;
+    }
+
     setState(() => _isChecking = true);
     try {
       final available = await ref.read(
