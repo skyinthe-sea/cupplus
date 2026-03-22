@@ -841,5 +841,7 @@
   "chatMatchProfileTitle": "매칭 프로필",
   "chatViewProfile": "프로필 보기",
   "chatMatchDate": "매칭일",
-  "chatMatchStatus": "매칭 상태"
+  "chatMatchStatus": "매칭 상태",
+
+  "matchInvitation": "매칭 초대장"
 }

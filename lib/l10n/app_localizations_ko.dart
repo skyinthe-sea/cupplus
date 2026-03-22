@@ -2013,4 +2013,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chatMatchStatus => '매칭 상태';
+
+  @override
+  String get matchInvitation => '매칭 초대장';
 }

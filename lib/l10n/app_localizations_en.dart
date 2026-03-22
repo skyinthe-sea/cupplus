@@ -2037,4 +2037,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatMatchStatus => 'Match Status';
+
+  @override
+  String get matchInvitation => 'Match Invitation';
 }

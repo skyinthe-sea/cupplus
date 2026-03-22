@@ -835,5 +835,7 @@
   "chatMatchProfileTitle": "Match Profiles",
   "chatViewProfile": "View Profile",
   "chatMatchDate": "Match Date",
-  "chatMatchStatus": "Match Status"
+  "chatMatchStatus": "Match Status",
+
+  "matchInvitation": "Match Invitation"
 }

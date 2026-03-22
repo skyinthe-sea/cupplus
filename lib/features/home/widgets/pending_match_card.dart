@@ -142,10 +142,12 @@ class _PendingMatchCardState extends State<PendingMatchCard>
                 height: 120.r,
                 child: ClipRect(
                   child: OverflowBox(
-                    alignment: Alignment.topCenter,
+                    alignment: const Alignment(0, -0.6),
                     maxHeight: 220.r,
                     child: IllustrationImage(
-                      assetPath: 'assets/images/illustrations/home_pending_match.png',
+                      assetPath: hasPending
+                          ? 'assets/images/illustrations/home_pending_match.png'
+                          : 'assets/images/illustrations/home_searching_match.png',
                       width: 140.r,
                       height: 220.r,
                       darkOpacity: 0.8,

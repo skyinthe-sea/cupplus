@@ -3877,6 +3877,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'매칭 상태'**
   String get chatMatchStatus;
+
+  /// No description provided for @matchInvitation.
+  ///
+  /// In ko, this message translates to:
+  /// **'매칭 초대장'**
+  String get matchInvitation;
 }
 
 class _AppLocalizationsDelegate

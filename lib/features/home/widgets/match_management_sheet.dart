@@ -5,9 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../config/routes.dart';
-import '../../../config/supabase_config.dart';
+import '../../../config/theme.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../verification/providers/verification_provider.dart';
 import '../providers/home_providers.dart';
 
 class MatchManagementSheet extends ConsumerStatefulWidget {
@@ -148,7 +147,7 @@ class _MatchTab extends ConsumerWidget {
           separatorBuilder: (_, __) => SizedBox(height: 10.h),
           itemBuilder: (context, index) {
             final match = matches[index];
-            return _MatchCard(match: match);
+            return _MatchCard(match: match, index: index);
           },
         );
       },
@@ -158,12 +157,67 @@ class _MatchTab extends ConsumerWidget {
   }
 }
 
-class _MatchCard extends ConsumerWidget {
+class _MatchCard extends StatefulWidget {
   const _MatchCard({
     required this.match,
+    required this.index,
   });
 
   final Map<String, dynamic> match;
+  final int index;
+
+  @override
+  State<_MatchCard> createState() => _MatchCardState();
+}
+
+class _MatchCardState extends State<_MatchCard> with TickerProviderStateMixin {
+  late final AnimationController _entryController;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<Offset> _slideAnimation;
+
+  late final AnimationController _pulseController;
+  late final Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _entryController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _entryController,
+      curve: Curves.easeOut,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.08),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _entryController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+    _pulseController.repeat(reverse: true);
+
+    Future.delayed(Duration(milliseconds: widget.index * 100), () {
+      if (mounted) _entryController.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _entryController.dispose();
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   int? _calcAge(String? birthDate) {
     if (birthDate == null) return null;
@@ -176,10 +230,12 @@ class _MatchCard extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final homeColors = theme.extension<HomeColors>()!;
 
+    final match = widget.match;
     final myClient = match['my_client'] as Map<String, dynamic>?;
     final otherClient = match['other_client'] as Map<String, dynamic>?;
     final myClientName = myClient?['full_name'] as String? ?? '?';
@@ -189,7 +245,6 @@ class _MatchCard extends ConsumerWidget {
     final status = match['status'] as String? ?? 'pending';
     final isSender = match['is_sender'] as bool? ?? true;
     final matchedAt = match['matched_at'] as String?;
-    final notes = match['notes'] as String?;
 
     String dateText = '';
     if (matchedAt != null) {
@@ -197,10 +252,11 @@ class _MatchCard extends ConsumerWidget {
     }
 
     final statusColor = switch (status) {
-      'pending' => Colors.amber.shade700,
-      'accepted' || 'meeting_scheduled' => const Color(0xFF2E7D32),
-      'declined' || 'cancelled' => const Color(0xFFC62828),
-      'completed' => theme.colorScheme.primary,
+      'pending' => homeColors.pointColor,
+      'accepted' || 'meeting_scheduled' => theme.colorScheme.secondary,
+      'declined' => theme.colorScheme.tertiary,
+      'cancelled' => theme.colorScheme.onSurfaceVariant,
+      'completed' => theme.colorScheme.secondary,
       _ => theme.colorScheme.onSurfaceVariant,
     };
 
@@ -214,639 +270,265 @@ class _MatchCard extends ConsumerWidget {
       _ => status,
     };
 
-    final directionColor = isSender
-        ? theme.colorScheme.primary
-        : theme.colorScheme.tertiary;
     final directionText =
         isSender ? l10n.matchCardSent : l10n.matchCardReceived;
     final directionIcon =
         isSender ? Icons.call_made_rounded : Icons.call_received_rounded;
 
-    final showReceivedActions = !isSender && status == 'pending';
+    final pointColor = homeColors.pointColor;
 
-    return GestureDetector(
-      onTap: () {
-        final matchId = match['id'] as String?;
-        if (matchId != null) {
-          Navigator.of(context).pop();
-          context.push(AppRoutes.matchDetail(matchId));
-        }
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.shadow.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(14.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top row: direction icon+text (left) + date (right)
-              Row(
-                children: [
-                  Icon(directionIcon, size: 14.sp, color: directionColor),
-                  SizedBox(width: 4.w),
-                  Text(
-                    directionText,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                      color: directionColor,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    dateText,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 11.sp,
-                    ),
-                  ),
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: GestureDetector(
+          onTap: () {
+            final matchId = match['id'] as String?;
+            if (matchId != null) {
+              Navigator.of(context).pop();
+              context.push(AppRoutes.matchDetail(matchId));
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  homeColors.pendingCardBg.withValues(alpha: 0.3),
+                  homeColors.cardColor,
                 ],
               ),
-              SizedBox(height: 14.h),
-
-              // My client row
-              _ClientRow(
-                label: l10n.matchCardMyClient,
-                name: myClientName,
-                age: myAge,
-                isPrimary: true,
-                theme: theme,
-                l10n: l10n,
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(
+                color: pointColor.withValues(alpha: 0.15),
               ),
-
-              // Heart divider
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.h),
-                child: Center(
-                  child: Icon(
-                    Icons.favorite_rounded,
-                    size: 16.r,
-                    color: theme.colorScheme.tertiary.withValues(alpha: 0.4),
-                  ),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.colorScheme.shadow.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
-              ),
-
-              // Other client row
-              _ClientRow(
-                label: l10n.matchCardOtherClient,
-                name: otherClientName,
-                age: otherAge,
-                isPrimary: false,
-                theme: theme,
-                l10n: l10n,
-              ),
-
-              SizedBox(height: 12.h),
-
-              // Action buttons for received pending
-              if (showReceivedActions)
-                Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: () =>
-                            _acceptMatch(context, ref, match, l10n),
-                        icon: Icon(Icons.check_rounded, size: 16.sp),
-                        label: Text(l10n.homeMatchAccept),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFF2E7D32),
-                          padding: EdgeInsets.symmetric(vertical: 8.h),
-                          textStyle: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
+              ],
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
+              child: Column(
+                children: [
+                  // Title: ✦ MATCH INVITATION
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.auto_awesome,
+                        size: 14.sp,
+                        color: pointColor,
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        l10n.matchInvitation.toUpperCase(),
+                        style: TextStyle(
+                          fontFamily: serifFontFamily,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: pointColor,
+                          letterSpacing: 1.5,
                         ),
                       ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () =>
-                            _declineMatch(context, ref, match, l10n),
-                        icon: Icon(Icons.close_rounded, size: 16.sp),
-                        label: Text(l10n.homeMatchDecline),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFFC62828),
-                          side: const BorderSide(color: Color(0xFFC62828)),
-                          padding: EdgeInsets.symmetric(vertical: 8.h),
-                          textStyle: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 6.w),
-                    IconButton(
-                      onPressed: () => _editNote(context, ref, match, l10n),
-                      icon: Icon(Icons.edit_note_rounded, size: 20.sp),
-                      color: theme.colorScheme.primary,
-                      style: IconButton.styleFrom(
-                        backgroundColor:
-                            theme.colorScheme.primary.withValues(alpha: 0.08),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                      ),
-                      tooltip: l10n.homeMatchMemo,
-                    ),
-                  ],
-                )
-              else if (status == 'pending' && isSender)
-                // Sent pending: waiting info box + cancel + memo
-                Column(
-                  children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                      decoration: BoxDecoration(
-                        color: Colors.amber.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(
-                            color: Colors.amber.withValues(alpha: 0.2)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.hourglass_top_rounded,
-                              size: 16.sp, color: Colors.amber.shade700),
-                          SizedBox(width: 8.w),
-                          Expanded(
-                            child: Text(
-                              l10n.matchDetailWaitingResponse,
-                              style: TextStyle(
-                                fontSize: 11.sp,
-                                color: Colors.amber.shade800,
+                    ],
+                  ),
+
+                  SizedBox(height: 18.h),
+
+                  // Two avatars with heart line
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // My client avatar + info
+                      Expanded(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 24.r,
+                              backgroundColor:
+                                  theme.colorScheme.primary.withValues(alpha: 0.1),
+                              child: Text(
+                                myClientName.isNotEmpty ? myClientName[0] : '?',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.colorScheme.primary,
+                                ),
                               ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () =>
-                                _cancelMatch(context, ref, match, l10n),
-                            icon: Icon(Icons.close_rounded, size: 18.sp),
-                            color: const Color(0xFFC62828),
-                            constraints: const BoxConstraints(),
-                            padding: EdgeInsets.all(4.r),
-                            tooltip: l10n.homeMatchCancel,
-                          ),
-                          SizedBox(width: 4.w),
-                          IconButton(
-                            onPressed: () =>
-                                _editNote(context, ref, match, l10n),
-                            icon: Icon(Icons.edit_note_rounded, size: 18.sp),
-                            color: theme.colorScheme.primary,
-                            constraints: const BoxConstraints(),
-                            padding: EdgeInsets.all(4.r),
-                            tooltip: l10n.homeMatchMemo,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-              // Notes preview
-              if (notes != null && notes.isNotEmpty) ...[
-                SizedBox(height: 8.h),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.sticky_note_2_outlined,
-                      size: 12.sp,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    SizedBox(width: 4.w),
-                    Expanded(
-                      child: Text(
-                        notes,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          fontStyle: FontStyle.italic,
-                          fontSize: 11.sp,
+                            SizedBox(height: 8.h),
+                            Text(
+                              myClientName,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            if (myAge != null)
+                              Text(
+                                l10n.homeAgeSuffix(myAge),
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                          ],
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      // Dashed line + heart
+                      SizedBox(
+                        width: 80.w,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: pointColor.withValues(alpha: 0.3),
+                                      width: 1,
+                                      style: BorderStyle.solid,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 4.w),
+                              child: ScaleTransition(
+                                scale: _pulseAnimation,
+                                child: Icon(
+                                  Icons.favorite_rounded,
+                                  size: 18.r,
+                                  color: pointColor.withValues(alpha: 0.6),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: pointColor.withValues(alpha: 0.3),
+                                      width: 1,
+                                      style: BorderStyle.solid,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Other client avatar + info
+                      Expanded(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 24.r,
+                              backgroundColor: theme.colorScheme.onSurfaceVariant
+                                  .withValues(alpha: 0.1),
+                              child: Text(
+                                otherClientName.isNotEmpty
+                                    ? otherClientName[0]
+                                    : '?',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              otherClientName,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            if (otherAge != null)
+                              Text(
+                                l10n.homeAgeSuffix(otherAge),
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  // Bottom: direction + date + status
+                  Row(
+                    children: [
+                      Icon(directionIcon, size: 12.sp,
+                          color: theme.colorScheme.onSurfaceVariant),
+                      SizedBox(width: 4.w),
+                      Text(
+                        directionText,
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        dateText,
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Status badge for non-pending
+                  if (status != 'pending') ...[
+                    SizedBox(height: 8.h),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 3.h),
+                        decoration: BoxDecoration(
+                          color: statusColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          statusText,
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w600,
+                            color: statusColor,
+                          ),
+                        ),
                       ),
                     ),
                   ],
-                ),
-              ],
-
-              // Status badge (bottom right) for non-pending
-              if (status != 'pending') ...[
-                SizedBox(height: 8.h),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-                    decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(6.r),
-                    ),
-                    child: Text(
-                      statusText,
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w600,
-                        color: statusColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Check verification before allowing accept/decline
-  Future<bool> _checkVerification(
-    BuildContext context,
-    WidgetRef ref,
-    AppLocalizations l10n,
-  ) async {
-    final status = await ref.read(managerVerificationStatusProvider.future);
-    if (status == 'verified') return true;
-
-    if (!context.mounted) return false;
-
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        icon: Icon(
-          Icons.verified_user_outlined,
-          size: 40.r,
-          color: Theme.of(ctx).colorScheme.primary,
-        ),
-        title: Text(l10n.matchSheetVerificationRequired),
-        content: Text(
-          l10n.matchSheetVerificationBody,
-          textAlign: TextAlign.center,
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              Navigator.of(context).pop(); // close sheet
-              context.push(AppRoutes.verification);
-            },
-            child: Text(l10n.matchSheetGoVerify),
-          ),
-        ],
-      ),
-    );
-
-    return false;
-  }
-
-  Future<void> _acceptMatch(
-    BuildContext context,
-    WidgetRef ref,
-    Map<String, dynamic> match,
-    AppLocalizations l10n,
-  ) async {
-    if (!await _checkVerification(context, ref, l10n)) return;
-
-    if (!context.mounted) return;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.homeMatchAccept),
-        content: Text(l10n.matchDetailAcceptConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.homeMatchAccept),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true) return;
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-      await client.from('matches').update({
-        'status': 'accepted',
-        'responded_at': DateTime.now().toIso8601String(),
-      }).eq('id', match['id']);
-
-      ref.invalidate(matchesByStatusProvider('pending'));
-      ref.invalidate(matchesByStatusProvider('active'));
-      ref.invalidate(homeTodayStatsProvider);
-      ref.invalidate(activityFeedProvider);
-
-      if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.homeMatchAcceptSuccess)),
-        );
-      }
-    } catch (_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.commonError)),
-        );
-      }
-    }
-  }
-
-  Future<void> _declineMatch(
-    BuildContext context,
-    WidgetRef ref,
-    Map<String, dynamic> match,
-    AppLocalizations l10n,
-  ) async {
-    if (!await _checkVerification(context, ref, l10n)) return;
-
-    if (!context.mounted) return;
-    final reasonController = TextEditingController();
-
-    try {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.homeMatchDecline),
-          content: TextField(
-            controller: reasonController,
-            decoration: InputDecoration(
-              hintText: l10n.homeMatchDeclineReason,
-            ),
-            maxLines: 2,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFFC62828),
-              ),
-              child: Text(l10n.homeMatchDecline),
-            ),
-          ],
-        ),
-      );
-
-      if (confirmed != true) return;
-
-      final client = ref.read(supabaseClientProvider);
-      final updates = <String, dynamic>{
-        'status': 'declined',
-        'responded_at': DateTime.now().toIso8601String(),
-      };
-      if (reasonController.text.trim().isNotEmpty) {
-        updates['notes'] = reasonController.text.trim();
-      }
-
-      await client.from('matches').update(updates).eq('id', match['id']);
-
-      ref.invalidate(matchesByStatusProvider('pending'));
-      ref.invalidate(matchesByStatusProvider('done'));
-      ref.invalidate(homeTodayStatsProvider);
-      ref.invalidate(activityFeedProvider);
-
-      if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.homeMatchDeclineSuccess)),
-        );
-      }
-    } catch (_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.commonError)),
-        );
-      }
-    } finally {
-      reasonController.dispose();
-    }
-  }
-
-  Future<void> _cancelMatch(
-    BuildContext context,
-    WidgetRef ref,
-    Map<String, dynamic> match,
-    AppLocalizations l10n,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.homeMatchCancel),
-        content: Text(l10n.homeMatchCancelConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFFC62828),
-            ),
-            child: Text(l10n.homeMatchCancel),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true) return;
-
-    try {
-      final matchId = match['id'] as String;
-      debugPrint('[CancelMatch] Cancelling match: $matchId');
-      final client = ref.read(supabaseClientProvider);
-      await client.from('matches').update({
-        'status': 'cancelled',
-        'responded_at': DateTime.now().toIso8601String(),
-      }).eq('id', matchId);
-      debugPrint('[CancelMatch] Update succeeded for $matchId');
-
-      ref.invalidate(matchesByStatusProvider('pending'));
-      ref.invalidate(matchesByStatusProvider('done'));
-      ref.invalidate(homeTodayStatsProvider);
-      ref.invalidate(activityFeedProvider);
-
-      if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.homeMatchCancelSuccess)),
-        );
-      }
-    } catch (e, st) {
-      debugPrint('Cancel match error: $e\n$st');
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.commonError)),
-        );
-      }
-    }
-  }
-
-  Future<void> _editNote(
-    BuildContext context,
-    WidgetRef ref,
-    Map<String, dynamic> match,
-    AppLocalizations l10n,
-  ) async {
-    final controller =
-        TextEditingController(text: match['notes'] as String? ?? '');
-
-    try {
-      final saved = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.homeMatchMemo),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(hintText: l10n.homeMatchMemoHint),
-            maxLines: 3,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l10n.commonSave),
-            ),
-          ],
-        ),
-      );
-
-      if (saved != true) return;
-
-      final client = ref.read(supabaseClientProvider);
-      await client
-          .from('matches')
-          .update({'notes': controller.text.trim()}).eq('id', match['id']);
-
-      ref.invalidate(matchesByStatusProvider('pending'));
-      ref.invalidate(matchesByStatusProvider('active'));
-      ref.invalidate(matchesByStatusProvider('done'));
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.homeMatchMemoSaved)),
-        );
-      }
-    } catch (_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.commonError)),
-        );
-      }
-    } finally {
-      controller.dispose();
-    }
-  }
-}
-
-class _ClientRow extends StatelessWidget {
-  const _ClientRow({
-    required this.label,
-    required this.name,
-    required this.age,
-    required this.isPrimary,
-    required this.theme,
-    required this.l10n,
-  });
-
-  final String label;
-  final String name;
-  final int? age;
-  final bool isPrimary;
-  final ThemeData theme;
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final color =
-        isPrimary ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant;
-
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 18.r,
-          backgroundColor: color.withValues(alpha: 0.1),
-          child: Text(
-            name.isNotEmpty ? name[0] : '?',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700,
-              color: color,
-            ),
-          ),
-        ),
-        SizedBox(width: 10.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w500,
-                color: color,
-              ),
-            ),
-            Row(
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: isPrimary ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                ),
-                if (age != null) ...[
-                  SizedBox(width: 6.w),
-                  Text(
-                    l10n.homeAgeSuffix(age!),
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
                 ],
-              ],
+              ),
             ),
-          ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }
